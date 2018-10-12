@@ -41,7 +41,8 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'paperboy = paperboy.server:main'
+            'paperboy = paperboy.server:main',
+            'paperboy-worker = paperboy.worker:main'
         ],
     },
 )
