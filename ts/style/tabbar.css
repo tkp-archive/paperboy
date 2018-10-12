@@ -8,8 +8,8 @@
 
 
 .p-TabBar {
-  min-height: 24px;
-  max-height: 24px;
+  min-height: 45px;
+  max-height: 45px;
 }
 
 
@@ -36,11 +36,6 @@
 }
 
 
-.p-TabBar-tab.p-mod-current {
-  background: var(--dark-bg-color);
-}
-
-
 .p-TabBar-tab:hover:not(.p-mod-current) {
   background: var(--dark-bg-hover);
 }
@@ -51,9 +46,15 @@
 }
 
 
+.p-TabBar-tab {
+  min-height: 45px;
+  max-height: 45px;
+}
+
 .p-TabBar-tab.p-mod-current {
-  min-height: 23px;
-  max-height: 23px;
+  background: var(--dark-bg-color);
+  min-height: 45px;
+  max-height: 45px;
   transform: translateY(1px);
 }
 

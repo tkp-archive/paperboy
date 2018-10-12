@@ -9,15 +9,10 @@
 @import '~@phosphor/dragdrop/style/index.css';
 @import '~@phosphor/widgets/style/index.css';
 @import './commandpalette.css';
-@import './content.css';
 @import './dockpanel.css';
 @import './menu.css';
 @import './menubar.css';
 @import './tabbar.css';
-@import './psp.css';
-@import './table.css';
-@import './controls.css';
-@import './material.dark.css';
 
 
 body {
@@ -32,13 +27,14 @@ body {
   padding: 0;
   overflow: hidden;
   color: var(--dark-color);
+  background-color: var(--dark-bg-color2);
   font-family: Arial;
 }
 
 div#header {
   height:45px;
-  background-color: var(--dark-bg-color3);
-  width: 100px;
+  background-color: var(--dark-bg-color2);
+  width: 250px;
   position: absolute;
   border-bottom: 1px solid var(--dark-border);
 }
@@ -51,17 +47,35 @@ div#header img {
 
 #menuBar {
   flex: 0 0 auto;
-  background-color: var(--dark-bg-color3);
+  background-color: var(--dark-bg-color2);
   color: var(--dark-color);
   height: 45px;
-  margin-left: 75px;
+  margin-left: 75%;
   display:flex;
-  align-items: flex-end;
+  justify-content: center;
 }
 
 
 #main {
   flex: 1 1 auto;
+  top: -45px;
+}
+
+
+#main > .p-TabBar > .p-TabBar-content {
+  padding-left: 30%;
+  padding-right: 30%;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.p-TabBar > .p-TabBar-content > .p-TabBar-tab {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+#main > .p-TabBar > .p-TabBar-content > .p-mod-current {
+  border-bottom:3px solid var(--highlight-teal);
 }
 
 
@@ -73,5 +87,9 @@ div#header img {
 
 #dock {
   padding: 4px;
-  background-color: var(--dark-bg-color2);
+  background-color: var(--dark-bg-color);
+}
+
+.p-SplitPanel {
+  background-color: var(--dark-bg-color);
 }
