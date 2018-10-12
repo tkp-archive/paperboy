@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+node_modules
+package-lock.json
+
+.DS_Store

@@ -1,0 +1,3 @@
+recursive-include paperboy/assets *
+prune tests
+include requirements.txt

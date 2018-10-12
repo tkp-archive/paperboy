@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2016",
+    "outDir": "./build",
+    "lib": ["es2016", "ES2015.Promise", "DOM"],
+    "types": []
+  },
+  "include": ["ts/src/*"]
+}

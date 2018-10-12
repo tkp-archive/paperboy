@@ -1,0 +1,84 @@
+html {
+    font-family: "Ubuntu";
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+/* specifically hide the arrow on focus */
+input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+body {
+    height: 100vh;
+    min-height:500px;
+    margin: 0px;
+    /*background: #141e30;*/
+    /*background: -webkit-linear-gradient(to right, #141e30, #243b55);*/
+    /*background: linear-gradient(to right, #141e30, #243b55); */
+    background: #000000;
+    background: -webkit-linear-gradient(to top, #000000, #53346d);
+    background: linear-gradient(to top, #000000, #53346d);
+}
+
+div.main{
+    width:100%;
+    min-height: 500px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+div.section {
+    width:100%;
+    height: 100%;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+div.header {
+    color: white;
+    background: transparent;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    border-bottom: 1px solid white;
+}
+
+div.header h2{
+    margin: 0;
+    margin-left:5px;
+    align-self: center;
+}
+
+div.header input {
+    height:25px;
+    align-self: center;
+    margin-left: 25px;
+    background-color: transparent;
+    color:white;
+    padding-left:10px;
+    text-transform: uppercase;
+}
+
+perspective-viewer#holder {
+    position: relative;
+    height:100%;
+    width:80%;
+}
+
+perspective-viewer div#app, 
+perspective-viewer div#pivot_chart{
+    background-color:transparent;
+}

@@ -1,0 +1,15 @@
+.tableWidget {
+    overflow-y: scroll !important;
+    min-width: 50px;
+    min-height: 50px;
+    padding: 8px;
+    border: 1px solid var(--dark-bg-color);
+    border-top: none;
+    background: var(--dark-bg-color);
+    box-shadow: 1px 1px 2px var(--dark-drop-shadow);
+}
+
+.tableWidget a{
+    text-decoration: underline;
+    color:white;
+}
