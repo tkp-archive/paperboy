@@ -41,6 +41,7 @@ setup(
 
     entry_points={
         'console_scripts': [
+            'paperboy = paperboy.server:main'
         ],
     },
 )
