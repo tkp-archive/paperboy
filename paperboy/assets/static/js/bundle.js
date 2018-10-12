@@ -37188,7 +37188,7 @@ function main() {
     });
     let dock = new widgets_1.DockPanel();
     dock.id = 'dock';
-    dock.title.label = 'Home';
+    dock.title.label = 'Dock';
     /* Reference Data Tab */
     let refdata_panel = new widgets_1.SplitPanel();
     refdata_panel.title.label = 'Test';
@@ -37246,7 +37246,7 @@ function main() {
     /* main area setup */
     widgets_1.BoxPanel.setStretch(dock, 1);
     let home = new widgets_1.SplitPanel();
-    home.title.label = "Dock";
+    home.title.label = "Home";
     let overview = new widgets_1.BoxPanel({ direction: 'top-to-bottom', spacing: 0 });
     overview.title.label = "Overview";
     home.addWidget(overview);
@@ -54433,7 +54433,7 @@ exports = module.exports = __webpack_require__(6)();
 
 
 // module
-exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n.p-MenuBar {\n  padding-left: 5px;\n  background: var(--dark-bg-color3);\n  color: var(--dark-color);\n  border-bottom: 1px solid var(--dark-border);\n  font: 13px Helvetica, Arial, sans-serif;\n}\n\n.p-MenuBar-content{\n  height: 100%;\n  width: 100%;\n  align-items: center;\n  padding-left:70%;\n  padding-right:50px;\n}\n\n.p-MenuBar-menu {\n  transform: translateY(-1px);\n}\n\n\n.p-MenuBar-item {\n  flex:1;\n  padding: 4px 8px;\n  border-left: 1px solid transparent;\n  border-right: 1px solid transparent;\n\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.p-MenuBar-itemIcon,\n.p-MenuBar-itemLabel {\n  text-align: center;\n}\n\n.p-MenuBar-item.p-mod-active {\n  background: var(--dark-bg-hover);\n}\n\n\n.p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {\n  z-index: 10001;\n  background: var(--dark-bg-hover);\n  border-left: 1px solid var(--dark-border2);\n  border-right: 1px solid var(--dark-border2);\n  box-shadow: 0px 0px 6px var(--dark-drop-shadow);\n}\n", ""]);
+exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n.p-MenuBar {\n  padding-left: 5px;\n  background: var(--dark-bg-color3);\n  color: var(--dark-color);\n  border-bottom: 1px solid var(--dark-border);\n  font: 13px Helvetica, Arial, sans-serif;\n}\n\n.p-MenuBar-content{\n  height: 100%;\n  width: 100%;\n  align-items: center;\n  padding-left:50%;\n  padding-right:50px;\n  z-index:5;\n}\n\n.p-MenuBar-menu {\n  transform: translateY(-1px);\n}\n\n\n.p-MenuBar-item {\n  flex:1;\n  padding: 4px 8px;\n  border-left: 1px solid transparent;\n  border-right: 1px solid transparent;\n\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.p-MenuBar-itemIcon,\n.p-MenuBar-itemLabel {\n  text-align: center;\n}\n\n.p-MenuBar-item.p-mod-active {\n  background: var(--dark-bg-hover);\n}\n\n\n.p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {\n  z-index: 10001;\n  background: var(--dark-bg-hover);\n  border-left: 1px solid var(--dark-border2);\n  border-right: 1px solid var(--dark-border2);\n  box-shadow: 0px 0px 6px var(--dark-drop-shadow);\n}\n", ""]);
 
 // exports
 

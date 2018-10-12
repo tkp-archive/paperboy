@@ -100,7 +100,7 @@ function main(): void {
 
   let dock = new DockPanel();
   dock.id = 'dock';
-  dock.title.label = 'Home';
+  dock.title.label = 'Dock';
 
   /* Reference Data Tab */
   let refdata_panel = new SplitPanel();
@@ -168,7 +168,7 @@ function main(): void {
   BoxPanel.setStretch(dock, 1);
 
   let home = new SplitPanel();
-  home.title.label = "Dock";
+  home.title.label = "Home";
 
   let overview = new BoxPanel({ direction: 'top-to-bottom', spacing: 0 });
   overview.title.label = "Overview"

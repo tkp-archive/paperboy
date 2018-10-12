@@ -19,8 +19,9 @@
   height: 100%;
   width: 100%;
   align-items: center;
-  padding-left:70%;
+  padding-left:50%;
   padding-right:50px;
+  z-index:5;
 }
 
 .p-MenuBar-menu {
