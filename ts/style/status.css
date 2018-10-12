@@ -1,0 +1,34 @@
+div.status {
+    display: flex;
+    flex-direction: row;
+    font-size: 10px;
+    padding-left: 15px;
+    border-right: 1px solid var(--dark-border);
+    border-bottom: 1px solid var(--dark-border);
+    border-bottom: 1px solid var(--dark-border2);
+}
+
+div.status span.number {
+    font-size: 25px;
+    width:100%;
+}
+
+div.status-notebooks,
+div.status-jobs,
+div.status-reports {
+    width:30%;
+    display:flex;
+    flex-direction: column;;
+}
+
+div.status span.notebooks {
+    color: var(--highlight-orange);
+}
+
+div.status span.jobs {
+    color: var(--highlight-blue);
+}
+
+div.status span.reports {
+    color: var(--highlight-teal);
+}

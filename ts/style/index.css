@@ -12,6 +12,7 @@
 @import './dockpanel.css';
 @import './menu.css';
 @import './menubar.css';
+@import './status.css';
 @import './tabbar.css';
 
 
@@ -19,6 +20,7 @@ body {
   display: flex;
   flex-direction: column;
   position: absolute;
+  font-family: 'Roboto';
   top: 0;
   left: 0;
   right: 0;
