@@ -1,19 +1,5 @@
-import falcon
 import gunicorn.app.base
 from gunicorn.six import iteritems
-from .resources import StaticResource, HTMLResource
-from .middleware import HandleCORS
-
-
-def FalconAPI():
-    api = falcon.API(middleware=[HandleCORS()])
-    html = HTMLResource()
-    static = StaticResource()
-
-    api.add_route('/', html)
-    api.add_route('/index.html', html)
-    api.add_sink(static.on_get, prefix='/static')
-    return api
 
 
 class FalconGunicorn(gunicorn.app.base.BaseApplication):
@@ -31,14 +17,3 @@ class FalconGunicorn(gunicorn.app.base.BaseApplication):
 
     def load(self):
         return self.application
-
-
-def main():
-    options = {
-        'bind': '0.0.0.0:8080',
-        'workers': 2
-    }
-    FalconGunicorn(FalconAPI(), options).run()
-
-if __name__ == '__main__':
-    main()
