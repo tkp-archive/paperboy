@@ -10,7 +10,7 @@ def read(file):
     path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'assets', 'static', file.replace('/static/', '')))
     if not os.path.exists(path):
         return None
-    with open(path, 'r') as fp:
+    with open(path, 'rb') as fp:
         return fp.read()
 
 
