@@ -5,6 +5,7 @@ import {
 import {request, RequestResult} from './request';
 
 
+
 export
 class Status extends Widget {
     static createNode(): HTMLElement {
@@ -13,43 +14,48 @@ class Status extends Widget {
         return node;
     }
 
-    private populateNode(data: any): void {
-        let nb = document.createElement('div');
-        nb.classList.add('status-notebooks');
-        let nb_sp = document.createElement('span');
-        nb_sp.classList.add('number');
-        nb_sp.classList.add('notebooks');
-        let nb_sp2 = document.createElement('span');
-        nb_sp.textContent = data.json()['notebooks'];
-        nb_sp2.textContent = 'Notebooks';
-        nb.appendChild(nb_sp);
-        nb.appendChild(nb_sp2);
+    static createSubtitle(clazz: string, title: string, data: any) : HTMLDivElement {
+        let sec = document.createElement('div');
+        sec.classList.add('status-' + clazz);
 
-        let jb = document.createElement('div');
-        jb.classList.add('status-jobs');
-        let jb_sp = document.createElement('span');
-        jb_sp.classList.add('number');
-        jb_sp.classList.add('jobs');
-        let jb_sp2 = document.createElement('span');
-        jb_sp.textContent = data.json()['jobs'];
-        jb_sp2.textContent = 'Jobs';
-        jb.appendChild(jb_sp);
-        jb.appendChild(jb_sp2);
+        let sec_sp = document.createElement('span');
+        sec_sp.classList.add('number');
+        sec_sp.classList.add(clazz);
+        let sec_sp2 = document.createElement('span');
 
-        let rp = document.createElement('div');
-        rp.classList.add('status-reports');
-        let rp_sp = document.createElement('span');
-        rp_sp.classList.add('number');
-        rp_sp.classList.add('reports');
-        let rp_sp2 = document.createElement('span');
-        rp_sp.textContent = data.json()['reports'];
-        rp_sp2.textContent = 'Reports';
-        rp.appendChild(rp_sp);
-        rp.appendChild(rp_sp2);
 
-        this.node.appendChild(nb);
-        this.node.appendChild(jb);
-        this.node.appendChild(rp);
+        sec_sp.textContent = data.json()[clazz];
+        sec_sp2.textContent = title;
+        sec.appendChild(sec_sp);
+        sec.appendChild(sec_sp2);
+        return sec;
+    }
+
+    static createSubsection(sec: HTMLDivElement, clazz: string, title: string, data: any) : void {
+        sec.classList.add('status-breakdown');
+
+        let sec_sp = document.createElement('span');
+        sec_sp.classList.add('subtitle');
+        sec_sp.classList.add(clazz);
+        sec_sp.textContent = title;
+
+        let sec_sp2 = document.createElement('span');
+        sec_sp2.textContent = data.json()[clazz];
+
+        sec.appendChild(sec_sp);
+        sec.appendChild(sec_sp2);
+    }
+
+    private populateTop(data: any): void {
+        this.top.classList.add('status-container');
+
+        let nb = Status.createSubtitle('notebooks', 'Notebooks', data);
+        let jb = Status.createSubtitle('jobs', 'Jobs', data);
+        let rp = Status.createSubtitle('reports', 'Reports', data);
+
+        this.top.appendChild(nb);
+        this.top.appendChild(jb);
+        this.top.appendChild(rp);
     }
 
     constructor(){
@@ -58,8 +64,30 @@ class Status extends Widget {
         this.title.closable = false;
         this.node.id = 'status';
 
+        this.node.appendChild(this.top);
+        this.node.appendChild(this.nbs);
+        this.node.appendChild(this.jbs);
+        this.node.appendChild(this.rps);
+
         request('get', '/api/v1/status').then((res: RequestResult) => {
-            this.populateNode(res);
+            this.populateTop(res);
+        });
+
+        request('get', '/api/v1/notebooks').then((res: RequestResult) => {
+            Status.createSubsection(this.nbs, 'notebooks', 'Notebooks', res);
+        });
+
+        request('get', '/api/v1/jobs').then((res: RequestResult) => {
+            Status.createSubsection(this.jbs, 'jobs', 'Jobs', res);
+        });
+
+        request('get', '/api/v1/reports').then((res: RequestResult) => {
+            Status.createSubsection(this.rps, 'reports', 'Reports', res);
         });
     }
+
+    private top = document.createElement('div');
+    private nbs = document.createElement('div');
+    private jbs = document.createElement('div');
+    private rps = document.createElement('div');
 }

@@ -1,12 +1,16 @@
 import falcon
-from ..resources import StaticResource, HTMLResource, StatusResource
+from ..resources import StaticResource, HTMLResource, StatusResource, NotebookResource, JobResource, ReportResource
 from ..middleware import HandleCORS
-
+from ..storage import StorageEngine, StorageError
 API = '/api/v1/'
 
 
 def FalconAPI():
     api = falcon.API(middleware=[HandleCORS()])
+
+    # database
+    db = StorageEngine()
+    api.add_error_handler(StorageError, StorageError.handle)
 
     # Static resources
     html = HTMLResource()
@@ -16,6 +20,15 @@ def FalconAPI():
     api.add_sink(static.on_get, prefix='/static')
 
     # Routes
-    status = StatusResource()
+    status = StatusResource(db)
     api.add_route(API + 'status', status)
+
+    notebooks = NotebookResource(db)
+    api.add_route(API + 'notebooks', notebooks)
+
+    jobs = JobResource(db)
+    api.add_route(API + 'jobs', jobs)
+
+    reports = ReportResource(db)
+    api.add_route(API + 'reports', reports)
     return api

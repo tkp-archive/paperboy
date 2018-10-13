@@ -1,6 +1,6 @@
 div.status {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     font-size: 10px;
     padding-left: 15px;
     border-right: 1px solid var(--dark-border);
@@ -8,8 +8,27 @@ div.status {
     border-bottom: 1px solid var(--dark-border2);
 }
 
+div.status > * {
+    flex: 1;
+}
+
+div.status-container {
+    display:flex;
+    flex-direction: row;
+}
+
+div.status-breakdown {
+    display: flex;
+    flex-direction: column;
+}
+
 div.status span.number {
     font-size: 25px;
+    width:100%;
+}
+
+div.status span.subtitle {
+    font-size: 15px;
     width:100%;
 }
 
@@ -18,7 +37,8 @@ div.status-jobs,
 div.status-reports {
     width:30%;
     display:flex;
-    flex-direction: column;;
+    flex-direction: column;
+    margin: auto;
 }
 
 div.status span.notebooks {

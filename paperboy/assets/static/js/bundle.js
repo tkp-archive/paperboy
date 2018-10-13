@@ -37085,54 +37085,69 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const widgets_1 = __webpack_require__(88);
 const request_1 = __webpack_require__(231);
 class Status extends widgets_1.Widget {
+    constructor() {
+        super({ node: Status.createNode() });
+        this.top = document.createElement('div');
+        this.nbs = document.createElement('div');
+        this.jbs = document.createElement('div');
+        this.rps = document.createElement('div');
+        this.setFlag(widgets_1.Widget.Flag.DisallowLayout);
+        this.title.closable = false;
+        this.node.id = 'status';
+        this.node.appendChild(this.top);
+        this.node.appendChild(this.nbs);
+        this.node.appendChild(this.jbs);
+        this.node.appendChild(this.rps);
+        request_1.request('get', '/api/v1/status').then((res) => {
+            this.populateTop(res);
+        });
+        request_1.request('get', '/api/v1/notebooks').then((res) => {
+            Status.createSubsection(this.nbs, 'notebooks', 'Notebooks', res);
+        });
+        request_1.request('get', '/api/v1/jobs').then((res) => {
+            Status.createSubsection(this.jbs, 'jobs', 'Jobs', res);
+        });
+        request_1.request('get', '/api/v1/reports').then((res) => {
+            Status.createSubsection(this.rps, 'reports', 'Reports', res);
+        });
+    }
     static createNode() {
         let node = document.createElement('div');
         node.classList.add('status');
         return node;
     }
-    populateNode(data) {
-        let nb = document.createElement('div');
-        nb.classList.add('status-notebooks');
-        let nb_sp = document.createElement('span');
-        nb_sp.classList.add('number');
-        nb_sp.classList.add('notebooks');
-        let nb_sp2 = document.createElement('span');
-        nb_sp.textContent = data.json()['notebooks'];
-        nb_sp2.textContent = 'Notebooks';
-        nb.appendChild(nb_sp);
-        nb.appendChild(nb_sp2);
-        let jb = document.createElement('div');
-        jb.classList.add('status-jobs');
-        let jb_sp = document.createElement('span');
-        jb_sp.classList.add('number');
-        jb_sp.classList.add('jobs');
-        let jb_sp2 = document.createElement('span');
-        jb_sp.textContent = data.json()['jobs'];
-        jb_sp2.textContent = 'Jobs';
-        jb.appendChild(jb_sp);
-        jb.appendChild(jb_sp2);
-        let rp = document.createElement('div');
-        rp.classList.add('status-reports');
-        let rp_sp = document.createElement('span');
-        rp_sp.classList.add('number');
-        rp_sp.classList.add('reports');
-        let rp_sp2 = document.createElement('span');
-        rp_sp.textContent = data.json()['reports'];
-        rp_sp2.textContent = 'Reports';
-        rp.appendChild(rp_sp);
-        rp.appendChild(rp_sp2);
-        this.node.appendChild(nb);
-        this.node.appendChild(jb);
-        this.node.appendChild(rp);
+    static createSubtitle(clazz, title, data) {
+        let sec = document.createElement('div');
+        sec.classList.add('status-' + clazz);
+        let sec_sp = document.createElement('span');
+        sec_sp.classList.add('number');
+        sec_sp.classList.add(clazz);
+        let sec_sp2 = document.createElement('span');
+        sec_sp.textContent = data.json()[clazz];
+        sec_sp2.textContent = title;
+        sec.appendChild(sec_sp);
+        sec.appendChild(sec_sp2);
+        return sec;
     }
-    constructor() {
-        super({ node: Status.createNode() });
-        this.setFlag(widgets_1.Widget.Flag.DisallowLayout);
-        this.title.closable = false;
-        this.node.id = 'status';
-        request_1.request('get', '/api/v1/status').then((res) => {
-            this.populateNode(res);
-        });
+    static createSubsection(sec, clazz, title, data) {
+        sec.classList.add('status-breakdown');
+        let sec_sp = document.createElement('span');
+        sec_sp.classList.add('subtitle');
+        sec_sp.classList.add(clazz);
+        sec_sp.textContent = title;
+        let sec_sp2 = document.createElement('span');
+        sec_sp2.textContent = data.json()[clazz];
+        sec.appendChild(sec_sp);
+        sec.appendChild(sec_sp2);
+    }
+    populateTop(data) {
+        this.top.classList.add('status-container');
+        let nb = Status.createSubtitle('notebooks', 'Notebooks', data);
+        let jb = Status.createSubtitle('jobs', 'Jobs', data);
+        let rp = Status.createSubtitle('reports', 'Reports', data);
+        this.top.appendChild(nb);
+        this.top.appendChild(jb);
+        this.top.appendChild(rp);
     }
 }
 exports.Status = Status;
@@ -54528,7 +54543,7 @@ exports = module.exports = __webpack_require__(6)();
 
 
 // module
-exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: row;\n    font-size: 10px;\n    padding-left: 15px;\n    border-right: 1px solid var(--dark-border);\n    border-bottom: 1px solid var(--dark-border);\n    border-bottom: 1px solid var(--dark-border2);\n}\n\ndiv.status span.number {\n    font-size: 25px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;;\n}\n\ndiv.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\ndiv.status span.jobs {\n    color: var(--highlight-blue);\n}\n\ndiv.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
+exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n    border-right: 1px solid var(--dark-border);\n    border-bottom: 1px solid var(--dark-border);\n    border-bottom: 1px solid var(--dark-border2);\n}\n\ndiv.status > * {\n    flex: 1;\n}\n\ndiv.status-container {\n    display:flex;\n    flex-direction: row;\n}\n\ndiv.status-breakdown {\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status span.number {\n    font-size: 25px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 15px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n}\n\ndiv.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\ndiv.status span.jobs {\n    color: var(--highlight-blue);\n}\n\ndiv.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
 
 // exports
 
