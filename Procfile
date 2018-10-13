@@ -1,1 +1,1 @@
-web: paperboy
+web: python3 -m paperboy.server
