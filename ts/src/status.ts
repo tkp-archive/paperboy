@@ -49,6 +49,8 @@ class Status extends Widget {
 
             k.textContent = toProperCase(section);
             v.textContent = data[section];
+            v.classList.add('status-data');
+
             row.appendChild(k);
             row.appendChild(v);
             table.appendChild(row);

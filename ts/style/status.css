@@ -26,6 +26,14 @@ div.status-breakdown {
     flex-direction: column;
 }
 
+div.status-breakdown td {
+    width: 50%;
+}
+
+div.status-breakdown td.status-data {
+    width: 50%;
+}
+
 div.status span.number {
     font-size: 20px;
     width:100%;

@@ -6,12 +6,11 @@ div.browser {
 
 
 div.browser div.search-holder {
-    height: 100px;
+    height: 100%;
     width: 100%;
     display:flex;
     flex-direction: row;
     margin: auto;
-    margin-top: 25%;
     align-items: center;
     justify-content: center;
 }

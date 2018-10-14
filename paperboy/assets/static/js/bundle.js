@@ -37155,14 +37155,15 @@ function autocomplete_ticker(path, value, autocomplete) {
         }
     });
 }
-class Browser extends widgets_1.BoxPanel {
+class Browser extends widgets_1.SplitPanel {
     constructor() {
-        super();
+        super({ orientation: 'vertical', spacing: 0 });
         this.node.classList.add('browser');
         let holder = document.createElement('div');
         holder.classList.add('search-holder');
         let search = document.createElement('input');
         search.setAttribute('list', 'browser-datalist');
+        search.placeholder = 'Search...';
         let datalist = document.createElement('datalist');
         datalist.id = 'browser-datalist';
         let go = document.createElement('button');
@@ -37194,7 +37195,12 @@ class Browser extends widgets_1.BoxPanel {
         holder.appendChild(search);
         holder.appendChild(datalist);
         holder.appendChild(go);
-        this.node.appendChild(holder);
+        let searchpanel = new widgets_1.BoxPanel();
+        searchpanel.node.appendChild(holder);
+        let resultspanel = new widgets_1.BoxPanel();
+        this.addWidget(searchpanel);
+        this.addWidget(resultspanel);
+        this.setRelativeSizes([.3, .7]);
     }
 }
 exports.Browser = Browser;
@@ -37392,6 +37398,7 @@ class Status extends widgets_1.Widget {
             let v = document.createElement('td');
             k.textContent = utils_1.toProperCase(section);
             v.textContent = data[section];
+            v.classList.add('status-data');
             row.appendChild(k);
             row.appendChild(v);
             table.appendChild(row);
@@ -54655,7 +54662,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "\ndiv.browser {\n    display: flex;\n    flex-direction: row;\n}\n\n\ndiv.browser div.search-holder {\n    height: 100px;\n    width: 100%;\n    display:flex;\n    flex-direction: row;\n    margin: auto;\n    margin-top: 25%;\n    align-items: center;\n    justify-content: center;\n}\n\n\ndiv.browser div.search-holder > input {\n    height: 25px;\n    width: 400px;\n    font-size: 25px;\n}\n\ndiv.browser div.search-holder > datalist {\n    display: none;\n}\n\ndiv.browser div.search-holder > button {\n    height: 31px;\n}\n\n\ndiv.browser div.search-holder > input::-webkit-outer-spin-button,\ndiv.browser div.search-holder > input::-webkit-inner-spin-button {\n    /* display: none; <- Crashes Chrome on hover */\n    -webkit-appearance: none;\n    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */\n}\n\n/* specifically hide the arrow on focus */\ndiv.browser div.search-holder > input::-webkit-calendar-picker-indicator {\n    display: none;\n}\n", ""]);
+exports.push([module.i, "\ndiv.browser {\n    display: flex;\n    flex-direction: row;\n}\n\n\ndiv.browser div.search-holder {\n    height: 100%;\n    width: 100%;\n    display:flex;\n    flex-direction: row;\n    margin: auto;\n    align-items: center;\n    justify-content: center;\n}\n\n\ndiv.browser div.search-holder > input {\n    height: 25px;\n    width: 400px;\n    font-size: 25px;\n}\n\ndiv.browser div.search-holder > datalist {\n    display: none;\n}\n\ndiv.browser div.search-holder > button {\n    height: 31px;\n}\n\n\ndiv.browser div.search-holder > input::-webkit-outer-spin-button,\ndiv.browser div.search-holder > input::-webkit-inner-spin-button {\n    /* display: none; <- Crashes Chrome on hover */\n    -webkit-appearance: none;\n    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */\n}\n\n/* specifically hide the arrow on focus */\ndiv.browser div.search-holder > input::-webkit-calendar-picker-indicator {\n    display: none;\n}\n", ""]);
 
 // exports
 
@@ -54778,7 +54785,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    /*flex: 1;*/\n    display:flex;\n    flex-direction: row;\n    margin-bottom:15px;\n}\n\ndiv.status-breakdown {\n    /*flex: 2;*/\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
+exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    /*flex: 1;*/\n    display:flex;\n    flex-direction: row;\n    margin-bottom:15px;\n}\n\ndiv.status-breakdown {\n    /*flex: 2;*/\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
 
 // exports
 
