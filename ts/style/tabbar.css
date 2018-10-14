@@ -21,10 +21,12 @@
 
 body.dark .p-TabBar-content {
   border-bottom: 1px solid var(--dark-border);
+  border-right: 1px solid var(--dark-border);
 }
 
 body.light .p-TabBar-content {
   border-bottom: 1px solid var(--light-border);
+  border-right: 1px solid var(--light-border);
 }
 
 .p-TabBar-tab {
