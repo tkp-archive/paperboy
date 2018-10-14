@@ -1,4 +1,6 @@
-
+div.browser {
+    font-size: 10px;
+}
 div.browser ul li {
     flex: 1;
 }
