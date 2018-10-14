@@ -1,4 +1,12 @@
 
+body.dark div.browser .p-TabBar-content {
+  border-right: 1px solid var(--dark-border);
+}
+
+body.light div.browser .p-TabBar-content {
+  border-right: 1px solid var(--light-border);
+}
+
 
 body.dark div.browser .p-StackedPanel {
     border-right: 1px solid var(--dark-border);
