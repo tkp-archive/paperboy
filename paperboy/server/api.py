@@ -1,5 +1,5 @@
 import falcon
-from ..resources import StaticResource, HTMLResource, StatusResource, NotebookResource, JobResource, ReportResource
+from ..resources import StaticResource, HTMLResource, StatusResource, NotebookResource, JobResource, ReportResource, AutocompleteResource
 from ..middleware import HandleCORS
 from ..storage import StorageEngine, StorageError
 API = '/api/v1/'
@@ -31,4 +31,7 @@ def FalconAPI():
 
     reports = ReportResource(db)
     api.add_route(API + 'reports', reports)
+
+    autocomplete = AutocompleteResource(db)
+    api.add_route(API + 'autocomplete', autocomplete)
     return api

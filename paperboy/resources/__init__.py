@@ -1,3 +1,4 @@
+from .autocomplete import AutocompleteResource
 from .html import HTMLResource
 from .job import JobResource
 from .notebook import NotebookResource

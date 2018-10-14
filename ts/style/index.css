@@ -14,6 +14,7 @@
 @import './header.css';
 @import './menu.css';
 @import './menubar.css';
+@import './quickbrowser.css';
 @import './status.css';
 @import './tabbar.css';
 
@@ -133,4 +134,12 @@ body.dark .p-SplitPanel {
 
 body.light .p-SplitPanel {
   background-color: var(--light-bg-color);
+}
+
+body.dark tr:hover > td {
+  background-color: var(--dark-bg-color2)
+}
+
+body.light tr:hover > td {
+  background-color: var(--light-bg-color2)
 }

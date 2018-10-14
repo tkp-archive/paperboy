@@ -17,6 +17,7 @@ import {
 
 import {Header} from './header';
 import {Status} from './status';
+import {QuickBrowser} from './quickbrowser';
 import {Browser} from './browser';
 
 import '../ts/style/index.css';
@@ -50,13 +51,10 @@ function main(): void {
   let overview = new BoxPanel({ direction: 'top-to-bottom', spacing: 0 });
   overview.title.label = "Overview"
   overview.addWidget(new Status());
-  overview.addWidget(new Browser());
+  overview.addWidget(new QuickBrowser());
 
   home.addWidget(overview);
-
-  let tmp = new SplitPanel();
-  tmp.title.label = 'Test2';
-  home.addWidget(tmp);
+  home.addWidget(new Browser());
 
   home.setRelativeSizes([.3, .7]);
 
@@ -65,8 +63,10 @@ function main(): void {
 
   let tmp2 = new SplitPanel()
   tmp2.title.label = 'Notebooks';
+
   let tmp3 = new SplitPanel()
   tmp3.title.label = 'Jobs';
+
   let tmp4 = new SplitPanel()
   tmp4.title.label = 'Reports';
 

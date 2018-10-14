@@ -1,76 +1,45 @@
+
 div.browser {
-    font-size: 10px;
-}
-div.browser ul li {
-    flex: 1;
-}
-
-body.dark div.browser .p-TabBar-content {
-  border-right: 1px solid var(--dark-border);
-}
-
-body.light div.browser .p-TabBar-content {
-  border-right: 1px solid var(--light-border);
-}
-
-
-body.dark div.browser .p-StackedPanel {
-    border-right: 1px solid var(--dark-border);
-}
-
-body.light div.browser .p-StackedPanel {
-    border-right: 1px solid var(--light-border);
-}
-
-div.browser-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
-div.browser-container table {
-    height:90%;
-    text-align: left;
-}
 
-div.browser-container table > tr > th {
-    padding: 5px;
-}
-
-body.dark div.browser-container table > tr > th {
-    border-bottom: 1px solid var(--dark-border);
-}
-
-body.light div.browser-container table > tr > th {
-    border-bottom: 1px solid var(--light-border);
-}
-
-div.browser-container table > tr > td {
-    padding: 5px;
-}
-
-body.dark div.browser-container table > tr > td {
-    border-bottom: 1px solid var(--dark-border);
-}
-
-body.light div.browser-container table > tr > td {
-    border-bottom: 1px solid var(--light-border);
-}
-
-div.browser-container p {
-    height:5%;
+div.browser div.search-holder {
+    height: 100px;
+    width: 100%;
+    display:flex;
+    flex-direction: row;
     margin: auto;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 25%;
+    align-items: center;
+    justify-content: center;
 }
 
-body.dark div.browser-container p span.page:hover {
-    color: white;
+
+div.browser div.search-holder > input {
+    height: 25px;
+    width: 400px;
+    font-size: 25px;
 }
 
-body.light div.browser-container p span.page:hover {
-    color: black;
+div.browser div.search-holder > datalist {
+    display: none;
 }
 
-div.browser-container p span.page-active {
-    color: var(--highlight-orange);
+div.browser div.search-holder > button {
+    height: 31px;
+}
+
+
+div.browser div.search-holder > input::-webkit-outer-spin-button,
+div.browser div.search-holder > input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+/* specifically hide the arrow on focus */
+div.browser div.search-holder > input::-webkit-calendar-picker-indicator {
+    display: none;
 }
