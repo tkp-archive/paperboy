@@ -8,8 +8,10 @@
 @import './vars.css';
 @import '~@phosphor/dragdrop/style/index.css';
 @import '~@phosphor/widgets/style/index.css';
+@import './browser.css';
 @import './commandpalette.css';
 @import './dockpanel.css';
+@import './header.css';
 @import './menu.css';
 @import './menubar.css';
 @import './status.css';
@@ -28,9 +30,17 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-family: Arial;
+}
+
+body.dark {
   color: var(--dark-color);
   background-color: var(--dark-bg-color2);
-  font-family: Arial;
+}
+
+body.light {
+  color: var(--light-color);
+  background-color: var(--light-bg-color2);
 }
 
 body div.footer {
@@ -43,32 +53,23 @@ body div.footer {
   bottom: 10px;
 }
 
-div#header {
-  display:flex;
-  align-items: center;
-  height:45px;
-  width: 85%;
-  position: absolute;
-  background-color: var(--dark-bg-color2);
-  border-bottom: 1px solid var(--dark-border);
-}
-
-div#header img {
-  height: 40px;
-  object-fit: contain;
-  margin-left: 15px;
-}
-
 #menuBar {
   flex: 0 0 auto;
-  background-color: var(--dark-bg-color2);
-  color: var(--dark-color);
   height: 45px;
   margin-left: 85%;
   display:flex;
   justify-content: center;
 }
 
+body.dark #menuBar {
+  background-color: var(--dark-bg-color2);
+  color: var(--dark-color);
+}
+
+body.light #menuBar {
+  background-color: var(--light-bg-color2);
+  color: var(--light-color);
+}
 
 #main {
   flex: 1 1 auto;
@@ -79,7 +80,14 @@ div#header img {
 #main > .p-TabBar > .p-TabBar-content {
   margin-left: 30%;
   margin-right: 30%;
+}
+
+body.dark #main > .p-TabBar > .p-TabBar-content {
   border-bottom: 1px solid var(--dark-border);
+}
+
+body.light #main > .p-TabBar > .p-TabBar-content {
+  border-bottom: 1px solid var(--light-border);
 }
 
 .p-TabBar > .p-TabBar-content > .p-TabBar-tab {
@@ -88,57 +96,41 @@ div#header img {
   text-align: center;
 }
 
-#main > .p-TabBar > .p-TabBar-content > .p-mod-current {
+body.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,
+body.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {
   border-bottom:3px solid var(--highlight-blue);
 }
 
-
 #palette {
   min-width: 300px;
+}
+
+body.dark #palette {
   border-right: 1px solid var(--dark-border);
+}
+
+body.light #palette {
+  border-right: 1px solid var(--light-border);
 }
 
 
 #dock {
   padding: 4px;
+}
+
+body.dark #dock {
   background-color: var(--dark-bg-color);
 }
 
-.p-SplitPanel {
+body.light #dock {
+  background-color: var(--light-bg-color);
+}
+
+body.dark .p-SplitPanel {
   background-color: var(--dark-bg-color);
 }
 
-div.active-icon {
-  color: var(--highlight-blue);
-}
 
-#light:hover,
-#dark:hover {
-  color: white;
-}
-
-#light {
-  margin-left: 65%;
-  z-index: 1000;
-  height: 25px;
-  width: 25px;
-}
-
-#light:before {
-  content: '\f185';
-  font-family: 'FontAwesome';
-  font-size: 25px;
-}
-
-#dark {
-  margin-left: 10px;
-  z-index: 1000;
-  height: 25px;
-  width: 25px;
-}
-
-#dark:before {
-  content: '\f186';
-  font-family: 'FontAwesome';
-  font-size: 25px;
+body.light .p-SplitPanel {
+  background-color: var(--light-bg-color);
 }

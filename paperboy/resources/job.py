@@ -8,7 +8,8 @@ class JobResource(BaseResource):
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
-        resp.body = json.dumps({'page': 0,
+        resp.body = json.dumps({'page': 1,
+                                'pages': 15,
                                 'count': 10,
                                 'total': 150,
                                 'jobs': [

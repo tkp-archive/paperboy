@@ -3,21 +3,25 @@ div.status {
     flex-direction: column;
     font-size: 10px;
     padding-left: 15px;
-    border-right: 1px solid var(--dark-border);
-    border-bottom: 1px solid var(--dark-border);
-    border-bottom: 1px solid var(--dark-border2);
 }
 
-div.status > * {
-    flex: 1;
+body.dark div.status {
+    border-right: 1px solid var(--dark-border);
+}
+
+body.light div.status {
+    border-right: 1px solid var(--light-border);
 }
 
 div.status-container {
+    flex: 1;
     display:flex;
     flex-direction: row;
+    margin-bottom:25px;
 }
 
 div.status-breakdown {
+    flex: 2;
     display: flex;
     flex-direction: column;
 }
@@ -41,14 +45,17 @@ div.status-reports {
     margin: auto;
 }
 
-div.status span.notebooks {
+body.light div.status span.notebooks,
+body.dark div.status span.notebooks {
     color: var(--highlight-orange);
 }
 
-div.status span.jobs {
+body.light div.status span.jobs,
+body.dark div.status span.jobs {
     color: var(--highlight-blue);
 }
 
-div.status span.reports {
+body.light div.status span.reports,
+body.dark div.status span.reports {
     color: var(--highlight-teal);
 }

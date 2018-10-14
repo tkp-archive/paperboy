@@ -12,17 +12,17 @@ import {
 } from '@phosphor/commands';
 
 import {
-  TabPanel, BoxPanel, DockPanel,  SplitPanel, MenuBar, Widget, Menu
+  TabPanel, BoxPanel,  SplitPanel, MenuBar, Widget, Menu
 } from '@phosphor/widgets';
 
 import {Header} from './header';
 import {Status} from './status';
+import {Browser} from './browser';
 
 import '../ts/style/index.css';
 import "@jpmorganchase/perspective-viewer";
 import "@jpmorganchase/perspective-viewer-hypergrid";
 import "@jpmorganchase/perspective-viewer-highcharts";
-
 
 const commands = new CommandRegistry();
 
@@ -44,27 +44,14 @@ function main(): void {
     commands.processKeydownEvent(event);
   });
 
-  let dock = new DockPanel();
-  dock.id = 'dock';
-  dock.title.label = 'Dock';
-
-  /* Reference Data Tab */
-  let refdata_panel = new SplitPanel();
-  refdata_panel.title.label = 'Test';
-
-  /* Markets Info */
-  dock.addWidget(refdata_panel);
-
-  /* main area setup */
-  BoxPanel.setStretch(dock, 1);
-
   let home = new SplitPanel();
   home.title.label = "Home";
 
   let overview = new BoxPanel({ direction: 'top-to-bottom', spacing: 0 });
   overview.title.label = "Overview"
   overview.addWidget(new Status());
-  overview.addWidget(new SplitPanel());
+  overview.addWidget(new Browser());
+
   home.addWidget(overview);
 
   let tmp = new SplitPanel();
@@ -75,8 +62,18 @@ function main(): void {
 
   let main = new TabPanel();
   main.id = 'main';
+
+  let tmp2 = new SplitPanel()
+  tmp2.title.label = 'Notebooks';
+  let tmp3 = new SplitPanel()
+  tmp3.title.label = 'Jobs';
+  let tmp4 = new SplitPanel()
+  tmp4.title.label = 'Reports';
+
   main.addWidget(home);
-  main.addWidget(dock);
+  main.addWidget(tmp2);
+  main.addWidget(tmp3);
+  main.addWidget(tmp4);
 
   window.onresize = () => { main.update(); };
 

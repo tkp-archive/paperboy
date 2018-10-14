@@ -1,0 +1,62 @@
+
+
+body.dark div.browser .p-StackedPanel {
+    border-right: 1px solid var(--dark-border);
+}
+
+body.light div.browser .p-StackedPanel {
+    border-right: 1px solid var(--light-border);
+}
+
+div.browser-container {
+    display: flex;
+    flex-direction: column;
+}
+
+div.browser-container table {
+    height:90%;
+    text-align: left;
+}
+
+div.browser-container table > tr > th {
+    padding: 5px;
+}
+
+body.dark div.browser-container table > tr > th {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.light div.browser-container table > tr > th {
+    border-bottom: 1px solid var(--light-border);
+}
+
+div.browser-container table > tr > td {
+    padding: 5px;
+}
+
+body.dark div.browser-container table > tr > td {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.light div.browser-container table > tr > td {
+    border-bottom: 1px solid var(--light-border);
+}
+
+div.browser-container p {
+    height:5%;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+body.dark div.browser-container p span.page:hover {
+    color: white;
+}
+
+body.light div.browser-container p span.page:hover {
+    color: black;
+}
+
+div.browser-container p span.page-active {
+    color: var(--highlight-orange);
+}

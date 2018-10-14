@@ -15,10 +15,23 @@ class Header extends Widget {
         /* icons */
         let light = document.createElement('div');
         light.id = 'light';
+        light.onclick = () => {
+            document.body.classList.remove('dark');
+            document.body.classList.add('light');
+            dark.classList.remove('active-icon');
+            light.classList.add('active-icon');
+        }
 
         let dark = document.createElement('div');
         dark.id = 'dark';
         dark.classList.add('active-icon');
+        document.body.classList.add('dark');
+        dark.onclick = () => {
+            document.body.classList.remove('light');
+            document.body.classList.add('dark');
+            dark.classList.add('active-icon');
+            light.classList.remove('active-icon');
+        }
 
         node.appendChild(light);
         node.appendChild(dark);
