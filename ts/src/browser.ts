@@ -2,25 +2,8 @@ import {
     SplitPanel, BoxPanel
 } from '@phosphor/widgets';
 
-import {request, RequestResult} from './request';
-import {DomUtils} from './utils';
+import {DomUtils, autocomplete} from './utils';
 
-
-function autocomplete_ticker(path: string, value: string, autocomplete: HTMLDataListElement){
-    request('get', '/api/v1/autocomplete').then((res: RequestResult) => {
-        var jsn = <any>res.json();
-        if (jsn) {
-            DomUtils.delete_all_children(autocomplete);
-
-            for(let val of jsn){
-                let option = document.createElement('option');
-                option.value = val['key'];
-                option.innerText = val['key'] + ' - ' + val['name'];
-                autocomplete.appendChild(option);
-            }
-        }
-    });
-}
 
 export
 class Browser extends SplitPanel {
@@ -55,7 +38,7 @@ class Browser extends SplitPanel {
             }
 
             if (e.keyCode !== 13) {
-                autocomplete_ticker('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
+                autocomplete('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
             }
 
             last = search.value;
@@ -68,7 +51,7 @@ class Browser extends SplitPanel {
                 // duplicate
                 return;
             }
-            autocomplete_ticker('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
+            autocomplete('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
             last = search.value;
         });
 

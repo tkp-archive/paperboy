@@ -11239,10 +11239,26 @@ exports.request = request;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+const request_1 = __webpack_require__(37);
 function toProperCase(str) {
     return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
 }
 exports.toProperCase = toProperCase;
+function autocomplete(path, value, autocomplete) {
+    request_1.request('get', path).then((res) => {
+        var jsn = res.json();
+        if (jsn) {
+            DomUtils.delete_all_children(autocomplete);
+            for (let val of jsn) {
+                let option = document.createElement('option');
+                option.value = val['key'];
+                option.innerText = val['key'] + ' - ' + val['name'];
+                autocomplete.appendChild(option);
+            }
+        }
+    });
+}
+exports.autocomplete = autocomplete;
 var DomUtils;
 (function (DomUtils) {
     let default_none = document.createElement('option');
@@ -11257,6 +11273,38 @@ var DomUtils;
         return label;
     }
     DomUtils.buildLabel = buildLabel;
+    function buildInput(type, placeholder, value) {
+        if (!type) {
+            type = 'text';
+        }
+        let input = document.createElement('input');
+        switch (type) {
+            case 'text': {
+                input.type = type;
+                if (placeholder) {
+                    input.placeholder = placeholder;
+                }
+                if (value) {
+                    input.value = value;
+                }
+                break;
+            }
+            case 'file': {
+                input.type = type;
+                input.name = 'files[]';
+                break;
+            }
+            case 'submit': {
+                input.type = type;
+                if (value) {
+                    input.value = value;
+                }
+                break;
+            }
+        }
+        return input;
+    }
+    DomUtils.buildInput = buildInput;
     function buildTextarea(text) {
         let area = document.createElement('textarea');
         area.placeholder = text;
@@ -11267,7 +11315,8 @@ var DomUtils;
     function buildSelect(list, def) {
         let select = document.createElement('select');
         select.appendChild(default_none);
-        for (let x of list) {
+        for (let i = 0; i < list.length; i++) {
+            let x = list[i];
             let option = document.createElement('option');
             option.value = x;
             option.textContent = x;
@@ -11281,6 +11330,19 @@ var DomUtils;
         return select;
     }
     DomUtils.buildSelect = buildSelect;
+    function buildAutocomplete(url, name) {
+        let search = document.createElement('input');
+        search.setAttribute('list', name + '-datalist');
+        search.placeholder = 'Search...';
+        let datalist = document.createElement('datalist');
+        datalist.id = name + '-datalist';
+        search.addEventListener('keyup', (e) => {
+            delete_all_children(datalist);
+            autocomplete(url + search.value, search.value, datalist);
+        });
+        return [search, datalist];
+    }
+    DomUtils.buildAutocomplete = buildAutocomplete;
     function createSubsection(sec, clazz, data) {
         let page = data['page'];
         let pages = data['pages'];
@@ -11337,6 +11399,35 @@ var DomUtils;
         }
     }
     DomUtils.delete_all_children = delete_all_children;
+    function createConfig(sec, clazz, data) {
+        for (let k of Object.keys(data)) {
+            let type = data[k]['type'];
+            if (data[k]['label']) {
+                sec.appendChild(buildLabel(data[k]['label']));
+            }
+            switch (type) {
+                case 'text': { }
+                case 'file': { }
+                case 'submit': {
+                    let input = buildInput(type, data[k]['placeholder'], data[k]['value']);
+                    sec.appendChild(input);
+                    break;
+                }
+                case 'autocomplete': {
+                    let auto = buildAutocomplete(data[k]['url'], k);
+                    sec.appendChild(auto[0]);
+                    sec.appendChild(auto[1]);
+                    break;
+                }
+                case 'select': {
+                    let select = buildSelect(data[k]['options']);
+                    sec.appendChild(select);
+                    break;
+                }
+            }
+        }
+    }
+    DomUtils.createConfig = createConfig;
 })(DomUtils = exports.DomUtils || (exports.DomUtils = {}));
 
 
@@ -37243,22 +37334,7 @@ function updateLink(linkElement, obj) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const widgets_1 = __webpack_require__(27);
-const request_1 = __webpack_require__(37);
 const utils_1 = __webpack_require__(38);
-function autocomplete_ticker(path, value, autocomplete) {
-    request_1.request('get', '/api/v1/autocomplete').then((res) => {
-        var jsn = res.json();
-        if (jsn) {
-            utils_1.DomUtils.delete_all_children(autocomplete);
-            for (let val of jsn) {
-                let option = document.createElement('option');
-                option.value = val['key'];
-                option.innerText = val['key'] + ' - ' + val['name'];
-                autocomplete.appendChild(option);
-            }
-        }
-    });
-}
 class Browser extends widgets_1.SplitPanel {
     constructor() {
         super({ orientation: 'vertical', spacing: 0 });
@@ -37282,7 +37358,7 @@ class Browser extends widgets_1.SplitPanel {
                 return;
             }
             if (e.keyCode !== 13) {
-                autocomplete_ticker('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
+                utils_1.autocomplete('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
             }
             last = search.value;
         };
@@ -37293,7 +37369,7 @@ class Browser extends widgets_1.SplitPanel {
                 // duplicate
                 return;
             }
-            autocomplete_ticker('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
+            utils_1.autocomplete('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
             last = search.value;
         });
         holder.appendChild(search);
@@ -37370,16 +37446,17 @@ const request_1 = __webpack_require__(37);
 const utils_1 = __webpack_require__(38);
 class Scheduler extends widgets_1.Widget {
     static createNode() {
-        let div = document.createElement('div');
+        let div = document.createElement('form');
         div.classList.add('scheduler');
-        div.appendChild(utils_1.DomUtils.buildLabel('Notebook'));
-        div.appendChild(utils_1.DomUtils.buildSelect(['Test1', 'Test2', 'Test3']));
         return div;
     }
     constructor() {
         super({ node: Scheduler.createNode() });
         this.title.closable = false;
         this.title.label = 'Scheduler';
+        request_1.request('get', '/api/v1/config?type=jobs').then((res) => {
+            utils_1.DomUtils.createConfig(this.node, 'jobs', res.json());
+        });
     }
 }
 class Jobs extends widgets_1.DockPanel {
@@ -37414,7 +37491,7 @@ const request_1 = __webpack_require__(37);
 const utils_1 = __webpack_require__(38);
 class Uploader extends widgets_1.Widget {
     static createNode() {
-        let div = document.createElement('div');
+        let div = document.createElement('form');
         div.classList.add('uploader');
         return div;
     }
@@ -37422,6 +37499,9 @@ class Uploader extends widgets_1.Widget {
         super({ node: Uploader.createNode() });
         this.title.closable = false;
         this.title.label = 'Uploader';
+        request_1.request('get', '/api/v1/config?type=notebooks').then((res) => {
+            utils_1.DomUtils.createConfig(this.node, 'notebooks', res.json());
+        });
     }
 }
 class Notebooks extends widgets_1.DockPanel {
@@ -37499,12 +37579,17 @@ const request_1 = __webpack_require__(37);
 const utils_1 = __webpack_require__(38);
 class Configurator extends widgets_1.Widget {
     static createNode() {
-        return document.createElement('div');
+        let div = document.createElement('form');
+        div.classList.add('configurator');
+        return div;
     }
     constructor() {
         super({ node: Configurator.createNode() });
         this.title.closable = false;
         this.title.label = 'Configurator';
+        request_1.request('get', '/api/v1/config?type=reports').then((res) => {
+            utils_1.DomUtils.createConfig(this.node, 'reports', res.json());
+        });
     }
 }
 class Reports extends widgets_1.DockPanel {
@@ -54924,7 +55009,7 @@ exports = module.exports = __webpack_require__(3)();
 
 
 // module
-exports.push([module.i, "div.jobs div.p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.jobs div.p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\ndiv.jobs div.p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.jobs div.p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light div.jobs div.p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\ndiv.jobs div.p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\ndiv.jobs div.p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.jobs div.p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.jobs div.p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.jobs div.p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.jobs div.p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.jobs div.p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n", ""]);
+exports.push([module.i, ".jobs .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.jobs .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.jobs .p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .jobs .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .jobs .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.jobs .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.jobs .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .jobs .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .jobs .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.jobs .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .jobs .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .jobs .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.jobs .scheduler {\n    padding:15px;\n}\n\n.jobs .scheduler > * {\n    width:50%;\n    margin-top:10px;\n    margin-left: auto;\n    margin-right: auto;\n}\n\n.jobs .scheduler > input[type=submit] {\n    width:15%;\n}\n\n.jobs .scheduler > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}", ""]);
 
 // exports
 
@@ -54966,7 +55051,7 @@ exports = module.exports = __webpack_require__(3)();
 
 
 // module
-exports.push([module.i, "div.notebooks div.p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.notebooks div.p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\ndiv.notebooks div.p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.notebooks div.p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light div.notebooks div.p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\ndiv.notebooks div.p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\ndiv.notebooks div.p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.notebooks div.p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.notebooks div.p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.notebooks div.p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.notebooks div.p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.notebooks div.p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n", ""]);
+exports.push([module.i, ".notebooks .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.notebooks .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.notebooks .p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .notebooks .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.notebooks .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.notebooks .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .notebooks .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.notebooks .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .notebooks .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.notebooks .uploader  {\n    padding:15px;\n}\n\n.notebooks .uploader > * {\n    width:50%;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top:10px;\n}\n\n.notebooks .uploader > input[type=submit] {\n    width:15%;\n}\n\n.notebooks .uploader > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}", ""]);
 
 // exports
 
@@ -54994,7 +55079,7 @@ exports = module.exports = __webpack_require__(3)();
 
 
 // module
-exports.push([module.i, "div.reports div.p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.reports div.p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\ndiv.reports div.p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.reports div.p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light div.reports div.p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\ndiv.reports div.p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\ndiv.reports div.p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.reports div.p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.reports div.p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.reports div.p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.reports div.p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.reports div.p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n", ""]);
+exports.push([module.i, ".reports .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.reports .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.reports .p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .reports .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .reports .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.reports .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.reports .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .reports .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .reports .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.reports .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .reports .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .reports .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.reports .configurator {\n    padding:15px;\n}\n\n.reports .configurator > * {\n    width:50%;\n    margin-top:10px;\n    margin-left: auto;\n    margin-right: auto;\n}\n\n.reports .configurator > input[type=submit] {\n    width:15%;\n}\n\n.reports .configurator > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}", ""]);
 
 // exports
 
@@ -55008,7 +55093,7 @@ exports = module.exports = __webpack_require__(3)();
 
 
 // module
-exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    /*flex: 1;*/\n    display:flex;\n    flex-direction: row;\n    margin-bottom:15px;\n}\n\ndiv.status-breakdown {\n    /*flex: 2;*/\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
+exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    flex: 1;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:15px;\n}\n\ndiv.status-breakdown {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
 
 // exports
 

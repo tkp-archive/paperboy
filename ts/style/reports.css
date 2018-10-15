@@ -1,54 +1,74 @@
-div.reports div.p-DockPanel-widget {
+.reports .p-DockPanel-widget {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
 }
 
-div.reports div.p-DockPanel-widget > table {
+.reports .p-DockPanel-widget > table {
     height:95%;
     text-align: left;
 }
 
-div.reports div.p-DockPanel-widget > p {
+.reports .p-DockPanel-widget > p {
     height:2.5%;
     margin: auto;
     margin-top: 0;
     margin-bottom: 0;
 }
 
-body.dark div.reports div.p-DockPanel-widget > p span.page:hover {
+body.dark .reports .p-DockPanel-widget > p span.page:hover {
     color: white;
 }
 
-body.light div.reports div.p-DockPanel-widget > p span.page:hover {
+body.light .reports .p-DockPanel-widget > p span.page:hover {
     color: #999;
 }
 
-div.reports div.p-DockPanel-widget > p span.page-active {
+.reports .p-DockPanel-widget > p span.page-active {
     color: var(--highlight-orange);
 }
 
 
-div.reports div.p-DockPanel-widget > table > tr > th {
+.reports .p-DockPanel-widget > table > tr > th {
     padding: 5px;
 }
 
-body.dark div.reports div.p-DockPanel-widget > table > tr > th {
+body.dark .reports .p-DockPanel-widget > table > tr > th {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div.reports div.p-DockPanel-widget > table > tr > th {
+body.light .reports .p-DockPanel-widget > table > tr > th {
     border-bottom: 1px solid var(--light-border);
 }
 
-div.reports div.p-DockPanel-widget > table > tr > td {
+.reports .p-DockPanel-widget > table > tr > td {
     padding: 5px;
 }
 
-body.dark div.reports div.p-DockPanel-widget > table > tr > td {
+body.dark .reports .p-DockPanel-widget > table > tr > td {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div.reports div.p-DockPanel-widget > table > tr > td {
+body.light .reports .p-DockPanel-widget > table > tr > td {
     border-bottom: 1px solid var(--light-border);
+}
+
+.reports .configurator {
+    padding:15px;
+}
+
+.reports .configurator > * {
+    width:50%;
+    margin-top:10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.reports .configurator > input[type=submit] {
+    width:15%;
+}
+
+.reports .configurator > input[type=submit]:hover {
+    color: white;
+    background-color: var(--highlight-blue);
 }

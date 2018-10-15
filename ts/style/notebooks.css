@@ -1,54 +1,74 @@
-div.notebooks div.p-DockPanel-widget {
+.notebooks .p-DockPanel-widget {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
 }
 
-div.notebooks div.p-DockPanel-widget > table {
+.notebooks .p-DockPanel-widget > table {
     height:95%;
     text-align: left;
 }
 
-div.notebooks div.p-DockPanel-widget > p {
+.notebooks .p-DockPanel-widget > p {
     height:2.5%;
     margin: auto;
     margin-top: 0;
     margin-bottom: 0;
 }
 
-body.dark div.notebooks div.p-DockPanel-widget > p span.page:hover {
+body.dark .notebooks .p-DockPanel-widget > p span.page:hover {
     color: white;
 }
 
-body.light div.notebooks div.p-DockPanel-widget > p span.page:hover {
+body.light .notebooks .p-DockPanel-widget > p span.page:hover {
     color: #999;
 }
 
-div.notebooks div.p-DockPanel-widget > p span.page-active {
+.notebooks .p-DockPanel-widget > p span.page-active {
     color: var(--highlight-orange);
 }
 
 
-div.notebooks div.p-DockPanel-widget > table > tr > th {
+.notebooks .p-DockPanel-widget > table > tr > th {
     padding: 5px;
 }
 
-body.dark div.notebooks div.p-DockPanel-widget > table > tr > th {
+body.dark .notebooks .p-DockPanel-widget > table > tr > th {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div.notebooks div.p-DockPanel-widget > table > tr > th {
+body.light .notebooks .p-DockPanel-widget > table > tr > th {
     border-bottom: 1px solid var(--light-border);
 }
 
-div.notebooks div.p-DockPanel-widget > table > tr > td {
+.notebooks .p-DockPanel-widget > table > tr > td {
     padding: 5px;
 }
 
-body.dark div.notebooks div.p-DockPanel-widget > table > tr > td {
+body.dark .notebooks .p-DockPanel-widget > table > tr > td {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div.notebooks div.p-DockPanel-widget > table > tr > td {
+body.light .notebooks .p-DockPanel-widget > table > tr > td {
     border-bottom: 1px solid var(--light-border);
+}
+
+.notebooks .uploader  {
+    padding:15px;
+}
+
+.notebooks .uploader > * {
+    width:50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:10px;
+}
+
+.notebooks .uploader > input[type=submit] {
+    width:15%;
+}
+
+.notebooks .uploader > input[type=submit]:hover {
+    color: white;
+    background-color: var(--highlight-blue);
 }

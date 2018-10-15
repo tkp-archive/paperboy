@@ -1,4 +1,5 @@
 from .autocomplete import AutocompleteResource
+from .config import ConfigResource
 from .html import HTMLResource
 from .job import JobResource, JobQuickBrowserResource
 from .notebook import NotebookResource, NotebookQuickBrowserResource

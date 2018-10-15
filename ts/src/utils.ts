@@ -2,11 +2,30 @@ import {
     Widget
 } from '@phosphor/widgets';
 
+import {request, RequestResult} from './request';
+
+
 export
 function toProperCase(str: string) {
   return str.replace(/\w\S*/g, function(txt: string){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
+export
+function autocomplete(path: string, value: string, autocomplete: HTMLDataListElement){
+    request('get', path).then((res: RequestResult) => {
+        var jsn = <any>res.json();
+        if (jsn) {
+            DomUtils.delete_all_children(autocomplete);
+
+            for(let val of jsn){
+                let option = document.createElement('option');
+                option.value = val['key'];
+                option.innerText = val['key'] + ' - ' + val['name'];
+                autocomplete.appendChild(option);
+            }
+        }
+    });
+}
 
 export
 namespace DomUtils {
@@ -24,6 +43,40 @@ namespace DomUtils {
     return label;
   }
 
+  export
+  function buildInput(type?: string, placeholder?: string, value?: string){
+    if (! type ){
+      type = 'text';
+    }
+
+    let input = document.createElement('input');
+    switch(type) {
+      case 'text': {
+        input.type = type;
+        if(placeholder){
+          input.placeholder = placeholder;
+        }
+        if(value){
+          input.value = value;
+        }
+        break;
+      }
+      case 'file': {
+        input.type = type;
+        input.name = 'files[]';
+        break;
+      }
+      case 'submit': {
+        input.type = type;
+        if(value){
+          input.value = value;
+        }
+        break;
+      }
+    }
+    return input;
+  }
+
   export 
   function buildTextarea(text: string): HTMLTextAreaElement {
     let area = document.createElement('textarea');
@@ -37,7 +90,8 @@ namespace DomUtils {
   function buildSelect(list: string[], def?: string): HTMLSelectElement {
     let select = document.createElement('select');
     select.appendChild(default_none);
-    for(let x of list) {
+    for(let i=0; i<list.length; i++) {
+      let x = list[i];
       let option = document.createElement('option');
       option.value = x
       option.textContent = x;
@@ -50,6 +104,22 @@ namespace DomUtils {
     select.style.marginBottom = '15px';
     select.style.minHeight = '25px';
     return select;
+  }
+
+  export
+  function buildAutocomplete(url: string, name: string): [HTMLInputElement, HTMLDataListElement] {
+    let search = document.createElement('input');
+    search.setAttribute('list', name + '-datalist');
+    search.placeholder = 'Search...';
+
+    let datalist = document.createElement('datalist');
+    datalist.id = name + '-datalist';
+
+    search.addEventListener('keyup', (e: KeyboardEvent) => {
+      delete_all_children(datalist);
+      autocomplete(url + search.value, search.value, datalist);
+    });
+    return [search, datalist];
   }
 
   export
@@ -116,6 +186,38 @@ namespace DomUtils {
   function delete_all_children(element: HTMLElement): void{
     while(element.lastChild){
       element.removeChild(element.lastChild);
+    }
+  }
+
+  export
+  function createConfig(sec: HTMLElement, clazz: string, data: any) : void {
+    for(let k of Object.keys(data)){
+      let type = data[k]['type'];
+
+      if(data[k]['label']){
+        sec.appendChild(buildLabel(data[k]['label']));
+      }
+
+      switch(type){
+        case 'text': {}
+        case 'file': {}
+        case 'submit': {
+          let input = buildInput(type, data[k]['placeholder'], data[k]['value']);
+          sec.appendChild(input);
+          break;
+        }
+        case 'autocomplete': {
+          let auto = buildAutocomplete(data[k]['url'], k);
+          sec.appendChild(auto[0]);
+          sec.appendChild(auto[1]);
+          break;
+        }
+        case 'select': {
+          let select = buildSelect(data[k]['options']);
+          sec.appendChild(select);
+          break;
+        }
+      }
     }
   }
 }

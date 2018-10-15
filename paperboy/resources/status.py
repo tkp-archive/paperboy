@@ -3,8 +3,8 @@ from .base import BaseResource
 
 
 class StatusResource(BaseResource):
-    def __init__(self, db):
-        super(StatusResource, self).__init__(db)
+    def __init__(self, *args):
+        super(StatusResource, self).__init__(*args)
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'

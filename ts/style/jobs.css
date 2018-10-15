@@ -1,54 +1,74 @@
-div.jobs div.p-DockPanel-widget {
+.jobs .p-DockPanel-widget {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
 }
 
-div.jobs div.p-DockPanel-widget > table {
+.jobs .p-DockPanel-widget > table {
     height:95%;
     text-align: left;
 }
 
-div.jobs div.p-DockPanel-widget > p {
+.jobs .p-DockPanel-widget > p {
     height:2.5%;
     margin: auto;
     margin-top: 0;
     margin-bottom: 0;
 }
 
-body.dark div.jobs div.p-DockPanel-widget > p span.page:hover {
+body.dark .jobs .p-DockPanel-widget > p span.page:hover {
     color: white;
 }
 
-body.light div.jobs div.p-DockPanel-widget > p span.page:hover {
+body.light .jobs .p-DockPanel-widget > p span.page:hover {
     color: #999;
 }
 
-div.jobs div.p-DockPanel-widget > p span.page-active {
+.jobs .p-DockPanel-widget > p span.page-active {
     color: var(--highlight-orange);
 }
 
 
-div.jobs div.p-DockPanel-widget > table > tr > th {
+.jobs .p-DockPanel-widget > table > tr > th {
     padding: 5px;
 }
 
-body.dark div.jobs div.p-DockPanel-widget > table > tr > th {
+body.dark .jobs .p-DockPanel-widget > table > tr > th {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div.jobs div.p-DockPanel-widget > table > tr > th {
+body.light .jobs .p-DockPanel-widget > table > tr > th {
     border-bottom: 1px solid var(--light-border);
 }
 
-div.jobs div.p-DockPanel-widget > table > tr > td {
+.jobs .p-DockPanel-widget > table > tr > td {
     padding: 5px;
 }
 
-body.dark div.jobs div.p-DockPanel-widget > table > tr > td {
+body.dark .jobs .p-DockPanel-widget > table > tr > td {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div.jobs div.p-DockPanel-widget > table > tr > td {
+body.light .jobs .p-DockPanel-widget > table > tr > td {
     border-bottom: 1px solid var(--light-border);
+}
+
+.jobs .scheduler {
+    padding:15px;
+}
+
+.jobs .scheduler > * {
+    width:50%;
+    margin-top:10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.jobs .scheduler > input[type=submit] {
+    width:15%;
+}
+
+.jobs .scheduler > input[type=submit]:hover {
+    color: white;
+    background-color: var(--highlight-blue);
 }

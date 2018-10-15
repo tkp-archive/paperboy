@@ -7,10 +7,9 @@ import {DomUtils} from './utils';
 
 
 class Uploader extends Widget {
-    static createNode(): HTMLDivElement {
-        let div = document.createElement('div');
+    static createNode(): HTMLElement {
+        let div = document.createElement('form');
         div.classList.add('uploader');
-
         return div;
     }
 
@@ -18,6 +17,9 @@ class Uploader extends Widget {
         super({node: Uploader.createNode()});
         this.title.closable = false;
         this.title.label = 'Uploader';
+        request('get', '/api/v1/config?type=notebooks').then((res: RequestResult) => {
+            DomUtils.createConfig(this.node, 'notebooks', res.json());
+        });
     }
 }
 

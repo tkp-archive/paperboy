@@ -6,14 +6,19 @@ import {request, RequestResult} from './request';
 import {DomUtils} from './utils';
 
 class Configurator extends Widget {
-    static createNode(): HTMLDivElement {
-        return document.createElement('div');
+    static createNode(): HTMLElement {
+        let div = document.createElement('form');
+        div.classList.add('configurator');
+        return div;
     }
 
     constructor(){
         super({node: Configurator.createNode()});
         this.title.closable = false;
         this.title.label = 'Configurator';
+        request('get', '/api/v1/config?type=reports').then((res: RequestResult) => {
+            DomUtils.createConfig(this.node, 'reports', res.json());
+        });
     }
 }
 

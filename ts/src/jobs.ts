@@ -6,13 +6,9 @@ import {request, RequestResult} from './request';
 import {DomUtils} from './utils';
 
 class Scheduler extends Widget {
-    static createNode(): HTMLDivElement {
-        let div = document.createElement('div');
+    static createNode(): HTMLElement {
+        let div = document.createElement('form');
         div.classList.add('scheduler');
-
-        div.appendChild(DomUtils.buildLabel('Notebook'));
-        div.appendChild(DomUtils.buildSelect(['Test1', 'Test2', 'Test3']));
-
         return div;
     }
 
@@ -20,6 +16,9 @@ class Scheduler extends Widget {
         super({node: Scheduler.createNode()});
         this.title.closable = false;
         this.title.label = 'Scheduler';
+        request('get', '/api/v1/config?type=jobs').then((res: RequestResult) => {
+            DomUtils.createConfig(this.node, 'jobs', res.json());
+        });
     }
 }
 
