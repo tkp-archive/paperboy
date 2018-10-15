@@ -1,5 +1,6 @@
 import falcon
 import logging
+import os
 
 # from ..storage import NotebookStorage, JobStorage, ReportStorage
 from ..storage import NotebookDummyStorage, JobDummyStorage, ReportDummyStorage
@@ -40,6 +41,7 @@ class Paperboy(Application):
 
     def start(self):
         """Start the whole thing"""
+        self.port = os.environ.get('PORT', self.port)
         options = {
             'bind': '0.0.0.0:{}'.format(self.port),
             'workers': self.workers
