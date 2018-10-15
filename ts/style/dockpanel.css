@@ -13,6 +13,15 @@
   transition-timing-function: ease;
 }
 
+body.dark .p-DockPanel-widget {
+  background-color: var(--dark-bg-color);
+}
+
+
+body.light .p-DockPanel-widget {
+  background-color: var(--light-bg-color);
+}
+
 body.dark .p-DockPanel-overlay {
   background: var(--dark-overlay);
   border: 1px dashed var(--dark-border);

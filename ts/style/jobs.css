@@ -1,0 +1,54 @@
+div.jobs div.p-DockPanel-widget {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+div.jobs div.p-DockPanel-widget > table {
+    height:95%;
+    text-align: left;
+}
+
+div.jobs div.p-DockPanel-widget > p {
+    height:2.5%;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+body.dark div.jobs div.p-DockPanel-widget > p span.page:hover {
+    color: white;
+}
+
+body.light div.jobs div.p-DockPanel-widget > p span.page:hover {
+    color: #999;
+}
+
+div.jobs div.p-DockPanel-widget > p span.page-active {
+    color: var(--highlight-orange);
+}
+
+
+div.jobs div.p-DockPanel-widget > table > tr > th {
+    padding: 5px;
+}
+
+body.dark div.jobs div.p-DockPanel-widget > table > tr > th {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.light div.jobs div.p-DockPanel-widget > table > tr > th {
+    border-bottom: 1px solid var(--light-border);
+}
+
+div.jobs div.p-DockPanel-widget > table > tr > td {
+    padding: 5px;
+}
+
+body.dark div.jobs div.p-DockPanel-widget > table > tr > td {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.light div.jobs div.p-DockPanel-widget > table > tr > td {
+    border-bottom: 1px solid var(--light-border);
+}

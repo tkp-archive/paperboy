@@ -3,18 +3,14 @@ import {
 } from '@phosphor/widgets';
 
 import {request, RequestResult} from './request';
+import {DomUtils} from './utils';
 
-function delete_all_children(element: HTMLElement): void{
-    while(element.lastChild){
-        element.removeChild(element.lastChild);
-    }
-}
 
 function autocomplete_ticker(path: string, value: string, autocomplete: HTMLDataListElement){
     request('get', '/api/v1/autocomplete').then((res: RequestResult) => {
         var jsn = <any>res.json();
         if (jsn) {
-            delete_all_children(autocomplete);
+            DomUtils.delete_all_children(autocomplete);
 
             for(let val of jsn){
                 let option = document.createElement('option');
@@ -50,7 +46,7 @@ class Browser extends SplitPanel {
 
         let foo = (e: KeyboardEvent) => {
             if (e.keyCode === 13){
-                delete_all_children(datalist);
+                DomUtils.delete_all_children(datalist);
             }
 
             if (last == search.value){
@@ -67,7 +63,7 @@ class Browser extends SplitPanel {
 
         search.addEventListener('keyup', foo);
         go.addEventListener('click', () => {
-            delete_all_children(datalist);
+            DomUtils.delete_all_children(datalist);
             if (last == search.value){
                 // duplicate
                 return;

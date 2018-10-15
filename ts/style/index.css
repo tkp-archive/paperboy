@@ -11,10 +11,13 @@
 @import './browser.css';
 @import './commandpalette.css';
 @import './dockpanel.css';
+@import './jobs.css';
 @import './header.css';
 @import './menu.css';
 @import './menubar.css';
+@import './notebooks.css';
 @import './quickbrowser.css';
+@import './reports.css';
 @import './status.css';
 @import './tabbar.css';
 

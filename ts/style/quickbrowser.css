@@ -25,6 +25,7 @@ body.light div.quickbrowser .p-StackedPanel {
 div.quickbrowser-container {
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
 }
 
 div.quickbrowser-container table {

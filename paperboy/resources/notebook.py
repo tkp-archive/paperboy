@@ -1,10 +1,11 @@
 import json
+from random import randint, choice
 from .base import BaseResource
 
 
-class NotebookResource(BaseResource):
+class NotebookQuickBrowserResource(BaseResource):
     def __init__(self, db):
-        super(NotebookResource, self).__init__(db)
+        super(NotebookQuickBrowserResource, self).__init__(db)
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
@@ -18,5 +19,26 @@ class NotebookResource(BaseResource):
                                          } for i in range(10)
                                 ]})
 
-    def on_post(self, req, resp):
+
+class NotebookResource(BaseResource):
+    def __init__(self, db):
+        super(NotebookResource, self).__init__(db)
+
+    def on_get(self, req, resp):
         resp.content_type = 'application/json'
+        resp.body = json.dumps({'page': 1,
+                                'pages': 1,
+                                'count': 25,
+                                'total': 25,
+                                'notebooks': [
+                                        {'name': 'TestNB%d' % i,
+                                         'meta': {
+                                            'author': 'Test Author',
+                                            'visibility': choice(['public'] * 10 + ['private']),
+                                            'jobs': str(randint(1, 100)),
+                                            'reports': str(randint(1, 1000)),
+                                            'created': '10/14/2018 04:50:33',
+                                            'last modified': '10/14/2018 18:25:31',
+                                         }
+                                         } for i in range(25)
+                                ]})

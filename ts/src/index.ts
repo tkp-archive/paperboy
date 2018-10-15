@@ -19,6 +19,9 @@ import {Header} from './header';
 import {Status} from './status';
 import {QuickBrowser} from './quickbrowser';
 import {Browser} from './browser';
+import {Notebooks} from './notebooks';
+import {Jobs} from './jobs';
+import {Reports} from './reports';
 
 import '../ts/style/index.css';
 import "@jpmorganchase/perspective-viewer";
@@ -61,19 +64,10 @@ function main(): void {
   let main = new TabPanel();
   main.id = 'main';
 
-  let tmp2 = new SplitPanel()
-  tmp2.title.label = 'Notebooks';
-
-  let tmp3 = new SplitPanel()
-  tmp3.title.label = 'Jobs';
-
-  let tmp4 = new SplitPanel()
-  tmp4.title.label = 'Reports';
-
   main.addWidget(home);
-  main.addWidget(tmp2);
-  main.addWidget(tmp3);
-  main.addWidget(tmp4);
+  main.addWidget(new Notebooks());
+  main.addWidget(new Jobs());
+  main.addWidget(new Reports());
 
   window.onresize = () => { main.update(); };
 
