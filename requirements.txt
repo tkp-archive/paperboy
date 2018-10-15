@@ -1,3 +1,4 @@
 falcon
 gunicorn
 jinja2
+traitlets
