@@ -44,12 +44,20 @@ namespace DomUtils {
   }
 
   export
-  function buildInput(type?: string, placeholder?: string, value?: string){
+  function buildInput(type?: string,
+                      placeholder?: string,
+                      value?: string,
+                      required = false
+                      ){
     if (! type ){
       type = 'text';
     }
 
     let input = document.createElement('input');
+    if(required){
+      input.required = true;
+    }
+
     switch(type) {
       case 'text': {
         input.type = type;
@@ -65,6 +73,10 @@ namespace DomUtils {
         input.type = type;
         input.name = 'files[]';
         break;
+      }
+      case 'datetime': {
+        input.type = 'datetime-local';
+        break;        
       }
       case 'submit': {
         input.type = type;
@@ -107,8 +119,13 @@ namespace DomUtils {
   }
 
   export
-  function buildAutocomplete(url: string, name: string): [HTMLInputElement, HTMLDataListElement] {
+  function buildAutocomplete(url: string, name: string, required=false): [HTMLInputElement, HTMLDataListElement] {
     let search = document.createElement('input');
+
+    if(required){
+      search.required = true;
+    }
+
     search.setAttribute('list', name + '-datalist');
     search.placeholder = 'Search...';
 
@@ -201,13 +218,14 @@ namespace DomUtils {
       switch(type){
         case 'text': {}
         case 'file': {}
+        case 'datetime': {}
         case 'submit': {
-          let input = buildInput(type, data[k]['placeholder'], data[k]['value']);
+          let input = buildInput(type, data[k]['placeholder'], data[k]['value'], data[k]['required']);
           sec.appendChild(input);
           break;
         }
         case 'autocomplete': {
-          let auto = buildAutocomplete(data[k]['url'], k);
+          let auto = buildAutocomplete(data[k]['url'], k, data[k]['required']);
           sec.appendChild(auto[0]);
           sec.appendChild(auto[1]);
           break;

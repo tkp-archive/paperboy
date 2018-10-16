@@ -20,10 +20,11 @@ div#header img {
   height: 40px;
   object-fit: contain;
   margin-left: 15px;
+  width:15%;
 }
 
 #light {
-  margin-left: 65%;
+  margin-left: 70%;
   z-index: 1000;
   height: 25px;
   width: 25px;

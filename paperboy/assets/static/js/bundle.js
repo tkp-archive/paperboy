@@ -11273,11 +11273,14 @@ var DomUtils;
         return label;
     }
     DomUtils.buildLabel = buildLabel;
-    function buildInput(type, placeholder, value) {
+    function buildInput(type, placeholder, value, required = false) {
         if (!type) {
             type = 'text';
         }
         let input = document.createElement('input');
+        if (required) {
+            input.required = true;
+        }
         switch (type) {
             case 'text': {
                 input.type = type;
@@ -11292,6 +11295,10 @@ var DomUtils;
             case 'file': {
                 input.type = type;
                 input.name = 'files[]';
+                break;
+            }
+            case 'datetime': {
+                input.type = 'datetime-local';
                 break;
             }
             case 'submit': {
@@ -11330,8 +11337,11 @@ var DomUtils;
         return select;
     }
     DomUtils.buildSelect = buildSelect;
-    function buildAutocomplete(url, name) {
+    function buildAutocomplete(url, name, required = false) {
         let search = document.createElement('input');
+        if (required) {
+            search.required = true;
+        }
         search.setAttribute('list', name + '-datalist');
         search.placeholder = 'Search...';
         let datalist = document.createElement('datalist');
@@ -11408,13 +11418,14 @@ var DomUtils;
             switch (type) {
                 case 'text': { }
                 case 'file': { }
+                case 'datetime': { }
                 case 'submit': {
-                    let input = buildInput(type, data[k]['placeholder'], data[k]['value']);
+                    let input = buildInput(type, data[k]['placeholder'], data[k]['value'], data[k]['required']);
                     sec.appendChild(input);
                     break;
                 }
                 case 'autocomplete': {
-                    let auto = buildAutocomplete(data[k]['url'], k);
+                    let auto = buildAutocomplete(data[k]['url'], k, data[k]['required']);
                     sec.appendChild(auto[0]);
                     sec.appendChild(auto[1]);
                     break;
@@ -54967,7 +54978,7 @@ exports = module.exports = __webpack_require__(3)();
 
 
 // module
-exports.push([module.i, "div#header {\n  display:flex;\n  align-items: center;\n  height:45px;\n  width: 85%;\n  position: absolute;\n}\n\nbody.dark div#header {\n  background-color: var(--dark-bg-color2);\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div#header {\n  background-color: var(--light-bg-color2);\n  border-bottom: 1px solid var(--light-border);\n}\n\ndiv#header img {\n  height: 40px;\n  object-fit: contain;\n  margin-left: 15px;\n}\n\n#light {\n  margin-left: 65%;\n  z-index: 1000;\n  height: 25px;\n  width: 25px;\n}\n\n#light:before {\n  content: '\\F185';\n  font-family: 'FontAwesome';\n  font-size: 25px;\n}\n\n#dark {\n  margin-left: 10px;\n  z-index: 1000;\n  height: 25px;\n  width: 25px;\n}\n\n#dark:before {\n  content: '\\F186';\n  font-family: 'FontAwesome';\n  font-size: 25px;\n}\n\nbody.dark div.active-icon,\nbody.light div.active-icon {\n  color: var(--highlight-blue);\n}\n\nbody.dark #light:hover {\n  color: white;\n}\n\nbody.light #dark:hover {\n  color: lightgrey;\n}\n", ""]);
+exports.push([module.i, "div#header {\n  display:flex;\n  align-items: center;\n  height:45px;\n  width: 85%;\n  position: absolute;\n}\n\nbody.dark div#header {\n  background-color: var(--dark-bg-color2);\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div#header {\n  background-color: var(--light-bg-color2);\n  border-bottom: 1px solid var(--light-border);\n}\n\ndiv#header img {\n  height: 40px;\n  object-fit: contain;\n  margin-left: 15px;\n  width:15%;\n}\n\n#light {\n  margin-left: 70%;\n  z-index: 1000;\n  height: 25px;\n  width: 25px;\n}\n\n#light:before {\n  content: '\\F185';\n  font-family: 'FontAwesome';\n  font-size: 25px;\n}\n\n#dark {\n  margin-left: 10px;\n  z-index: 1000;\n  height: 25px;\n  width: 25px;\n}\n\n#dark:before {\n  content: '\\F186';\n  font-family: 'FontAwesome';\n  font-size: 25px;\n}\n\nbody.dark div.active-icon,\nbody.light div.active-icon {\n  color: var(--highlight-blue);\n}\n\nbody.dark #light:hover {\n  color: white;\n}\n\nbody.light #dark:hover {\n  color: lightgrey;\n}\n", ""]);
 
 // exports
 
@@ -55093,7 +55104,7 @@ exports = module.exports = __webpack_require__(3)();
 
 
 // module
-exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    flex: 1;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:15px;\n}\n\ndiv.status-breakdown {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
+exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    max-height:40px;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:5px;\n}\n\ndiv.status-breakdown {\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n    margin-top:0px;\n    margin-bottom:0px;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
 
 // exports
 

@@ -14,14 +14,13 @@ body.light div.status {
 }
 
 div.status-container {
-    flex: 1;
+    max-height:40px;
     display:flex;
     flex-direction: row;
-    margin-bottom:15px;
+    margin-bottom:5px;
 }
 
 div.status-breakdown {
-    flex: 1;
     display: flex;
     flex-direction: column;
 }
@@ -51,6 +50,8 @@ div.status-reports {
     display:flex;
     flex-direction: column;
     margin: auto;
+    margin-top:0px;
+    margin-bottom:0px;
 }
 
 body.light div.status span.notebooks,
