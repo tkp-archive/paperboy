@@ -2,13 +2,14 @@ import falcon
 import logging
 import os
 
-# from ..storage import NotebookStorage, JobStorage, ReportStorage
+from ..storage import NotebookStorage, JobStorage, ReportStorage
 from ..storage import NotebookDummyStorage, JobDummyStorage, ReportDummyStorage
+from ..scheduler import DummyScheduler
 from ..server.api import FalconAPI
 from ..server.deploy import FalconGunicorn
 
 from traitlets.config.application import Application
-from traitlets import Int, Instance, List, Tuple, Unicode
+from traitlets import Int, Instance, List, Tuple, Type, Unicode
 
 
 class Paperboy(Application):
@@ -24,17 +25,18 @@ class Paperboy(Application):
     baseurl = Unicode(default_value='/')
     apiurl = Unicode(default_value='/api/v1/')
 
-    ########################################
-    # FIXME doesnt allow default_value yet #
-    # notebook_storage = Instance(NotebookStorage, default_value=NotebookInMemoryStorage())
-    # job_storage = Instance(JobStorage, default_value=JobInMemoryStorage())
-    # report_storage = Instance(ReportStorage, default_value=ReportInMemoryStorage())
-
+    ################################################
+    # FIXME doesnt allow default_value yet         #
+    # notebook_storage = Type(NotebookStorage, default_value=NotebookDummyStorage)
+    # job_storage = Type(JobStorage, default_value=JobDummyStorage)
+    # report_storage = Type(ReportStorage, default_value=ReportDummyStorage)
     notebook_storage = NotebookDummyStorage
     job_storage = JobDummyStorage
     report_storage = ReportDummyStorage
-    # END                                  #
-    ########################################
+    #                                              #
+    scheduler = DummyScheduler
+    # END                                          #
+    ################################################
 
     extra_middleware = List(default_value=[])  # List of extra middlewares to install
     extra_handlers = List(trait=Tuple(), default_value=[])  # List of tuples (route, handler) of handlers to install

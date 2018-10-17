@@ -12,7 +12,7 @@ import {
 } from '@phosphor/commands';
 
 import {
-  TabPanel, BoxPanel,  SplitPanel, MenuBar, Widget, Menu
+  TabPanel, BoxPanel,  SplitPanel, MenuBar, Widget, Menu, CommandPalette
 } from '@phosphor/widgets';
 
 import {Header} from './header';
@@ -27,11 +27,46 @@ import '../ts/style/index.css';
 
 const commands = new CommandRegistry();
 
+function makeLoader(): HTMLDivElement {
+  let loader = document.createElement('div');
+  loader.classList.add('loader');
+  loader.style.display = 'none';
+  let loader_icon = document.createElement('div');
+  loader_icon.classList.add('loader_icon');
+  loader.appendChild(loader_icon);
+  loader.onclick = () => {
+    loader.style.display = 'none';
+    document.body.removeChild(loader);
+  }
+  return loader
+}
+
+
 function main(): void {
   /* Home "Menu" */
   let menu = new Menu({ commands });
   menu.title.label = 'About';
   menu.title.mnemonic = 0;
+ 
+  let loader = makeLoader();
+  let palette = new CommandPalette({ commands });
+  palette.id = 'palette';
+  palette.addItem({
+    command: 'open-loader',
+    category: 'Loader',
+    rank: 0
+  });
+  commands.addCommand('open-loader', {
+    label: 'Open Loader',
+    mnemonic: 2,
+    iconClass: 'fa fa-plus',
+    execute: () => {
+      loader.style.display = 'flex';
+      document.body.appendChild(loader);
+    }
+  });
+  menu.addItem({ command: 'open-loader'});
+
 
   /* Title bar */
   let header = new Header();

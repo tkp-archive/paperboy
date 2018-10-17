@@ -235,7 +235,7 @@ module.exports = function() {
 
 
 var base64 = __webpack_require__(157)
-var ieee754 = __webpack_require__(232)
+var ieee754 = __webpack_require__(233)
 var isArray = __webpack_require__(87)
 
 exports.Buffer = Buffer
@@ -2107,7 +2107,7 @@ __export(__webpack_require__(127));
 
   var Buffer;
   try {
-    Buffer = __webpack_require__(258).Buffer;
+    Buffer = __webpack_require__(259).Buffer;
   } catch (e) {
   }
 
@@ -5483,7 +5483,7 @@ __export(__webpack_require__(127));
   };
 })(typeof module === 'undefined' || module, this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(257)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(258)(module)))
 
 /***/ }),
 /* 6 */
@@ -7017,15 +7017,15 @@ var MessageLoop;
 
 var elliptic = exports;
 
-elliptic.version = __webpack_require__(223).version;
-elliptic.utils = __webpack_require__(222);
+elliptic.version = __webpack_require__(224).version;
+elliptic.utils = __webpack_require__(223);
 elliptic.rand = __webpack_require__(72);
 elliptic.curve = __webpack_require__(38);
-elliptic.curves = __webpack_require__(214);
+elliptic.curves = __webpack_require__(215);
 
 // Protocols
-elliptic.ec = __webpack_require__(215);
-elliptic.eddsa = __webpack_require__(218);
+elliptic.ec = __webpack_require__(216);
+elliptic.eddsa = __webpack_require__(219);
 
 
 /***/ }),
@@ -12881,10 +12881,10 @@ module.exports.AES = AES
 
 var curve = exports;
 
-curve.base = __webpack_require__(210);
-curve.short = __webpack_require__(213);
-curve.mont = __webpack_require__(212);
-curve.edwards = __webpack_require__(211);
+curve.base = __webpack_require__(211);
+curve.short = __webpack_require__(214);
+curve.mont = __webpack_require__(213);
+curve.edwards = __webpack_require__(212);
 
 
 /***/ }),
@@ -12942,9 +12942,9 @@ module.exports = EVP_BytesToKey
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var asn1 = __webpack_require__(235)
-var aesid = __webpack_require__(234)
-var fixProc = __webpack_require__(237)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var asn1 = __webpack_require__(236)
+var aesid = __webpack_require__(235)
+var fixProc = __webpack_require__(238)
 var ciphers = __webpack_require__(49)
 var compat = __webpack_require__(90)
 module.exports = parseKeys
@@ -13160,7 +13160,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(249);
+__webpack_require__(250);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -16656,11 +16656,11 @@ function getr(priv) {
 "use strict";
 
 
-exports.utils = __webpack_require__(206);
-exports.Cipher = __webpack_require__(203);
-exports.DES = __webpack_require__(204);
-exports.CBC = __webpack_require__(202);
-exports.EDE = __webpack_require__(205);
+exports.utils = __webpack_require__(207);
+exports.Cipher = __webpack_require__(204);
+exports.DES = __webpack_require__(205);
+exports.CBC = __webpack_require__(203);
+exports.EDE = __webpack_require__(206);
 
 
 /***/ }),
@@ -16979,9 +16979,9 @@ var hash = exports;
 
 hash.utils = __webpack_require__(13);
 hash.common = __webpack_require__(32);
-hash.sha = __webpack_require__(227);
-hash.ripemd = __webpack_require__(226);
-hash.hmac = __webpack_require__(225);
+hash.sha = __webpack_require__(228);
+hash.ripemd = __webpack_require__(227);
+hash.hmac = __webpack_require__(226);
 
 // Proxy hash functions to the main object
 hash.sha1 = hash.sha.sha1;
@@ -17222,7 +17222,7 @@ util.inherits = __webpack_require__(0);
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(255)
+  deprecate: __webpack_require__(256)
 };
 /*</replacement>*/
 
@@ -17849,7 +17849,7 @@ exports.Readable = exports;
 exports.Writable = __webpack_require__(56);
 exports.Duplex = __webpack_require__(19);
 exports.Transform = __webpack_require__(98);
-exports.PassThrough = __webpack_require__(244);
+exports.PassThrough = __webpack_require__(245);
 
 
 /***/ }),
@@ -18035,11 +18035,11 @@ var exports = module.exports = function SHA (algorithm) {
   return new Algorithm()
 }
 
-exports.sha = __webpack_require__(250)
-exports.sha1 = __webpack_require__(251)
-exports.sha224 = __webpack_require__(252)
+exports.sha = __webpack_require__(251)
+exports.sha1 = __webpack_require__(252)
+exports.sha224 = __webpack_require__(253)
 exports.sha256 = __webpack_require__(101)
-exports.sha384 = __webpack_require__(253)
+exports.sha384 = __webpack_require__(254)
 exports.sha512 = __webpack_require__(102)
 
 
@@ -18075,10 +18075,10 @@ var inherits = __webpack_require__(0);
 
 inherits(Stream, EE);
 Stream.Readable = __webpack_require__(57);
-Stream.Writable = __webpack_require__(248);
-Stream.Duplex = __webpack_require__(243);
-Stream.Transform = __webpack_require__(247);
-Stream.PassThrough = __webpack_require__(246);
+Stream.Writable = __webpack_require__(249);
+Stream.Duplex = __webpack_require__(244);
+Stream.Transform = __webpack_require__(248);
+Stream.PassThrough = __webpack_require__(247);
 
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
@@ -23534,7 +23534,7 @@ if (typeof self === 'object') {
 } else {
   // Node.js or Web worker with no crypto support
   try {
-    var crypto = __webpack_require__(259);
+    var crypto = __webpack_require__(260);
     if (typeof crypto.randomBytes !== 'function')
       throw new Error('Not supported');
 
@@ -24776,7 +24776,7 @@ utils.encode = function encode(arr, enc) {
 /* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports.pbkdf2 = __webpack_require__(238)
+exports.pbkdf2 = __webpack_require__(239)
 exports.pbkdf2Sync = __webpack_require__(93)
 
 
@@ -25066,7 +25066,7 @@ util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(260);
+var debugUtil = __webpack_require__(261);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -25075,7 +25075,7 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __webpack_require__(245);
+var BufferList = __webpack_require__(246);
 var destroyImpl = __webpack_require__(99);
 var StringDecoder;
 
@@ -27121,7 +27121,7 @@ exports.Status = Status;
 // This file can be required in Browserify and Node.js for automatic polyfill
 // To use it:  require('es6-promise/auto');
 
-module.exports = __webpack_require__(224).polyfill();
+module.exports = __webpack_require__(225).polyfill();
 
 
 /***/ }),
@@ -27134,7 +27134,7 @@ module.exports = __webpack_require__(224).polyfill();
 var content = __webpack_require__(192);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(254)(content, {});
+var update = __webpack_require__(255)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -27176,11 +27176,42 @@ const jobs_1 = __webpack_require__(105);
 const reports_1 = __webpack_require__(108);
 __webpack_require__(111);
 const commands = new commands_1.CommandRegistry();
+function makeLoader() {
+    let loader = document.createElement('div');
+    loader.classList.add('loader');
+    loader.style.display = 'none';
+    let loader_icon = document.createElement('div');
+    loader_icon.classList.add('loader_icon');
+    loader.appendChild(loader_icon);
+    loader.onclick = () => {
+        loader.style.display = 'none';
+        document.body.removeChild(loader);
+    };
+    return loader;
+}
 function main() {
     /* Home "Menu" */
     let menu = new widgets_1.Menu({ commands });
     menu.title.label = 'About';
     menu.title.mnemonic = 0;
+    let loader = makeLoader();
+    let palette = new widgets_1.CommandPalette({ commands });
+    palette.id = 'palette';
+    palette.addItem({
+        command: 'open-loader',
+        category: 'Loader',
+        rank: 0
+    });
+    commands.addCommand('open-loader', {
+        label: 'Open Loader',
+        mnemonic: 2,
+        iconClass: 'fa fa-plus',
+        execute: () => {
+            loader.style.display = 'flex';
+            document.body.appendChild(loader);
+        }
+    });
+    menu.addItem({ command: 'open-loader' });
     /* Title bar */
     let header = new header_1.Header();
     /* File bar */
@@ -37477,7 +37508,7 @@ function Entity(name, body) {
 Entity.prototype._createNamed = function createNamed(base) {
   var named;
   try {
-    named = __webpack_require__(256).runInThisContext(
+    named = __webpack_require__(257).runInThisContext(
       '(function ' + this.name + '(entity) {\n' +
       '  this._initNamed(entity);\n' +
       '})'
@@ -39836,7 +39867,7 @@ exports.createDecipheriv = aes.createDecipheriv
 exports.getCiphers = aes.getCiphers
 exports.listCiphers = aes.listCiphers
 
-var dh = __webpack_require__(207)
+var dh = __webpack_require__(208)
 
 exports.DiffieHellmanGroup = dh.DiffieHellmanGroup
 exports.createDiffieHellmanGroup = dh.createDiffieHellmanGroup
@@ -39853,7 +39884,7 @@ exports.Verify = sign.Verify
 
 exports.createECDH = __webpack_require__(174)
 
-var publicEncrypt = __webpack_require__(239)
+var publicEncrypt = __webpack_require__(240)
 
 exports.publicEncrypt = publicEncrypt.publicEncrypt
 exports.privateEncrypt = publicEncrypt.privateEncrypt
@@ -39873,7 +39904,7 @@ exports.privateDecrypt = publicEncrypt.privateDecrypt
 //   }
 // })
 
-var rf = __webpack_require__(242)
+var rf = __webpack_require__(243)
 
 exports.randomFill = rf.randomFill
 exports.randomFillSync = rf.randomFillSync
@@ -40129,7 +40160,7 @@ exports.push([module.i, "div#header {\n  display:flex;\n  align-items: center;\n
 
 exports = module.exports = __webpack_require__(2)();
 // imports
-exports.i(__webpack_require__(201), "");
+exports.i(__webpack_require__(202), "");
 exports.i(__webpack_require__(177), "");
 exports.i(__webpack_require__(180), "");
 exports.i(__webpack_require__(188), "");
@@ -40144,6 +40175,7 @@ exports.i(__webpack_require__(197), "");
 exports.i(__webpack_require__(198), "");
 exports.i(__webpack_require__(199), "");
 exports.i(__webpack_require__(200), "");
+exports.i(__webpack_require__(201), "");
 
 // module
 exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\ninput {\n  min-height:15px;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}", ""]);
@@ -40174,7 +40206,7 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n.p-Menu {\n  padding: 3px 0px;\n  font: 12px Helvetica, Arial, sans-serif;\n  box-shadow: 0px 1px 6px var(--dark-drop-shadow);\n}\n\nbody.dark .p-Menu {\n  background: var(--dark-bg-color);\n  color: var(--dark-color);\n  border: 1px solid var(--dark-bg-color);\n}\n\nbody.light .p-Menu {\n  background: var(--light-bg-color);\n  color: var(--light-color);\n  border: 1px solid var(--light-bg-color);\n}\n\n\nbody.dark .p-Menu-item.p-mod-active {\n  background: var(--dark-bg-hover);\n}\n\nbody.light .p-Menu-item.p-mod-active {\n  background: var(--light-bg-hover);\n}\n\nbody.dark .p-Menu-item.p-mod-disabled {\n  color: var(--dark-color-disabled);\n}\n\nbody.light .p-Menu-item.p-mod-disabled {\n  color: var(--light-color-disabled);\n}\n\n.p-Menu-itemIcon {\n  width: 21px;\n  padding: 4px 2px;\n}\n\n\n.p-Menu-itemLabel {\n  padding: 4px 35px 4px 2px;\n}\n\n\n.p-Menu-itemMnemonic {\n  text-decoration: underline;\n}\n\n\n.p-Menu-itemShortcut {\n  padding: 4px 0px;\n}\n\n\n.p-Menu-itemSubmenuIcon {\n  width: 16px;\n  padding: 4px 0px;\n}\n\n\n.p-Menu-item[data-type='separator'] > div {\n  padding: 0;\n  height: 9px;\n}\n\n\n.p-Menu-item[data-type='separator'] > div::after {\n  content: '';\n  display: block;\n  position: relative;\n  top: 4px;\n  border-top: 1px solid var(--dark-border2);\n}\n\nbody.dark .p-Menu-item[data-type='separator'] > div::after {\n  border-top: 1px solid var(--dark-border2);\n}\n\nbody.light .p-Menu-item[data-type='separator'] > div::after {\n  border-top: 1px solid var(--light-border2);\n}\n\n.p-Menu-itemIcon::before,\n.p-Menu-itemSubmenuIcon::before {\n  font-family: FontAwesome;\n}\n\n\n.p-Menu-item.p-mod-toggled > .p-Menu-itemIcon::before {\n  content: '\\F00C';\n}\n\n\n.p-Menu-item[data-type='submenu'] > .p-Menu-itemSubmenuIcon::before {\n  content: '\\F0DA';\n}\n", ""]);
+exports.push([module.i, "div.loader {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\ndiv.loader_icon {\n  border: 24px solid #333; \n  /*border: 16px solid #f3f3f3; */\n  /*border-top: 16px solid #3498db; */\n  border-right: 24px solid var(--highlight-blue);\n  border-left: 24px solid var(--highlight-blue);\n\n  border-radius: 50%;\n  animation: spin 2s linear infinite;\n\n  height:200px;\n  width:200px;\n}\n\n@keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n}\n", ""]);
 
 // exports
 
@@ -40188,7 +40220,7 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n.p-MenuBar {\n  padding-left: 5px;\n  border-bottom: 1px solid var(--dark-border);\n  font: 13px Helvetica, Arial, sans-serif;\n}\n\nbody.dark .p-MenuBar {\n  background: var(--dark-bg-color3);\n  color: var(--dark-color);\n}\n\nbody.light .p-MenuBar {\n  background: var(--light-bg-color3);\n  color: var(--light-color);\n}\n\n.p-MenuBar-content{\n  height: 100%;\n  width: 100%;\n  align-items: center;\n  z-index:5;\n}\n\n.p-MenuBar-menu {\n  transform: translateY(-1px);\n}\n\n\n.p-MenuBar-item {\n  flex:1;\n  padding: 4px 8px;\n  border-left: 1px solid transparent;\n  border-right: 1px solid transparent;\n\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.p-MenuBar-itemIcon,\n.p-MenuBar-itemLabel {\n  text-align: center;\n}\n\nbody.dark .p-MenuBar-item.p-mod-active {\n  background: var(--dark-bg-hover);\n}\n\nbody.light .p-MenuBar-item.p-mod-active {\n  background: var(--light-bg-hover);\n}\n\n\n.p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {\n  z-index: 7;\n  border-left: 1px solid var(--dark-border2);\n  border-right: 1px solid var(--dark-border2);\n  box-shadow: 0px 0px 6px var(--dark-drop-shadow);\n}\n\nbody.dark .p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {\n  background: var(--dark-bg-hover);\n}\n\nbody.light .p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {\n  background: var(--light-bg-hover);\n}\n", ""]);
+exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n.p-Menu {\n  padding: 3px 0px;\n  font: 12px Helvetica, Arial, sans-serif;\n  box-shadow: 0px 1px 6px var(--dark-drop-shadow);\n}\n\nbody.dark .p-Menu {\n  background: var(--dark-bg-color);\n  color: var(--dark-color);\n  border: 1px solid var(--dark-bg-color);\n}\n\nbody.light .p-Menu {\n  background: var(--light-bg-color);\n  color: var(--light-color);\n  border: 1px solid var(--light-bg-color);\n}\n\n\nbody.dark .p-Menu-item.p-mod-active {\n  background: var(--dark-bg-hover);\n}\n\nbody.light .p-Menu-item.p-mod-active {\n  background: var(--light-bg-hover);\n}\n\nbody.dark .p-Menu-item.p-mod-disabled {\n  color: var(--dark-color-disabled);\n}\n\nbody.light .p-Menu-item.p-mod-disabled {\n  color: var(--light-color-disabled);\n}\n\n.p-Menu-itemIcon {\n  width: 21px;\n  padding: 4px 2px;\n}\n\n\n.p-Menu-itemLabel {\n  padding: 4px 35px 4px 2px;\n}\n\n\n.p-Menu-itemMnemonic {\n  text-decoration: underline;\n}\n\n\n.p-Menu-itemShortcut {\n  padding: 4px 0px;\n}\n\n\n.p-Menu-itemSubmenuIcon {\n  width: 16px;\n  padding: 4px 0px;\n}\n\n\n.p-Menu-item[data-type='separator'] > div {\n  padding: 0;\n  height: 9px;\n}\n\n\n.p-Menu-item[data-type='separator'] > div::after {\n  content: '';\n  display: block;\n  position: relative;\n  top: 4px;\n  border-top: 1px solid var(--dark-border2);\n}\n\nbody.dark .p-Menu-item[data-type='separator'] > div::after {\n  border-top: 1px solid var(--dark-border2);\n}\n\nbody.light .p-Menu-item[data-type='separator'] > div::after {\n  border-top: 1px solid var(--light-border2);\n}\n\n.p-Menu-itemIcon::before,\n.p-Menu-itemSubmenuIcon::before {\n  font-family: FontAwesome;\n}\n\n\n.p-Menu-item.p-mod-toggled > .p-Menu-itemIcon::before {\n  content: '\\F00C';\n}\n\n\n.p-Menu-item[data-type='submenu'] > .p-Menu-itemSubmenuIcon::before {\n  content: '\\F0DA';\n}\n", ""]);
 
 // exports
 
@@ -40202,7 +40234,7 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, ".notebooks .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.notebooks .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.notebooks .p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .notebooks .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.notebooks .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.notebooks .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .notebooks .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.notebooks .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .notebooks .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.notebooks .uploader  {\n    padding:15px;\n}\n\n.notebooks .uploader form {\n    display: flex;\n    flex-direction: column;\n}\n\n.notebooks .uploader form > * {\n    width:50%;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top:10px;\n}\n\n.notebooks .uploader form > input[type=submit] {\n    width:15%;\n}\n\n.notebooks .uploader form > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}", ""]);
+exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n.p-MenuBar {\n  padding-left: 5px;\n  border-bottom: 1px solid var(--dark-border);\n  font: 13px Helvetica, Arial, sans-serif;\n}\n\nbody.dark .p-MenuBar {\n  background: var(--dark-bg-color3);\n  color: var(--dark-color);\n}\n\nbody.light .p-MenuBar {\n  background: var(--light-bg-color3);\n  color: var(--light-color);\n}\n\n.p-MenuBar-content{\n  height: 100%;\n  width: 100%;\n  align-items: center;\n  z-index:5;\n}\n\n.p-MenuBar-menu {\n  transform: translateY(-1px);\n}\n\n\n.p-MenuBar-item {\n  flex:1;\n  padding: 4px 8px;\n  border-left: 1px solid transparent;\n  border-right: 1px solid transparent;\n\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.p-MenuBar-itemIcon,\n.p-MenuBar-itemLabel {\n  text-align: center;\n}\n\nbody.dark .p-MenuBar-item.p-mod-active {\n  background: var(--dark-bg-hover);\n}\n\nbody.light .p-MenuBar-item.p-mod-active {\n  background: var(--light-bg-hover);\n}\n\n\n.p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {\n  z-index: 7;\n  border-left: 1px solid var(--dark-border2);\n  border-right: 1px solid var(--dark-border2);\n  box-shadow: 0px 0px 6px var(--dark-drop-shadow);\n}\n\nbody.dark .p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {\n  background: var(--dark-bg-hover);\n}\n\nbody.light .p-MenuBar.p-mod-active .p-MenuBar-item.p-mod-active {\n  background: var(--light-bg-hover);\n}\n", ""]);
 
 // exports
 
@@ -40216,7 +40248,7 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, "div.quickbrowser {\n    font-size: 10px;\n}\ndiv.quickbrowser ul li {\n    flex: 1;\n}\n\nbody.dark div.quickbrowser .p-TabBar-content {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.quickbrowser .p-TabBar-content {\n  border-right: 1px solid var(--light-border);\n}\n\n\nbody.dark div.quickbrowser .p-StackedPanel {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.quickbrowser .p-StackedPanel {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.quickbrowser-container {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.quickbrowser-container table {\n    height:90%;\n    text-align: left;\n}\n\ndiv.quickbrowser-container table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.quickbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.quickbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.quickbrowser-container table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.quickbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.quickbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.quickbrowser-container p {\n    height:5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.quickbrowser-container p span.page:hover {\n    color: white;\n}\n\nbody.light div.quickbrowser-container p span.page:hover {\n    color: #999;\n}\n\ndiv.quickbrowser-container p span.page-active {\n    color: var(--highlight-orange);\n}\n", ""]);
+exports.push([module.i, ".notebooks .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.notebooks .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.notebooks .p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .notebooks .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.notebooks .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.notebooks .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .notebooks .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.notebooks .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .notebooks .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .notebooks .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.notebooks .uploader  {\n    padding:15px;\n}\n\n.notebooks .uploader form {\n    display: flex;\n    flex-direction: column;\n}\n\n.notebooks .uploader form > * {\n    width:50%;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top:10px;\n}\n\n.notebooks .uploader form > input[type=submit] {\n    width:15%;\n}\n\n.notebooks .uploader form > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}", ""]);
 
 // exports
 
@@ -40230,7 +40262,7 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, ".reports .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.reports .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.reports .p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .reports .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .reports .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.reports .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.reports .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .reports .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .reports .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.reports .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .reports .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .reports .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.reports .configurator {\n    padding:15px;\n}\n\n.reports .configurator form {\n    display: flex;\n    flex-direction: column;\n}\n\n.reports .configurator form > * {\n    width:50%;\n    margin-top:10px;\n    margin-left: auto;\n    margin-right: auto;\n}\n\n.reports .configurator form > input[type=submit] {\n    width:15%;\n}\n\n.reports .configurator form > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}", ""]);
+exports.push([module.i, "div.quickbrowser {\n    font-size: 10px;\n}\ndiv.quickbrowser ul li {\n    flex: 1;\n}\n\nbody.dark div.quickbrowser .p-TabBar-content {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.quickbrowser .p-TabBar-content {\n  border-right: 1px solid var(--light-border);\n}\n\n\nbody.dark div.quickbrowser .p-StackedPanel {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.quickbrowser .p-StackedPanel {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.quickbrowser-container {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.quickbrowser-container table {\n    height:90%;\n    text-align: left;\n}\n\ndiv.quickbrowser-container table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.quickbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.quickbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.quickbrowser-container table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.quickbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.quickbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.quickbrowser-container p {\n    height:5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.quickbrowser-container p span.page:hover {\n    color: white;\n}\n\nbody.light div.quickbrowser-container p span.page:hover {\n    color: #999;\n}\n\ndiv.quickbrowser-container p span.page-active {\n    color: var(--highlight-orange);\n}\n", ""]);
 
 // exports
 
@@ -40244,7 +40276,7 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n    overflow-y: scroll;\n    min-height:275px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    max-height:40px;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:5px;\n}\n\ndiv.status-breakdown {\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n    margin-top:0px;\n    margin-bottom:0px;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
+exports.push([module.i, ".reports .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.reports .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.reports .p-DockPanel-widget > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .reports .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .reports .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.reports .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.reports .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .reports .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .reports .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.reports .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .reports .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .reports .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.reports .configurator {\n    padding:15px;\n}\n\n.reports .configurator form {\n    display: flex;\n    flex-direction: column;\n}\n\n.reports .configurator form > * {\n    width:50%;\n    margin-top:10px;\n    margin-left: auto;\n    margin-right: auto;\n}\n\n.reports .configurator form > input[type=submit] {\n    width:15%;\n}\n\n.reports .configurator form > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}", ""]);
 
 // exports
 
@@ -40258,7 +40290,7 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n.p-TabBar {\n  min-height: 45px;\n  max-height: 45px;\n}\n\n\n.p-TabBar-content {\n  min-width: 0;\n  min-height: 0;\n  align-items: flex-end;\n}\n\nbody.dark .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar-tab {\n  padding: 0px 10px;\n  border-bottom: none;\n  font: 12px Helvetica, Arial, sans-serif;\n  flex: 0 1 125px;\n  min-height: 20px;\n  max-height: 20px;\n  min-width: 35px;\n  margin-left: -1px;\n  line-height: 20px;\n}\n\nbody.dark .p-TabBar-tab {\n  background: var(--dark-bg-color2);\n  border: 1px solid var(--dark-border);\n}\n\nbody.light .p-TabBar-tab {\n  background: var(--light-bg-color2);\n  border: 1px solid var(--light-border);\n}\n\nbody.dark .p-TabBar-tab:hover:not(.p-mod-current) {\n  background: var(--dark-bg-hover);\n}\n\nbody.light .p-TabBar-tab:hover:not(.p-mod-current) {\n  background: var(--light-bg-hover);\n}\n\n.p-TabBar-tab:first-child {\n  margin-left: 0;\n}\n\n\n.p-TabBar-tab {\n  min-height: 45px;\n  max-height: 45px;\n}\n\n.p-TabBar-tab.p-mod-current {\n  min-height: 45px;\n  max-height: 45px;\n  transform: translateY(1px);\n}\n\nbody.dark .p-TabBar-tab.p-mod-current {\n  background: var(--dark-bg-color);\n}\n\nbody.light .p-TabBar-tab.p-mod-current {\n  background: var(--light-bg-color);\n}\n\nbody.dark .p-TabBar-tabIcon:hover {\n  color: var(--dark-color-disabled);\n}\n\nbody.light .p-TabBar-tabIcon:hover {\n  color: var(--light-color-disabled);\n}\n\n.p-TabBar-tabLabel,\n.p-TabBar-tabCloseIcon {\n  display: inline-block;\n}\n\n\n.p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon {\n  margin-left: 4px;\n}\n\nbody.dark .p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:hover {\n  color: var(--dark-color-disabled);\n}\n\nbody.light .p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:hover {\n  color: var(--light-color-disabled);\n}\n\n.p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:before {\n  content: '\\F00D';\n  font-family: FontAwesome;\n}\n\n\n.p-TabBar-tab.p-mod-drag-image {\n  min-height: 23px;\n  max-height: 23px;\n  min-width: 125px;\n  border: none;\n  transform: translateX(-40%) translateY(-58%);\n}\n\nbody.dark .p-TabBar-tab.p-mod-drag-image {\n  box-shadow: 1px 1px 2px var(--dark-drop-shadow);\n}\n\nbody.light .p-TabBar-tab.p-mod-drag-image {\n  box-shadow: 1px 1px 2px var(--light-drop-shadow);\n}\n", ""]);
+exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n    overflow-y: scroll;\n    min-height:275px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    max-height:40px;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:5px;\n}\n\ndiv.status-breakdown {\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n    margin-top:0px;\n    margin-bottom:0px;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n", ""]);
 
 // exports
 
@@ -40272,13 +40304,27 @@ exports = module.exports = __webpack_require__(2)();
 
 
 // module
-exports.push([module.i, ":root {\n    --dark-bg-color: #242526;\n    --dark-bg-color2: #161616;\n\n    --light-bg-color: #ddd;\n    --light-bg-color2: #fff;\n\n    --dark-bg-hover: #636363;\n    --light-bg-hover: #636363;\n\n    --dark-color: lightgrey;\n    --light-color: #2b2b2b;\n\n    --dark-color-disabled: rgba(255, 255, 255, 0.25);\n    --light-color-disabled: rgba(255, 255, 255, 0.25);\n\n    --dark-border: #666;\n    --light-border: #666;\n\n    --dark-border2: #3b3e44;\n    --light-border2: #3b3e44;\n\n    --dark-overlay: rgba(0, 0, 0, 0.6);\n    --light-overlay: rgba(0, 0, 0, 0.4);\n\n    --dark-drop-shadow: rgba(255, 255, 255, 0.2);\n    --light-drop-shadow: rgba(255, 255, 255, 0.8);\n\n    --light-border: black;\n\n    --highlight-orange: #ff9800;\n    --highlight-blue: #00bcd4;\n    --highlight-teal: #2BB0AF;\n    --highlight-green: #4caf50;\n    --highlight-purple: #9c27b0;\n    --highlight-red:#f44336;\n}", ""]);
+exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n.p-TabBar {\n  min-height: 45px;\n  max-height: 45px;\n}\n\n\n.p-TabBar-content {\n  min-width: 0;\n  min-height: 0;\n  align-items: flex-end;\n}\n\nbody.dark .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar-tab {\n  padding: 0px 10px;\n  border-bottom: none;\n  font: 12px Helvetica, Arial, sans-serif;\n  flex: 0 1 125px;\n  min-height: 20px;\n  max-height: 20px;\n  min-width: 35px;\n  margin-left: -1px;\n  line-height: 20px;\n}\n\nbody.dark .p-TabBar-tab {\n  background: var(--dark-bg-color2);\n  border: 1px solid var(--dark-border);\n}\n\nbody.light .p-TabBar-tab {\n  background: var(--light-bg-color2);\n  border: 1px solid var(--light-border);\n}\n\nbody.dark .p-TabBar-tab:hover:not(.p-mod-current) {\n  background: var(--dark-bg-hover);\n}\n\nbody.light .p-TabBar-tab:hover:not(.p-mod-current) {\n  background: var(--light-bg-hover);\n}\n\n.p-TabBar-tab:first-child {\n  margin-left: 0;\n}\n\n\n.p-TabBar-tab {\n  min-height: 45px;\n  max-height: 45px;\n}\n\n.p-TabBar-tab.p-mod-current {\n  min-height: 45px;\n  max-height: 45px;\n  transform: translateY(1px);\n}\n\nbody.dark .p-TabBar-tab.p-mod-current {\n  background: var(--dark-bg-color);\n}\n\nbody.light .p-TabBar-tab.p-mod-current {\n  background: var(--light-bg-color);\n}\n\nbody.dark .p-TabBar-tabIcon:hover {\n  color: var(--dark-color-disabled);\n}\n\nbody.light .p-TabBar-tabIcon:hover {\n  color: var(--light-color-disabled);\n}\n\n.p-TabBar-tabLabel,\n.p-TabBar-tabCloseIcon {\n  display: inline-block;\n}\n\n\n.p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon {\n  margin-left: 4px;\n}\n\nbody.dark .p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:hover {\n  color: var(--dark-color-disabled);\n}\n\nbody.light .p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:hover {\n  color: var(--light-color-disabled);\n}\n\n.p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:before {\n  content: '\\F00D';\n  font-family: FontAwesome;\n}\n\n\n.p-TabBar-tab.p-mod-drag-image {\n  min-height: 23px;\n  max-height: 23px;\n  min-width: 125px;\n  border: none;\n  transform: translateX(-40%) translateY(-58%);\n}\n\nbody.dark .p-TabBar-tab.p-mod-drag-image {\n  box-shadow: 1px 1px 2px var(--dark-drop-shadow);\n}\n\nbody.light .p-TabBar-tab.p-mod-drag-image {\n  box-shadow: 1px 1px 2px var(--light-drop-shadow);\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
 /* 202 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(2)();
+// imports
+
+
+// module
+exports.push([module.i, ":root {\n    --dark-bg-color: #242526;\n    --dark-bg-color2: #161616;\n\n    --light-bg-color: #ddd;\n    --light-bg-color2: #fff;\n\n    --dark-bg-hover: #636363;\n    --light-bg-hover: #636363;\n\n    --dark-color: lightgrey;\n    --light-color: #2b2b2b;\n\n    --dark-color-disabled: rgba(255, 255, 255, 0.25);\n    --light-color-disabled: rgba(255, 255, 255, 0.25);\n\n    --dark-border: #666;\n    --light-border: #666;\n\n    --dark-border2: #3b3e44;\n    --light-border2: #3b3e44;\n\n    --dark-overlay: rgba(0, 0, 0, 0.6);\n    --light-overlay: rgba(0, 0, 0, 0.4);\n\n    --dark-drop-shadow: rgba(255, 255, 255, 0.2);\n    --light-drop-shadow: rgba(255, 255, 255, 0.8);\n\n    --light-border: black;\n\n    --highlight-orange: #ff9800;\n    --highlight-blue: #00bcd4;\n    --highlight-teal: #2BB0AF;\n    --highlight-green: #4caf50;\n    --highlight-purple: #9c27b0;\n    --highlight-red:#f44336;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40350,7 +40396,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
 
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40498,7 +40544,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
 
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40648,7 +40694,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
 
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40710,7 +40756,7 @@ EDE.prototype._unpad = DES.prototype._unpad;
 
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40973,13 +41019,13 @@ exports.padSplit = function padSplit(num, size, group) {
 
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var generatePrime = __webpack_require__(82)
-var primes = __webpack_require__(209)
+var primes = __webpack_require__(210)
 
-var DH = __webpack_require__(208)
+var DH = __webpack_require__(209)
 
 function getDiffieHellman (mod) {
   var prime = new Buffer(primes[mod].prime, 'hex')
@@ -41022,7 +41068,7 @@ exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer))
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var BN = __webpack_require__(5);
@@ -41193,13 +41239,13 @@ function formatReturnValue(bn, enc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer))
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports) {
 
 module.exports = {"modp1":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a63a3620ffffffffffffffff"},"modp2":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece65381ffffffffffffffff"},"modp5":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca237327ffffffffffffffff"},"modp14":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aacaa68ffffffffffffffff"},"modp15":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a93ad2caffffffffffffffff"},"modp16":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c934063199ffffffffffffffff"},"modp17":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dcc4024ffffffffffffffff"},"modp18":{"gen":"02","prime":"ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"}}
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41581,7 +41627,7 @@ BasePoint.prototype.dblp = function dblp(k) {
 
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42021,7 +42067,7 @@ Point.prototype.mixedAdd = Point.prototype.add;
 
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42208,7 +42254,7 @@ Point.prototype.getX = function getX() {
 
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43153,7 +43199,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
 
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43326,7 +43372,7 @@ defineCurve('ed25519', {
 
 var pre;
 try {
-  pre = __webpack_require__(221);
+  pre = __webpack_require__(222);
 } catch (e) {
   pre = undefined;
 }
@@ -43365,20 +43411,20 @@ defineCurve('secp256k1', {
 
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var BN = __webpack_require__(5);
-var HmacDRBG = __webpack_require__(231);
+var HmacDRBG = __webpack_require__(232);
 var elliptic = __webpack_require__(9);
 var utils = elliptic.utils;
 var assert = utils.assert;
 
-var KeyPair = __webpack_require__(216);
-var Signature = __webpack_require__(217);
+var KeyPair = __webpack_require__(217);
+var Signature = __webpack_require__(218);
 
 function EC(options) {
   if (!(this instanceof EC))
@@ -43612,7 +43658,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
 
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43738,7 +43784,7 @@ KeyPair.prototype.inspect = function inspect() {
 
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43880,7 +43926,7 @@ Signature.prototype.toDER = function toDER(enc) {
 
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43891,8 +43937,8 @@ var elliptic = __webpack_require__(9);
 var utils = elliptic.utils;
 var assert = utils.assert;
 var parseBytes = utils.parseBytes;
-var KeyPair = __webpack_require__(219);
-var Signature = __webpack_require__(220);
+var KeyPair = __webpack_require__(220);
+var Signature = __webpack_require__(221);
 
 function EDDSA(curve) {
   assert(curve === 'ed25519', 'only tested with ed25519 so far');
@@ -44005,7 +44051,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
 
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44108,7 +44154,7 @@ module.exports = KeyPair;
 
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44181,7 +44227,7 @@ module.exports = Signature;
 
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -44967,7 +45013,7 @@ module.exports = {
 
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45094,13 +45140,13 @@ utils.intFromLE = intFromLE;
 
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports) {
 
 module.exports = {"_args":[["elliptic@6.4.0","/Users/theocean154/Programs/projects/paperboy"]],"_development":true,"_from":"elliptic@6.4.0","_id":"elliptic@6.4.0","_inBundle":false,"_integrity":"sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=","_location":"/elliptic","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"elliptic@6.4.0","name":"elliptic","escapedName":"elliptic","rawSpec":"6.4.0","saveSpec":null,"fetchSpec":"6.4.0"},"_requiredBy":["/browserify-sign","/create-ecdh"],"_resolved":"https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz","_spec":"6.4.0","_where":"/Users/theocean154/Programs/projects/paperboy","author":{"name":"Fedor Indutny","email":"fedor@indutny.com"},"bugs":{"url":"https://github.com/indutny/elliptic/issues"},"dependencies":{"bn.js":"^4.4.0","brorand":"^1.0.1","hash.js":"^1.0.0","hmac-drbg":"^1.0.0","inherits":"^2.0.1","minimalistic-assert":"^1.0.0","minimalistic-crypto-utils":"^1.0.0"},"description":"EC cryptography","devDependencies":{"brfs":"^1.4.3","coveralls":"^2.11.3","grunt":"^0.4.5","grunt-browserify":"^5.0.0","grunt-cli":"^1.2.0","grunt-contrib-connect":"^1.0.0","grunt-contrib-copy":"^1.0.0","grunt-contrib-uglify":"^1.0.1","grunt-mocha-istanbul":"^3.0.1","grunt-saucelabs":"^8.6.2","istanbul":"^0.4.2","jscs":"^2.9.0","jshint":"^2.6.0","mocha":"^2.1.0"},"files":["lib"],"homepage":"https://github.com/indutny/elliptic","keywords":["EC","Elliptic","curve","Cryptography"],"license":"MIT","main":"lib/elliptic.js","name":"elliptic","repository":{"type":"git","url":"git+ssh://git@github.com/indutny/elliptic.git"},"scripts":{"jscs":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","jshint":"jscs benchmarks/*.js lib/*.js lib/**/*.js lib/**/**/*.js test/index.js","lint":"npm run jscs && npm run jshint","test":"npm run lint && npm run unit","unit":"istanbul test _mocha --reporter=spec test/index.js","version":"grunt dist && git add dist/"},"version":"6.4.0"}
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, global) {/*!
@@ -46286,7 +46332,7 @@ return Promise$1;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(14)))
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46340,7 +46386,7 @@ Hmac.prototype.digest = function digest(enc) {
 
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46493,21 +46539,21 @@ var sh = [
 
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-exports.sha1 = __webpack_require__(228);
-exports.sha224 = __webpack_require__(229);
+exports.sha1 = __webpack_require__(229);
+exports.sha224 = __webpack_require__(230);
 exports.sha256 = __webpack_require__(84);
-exports.sha384 = __webpack_require__(230);
+exports.sha384 = __webpack_require__(231);
 exports.sha512 = __webpack_require__(85);
 
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46588,7 +46634,7 @@ SHA1.prototype._digest = function digest(enc) {
 
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46625,7 +46671,7 @@ SHA224.prototype._digest = function digest(enc) {
 
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46667,7 +46713,7 @@ SHA384.prototype._digest = function digest(enc) {
 
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46787,7 +46833,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
 
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -46877,7 +46923,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports) {
 
 
@@ -46892,13 +46938,13 @@ module.exports = function(arr, obj){
 };
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports) {
 
 module.exports = {"2.16.840.1.101.3.4.1.1":"aes-128-ecb","2.16.840.1.101.3.4.1.2":"aes-128-cbc","2.16.840.1.101.3.4.1.3":"aes-128-ofb","2.16.840.1.101.3.4.1.4":"aes-128-cfb","2.16.840.1.101.3.4.1.21":"aes-192-ecb","2.16.840.1.101.3.4.1.22":"aes-192-cbc","2.16.840.1.101.3.4.1.23":"aes-192-ofb","2.16.840.1.101.3.4.1.24":"aes-192-cfb","2.16.840.1.101.3.4.1.41":"aes-256-ecb","2.16.840.1.101.3.4.1.42":"aes-256-cbc","2.16.840.1.101.3.4.1.43":"aes-256-ofb","2.16.840.1.101.3.4.1.44":"aes-256-cfb"}
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46908,7 +46954,7 @@ module.exports = {"2.16.840.1.101.3.4.1.1":"aes-128-ecb","2.16.840.1.101.3.4.1.2
 
 var asn1 = __webpack_require__(27)
 
-exports.certificate = __webpack_require__(236)
+exports.certificate = __webpack_require__(237)
 
 var RSAPrivateKey = asn1.define('RSAPrivateKey', function () {
   this.seq().obj(
@@ -47027,7 +47073,7 @@ exports.signature = asn1.define('signature', function () {
 
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47122,7 +47168,7 @@ module.exports = X509Certificate
 
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// adapted from https://github.com/apatil/pemstrip
@@ -47159,7 +47205,7 @@ module.exports = function (okey, password) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer))
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {var checkParameters = __webpack_require__(92)
@@ -47266,11 +47312,11 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(15)))
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports.publicEncrypt = __webpack_require__(241);
-exports.privateDecrypt = __webpack_require__(240);
+exports.publicEncrypt = __webpack_require__(242);
+exports.privateDecrypt = __webpack_require__(241);
 
 exports.privateEncrypt = function privateEncrypt(key, buf) {
   return exports.publicEncrypt(key, buf, true);
@@ -47281,7 +47327,7 @@ exports.publicDecrypt = function publicDecrypt(key, buf) {
 };
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(40);
@@ -47395,7 +47441,7 @@ function compare(a, b){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer))
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(40);
@@ -47496,7 +47542,7 @@ function nonZero(len, crypto) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer))
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47612,14 +47658,14 @@ function randomFillSync (buf, offset, size) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(15)))
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(19);
 
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47672,7 +47718,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 };
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47681,7 +47727,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Buffer = __webpack_require__(1).Buffer;
-var util = __webpack_require__(261);
+var util = __webpack_require__(262);
 
 function copyBuffer(src, target, offset) {
   src.copy(target, offset);
@@ -47757,28 +47803,28 @@ if (util && util.inspect && util.inspect.custom) {
 }
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(57).PassThrough
 
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(57).Transform
 
 
 /***/ }),
-/* 248 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(56);
 
 
 /***/ }),
-/* 249 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -47971,7 +48017,7 @@ module.exports = __webpack_require__(56);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(15)))
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -48071,7 +48117,7 @@ module.exports = Sha
 
 
 /***/ }),
-/* 251 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -48176,7 +48222,7 @@ module.exports = Sha1
 
 
 /***/ }),
-/* 252 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -48235,7 +48281,7 @@ module.exports = Sha224
 
 
 /***/ }),
-/* 253 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(0)
@@ -48298,7 +48344,7 @@ module.exports = Sha384
 
 
 /***/ }),
-/* 254 */
+/* 255 */
 /***/ (function(module, exports) {
 
 /*
@@ -48550,7 +48596,7 @@ function updateLink(linkElement, obj) {
 
 
 /***/ }),
-/* 255 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -48624,10 +48670,10 @@ function config (name) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 256 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var indexOf = __webpack_require__(233);
+var indexOf = __webpack_require__(234);
 
 var Object_keys = function (obj) {
     if (Object.keys) return Object.keys(obj)
@@ -48768,7 +48814,7 @@ exports.createContext = Script.createContext = function (context) {
 
 
 /***/ }),
-/* 257 */
+/* 258 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -48796,12 +48842,6 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 258 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 259 */
 /***/ (function(module, exports) {
 
@@ -48815,6 +48855,12 @@ module.exports = function(module) {
 
 /***/ }),
 /* 261 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 262 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
