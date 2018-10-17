@@ -46,3 +46,17 @@ class Reports extends DockPanel {
 
     private mine = new BoxPanel();
 }
+
+
+export
+class ReportDetail extends Widget {
+    static createNode(): HTMLElement {
+        let div = document.createElement('div');
+        div.classList.add('report-detail');
+        return div;
+    }
+
+    constructor(){
+        super({node: ReportDetail.createNode()});
+    }
+}

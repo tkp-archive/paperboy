@@ -1,16 +1,17 @@
 import {
-    SplitPanel, BoxPanel
+    SplitPanel, BoxPanel, DockPanel
 } from '@phosphor/widgets';
 
 import {DomUtils, autocomplete} from './utils';
-
+import {NotebookDetail} from './notebooks';
 
 export
 class Browser extends SplitPanel {
     constructor(){
         super({ orientation: 'vertical', spacing: 0 });
         this.node.classList.add('browser');
-
+        let searchpanel = new BoxPanel();
+        let resultspanel = new DockPanel();
 
         let holder = document.createElement('div');
         holder.classList.add('search-holder');
@@ -49,22 +50,20 @@ class Browser extends SplitPanel {
             DomUtils.delete_all_children(datalist);
             if (last == search.value){
                 // duplicate
-                return;
+            } else {
+                autocomplete('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
+                last = search.value;
             }
-            autocomplete('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
-            last = search.value;
+            resultspanel.addWidget(new NotebookDetail(search.value));
         });
 
         holder.appendChild(search);
         holder.appendChild(datalist);
         holder.appendChild(go);
-
-        let searchpanel = new BoxPanel();
         searchpanel.node.appendChild(holder);
 
-        let resultspanel = new BoxPanel();
         this.addWidget(searchpanel);
         this.addWidget(resultspanel);
-        this.setRelativeSizes([.3, .7]);
+        this.setRelativeSizes([.2, .8]);
     }
 }

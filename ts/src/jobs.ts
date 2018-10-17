@@ -46,3 +46,17 @@ class Jobs extends DockPanel {
 
     private mine = new BoxPanel();
 }
+
+
+export
+class JobDetail extends Widget {
+    static createNode(): HTMLElement {
+        let div = document.createElement('div');
+        div.classList.add('job-detail');
+        return div;
+    }
+
+    constructor(){
+        super({node: JobDetail.createNode()});
+    }
+}

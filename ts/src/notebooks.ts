@@ -48,3 +48,19 @@ class Notebooks extends DockPanel {
 
     private mine = new BoxPanel();
 }
+
+
+export
+class NotebookDetail extends Widget {
+    static createNode(): HTMLElement {
+        let div = document.createElement('div');
+        div.classList.add('notebook-detail');
+        return div;
+    }
+
+    constructor(id: string){
+        super({node: NotebookDetail.createNode()});
+        this.title.label = id;
+        this.title.closable = true;
+    }
+}

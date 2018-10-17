@@ -11,16 +11,25 @@ class AutocompleteResource(BaseResource):
         partial = req.params.get('partial', None)
         type = req.params.get('type', None)
         if type is None:
-            resp.body = json.dumps([{'key': 'TestKey{}'.format(i),
-                                     'name': 'TestName{}'.format(i)}
-                                    for i in range(10)
+            resp.body = json.dumps([{'id': 'TestNB{}'.format(i),
+                                     'name': 'MyNotebook{}'.format(i)}
+                                    for i in range(20)
+                                    ] +
+                                   [{'id': 'TestJob{}'.format(i),
+                                     'name': 'MyJob{}'.format(i)}
+                                    for i in range(20)
+                                    ] +
+                                   [{'id': 'TestReport{}'.format(i),
+                                     'name': 'MyReport{}'.format(i)}
+                                    for i in range(20)
                                     ])
+
         elif type == 'notebooks':
-            resp.body = json.dumps([{'key': i, 'name': 'TestNB{}'.format(i)} for i in range(20)])
+            resp.body = json.dumps([{'id': i, 'name': 'TestNB{}'.format(i)} for i in range(20)])
         elif type == 'jobs':
-            resp.body = json.dumps([{'key': i, 'name': 'TestJob{}'.format(i)} for i in range(20)])
+            resp.body = json.dumps([{'id': i, 'name': 'TestJob{}'.format(i)} for i in range(20)])
         elif type == 'reports':
-            resp.body = json.dumps([{'key': i, 'name': 'TestReport{}'.format(i)} for i in range(20)])
+            resp.body = json.dumps([{'id': i, 'name': 'TestReport{}'.format(i)} for i in range(20)])
         else:
             resp.body = 'No results for type {}'.format(type)
 

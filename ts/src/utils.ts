@@ -21,8 +21,8 @@ function autocomplete(path: string, value: string, autocomplete: HTMLDataListEle
 
             for(let val of jsn){
                 let option = document.createElement('option');
-                option.value = val['key'];
-                option.innerText = val['key'] + ' - ' + val['name'];
+                option.value = val['name'];
+                option.innerText = val['id'] + ' - ' + val['name'];
                 autocomplete.appendChild(option);
             }
         }
@@ -174,14 +174,26 @@ namespace DomUtils {
     search.setAttribute('list', name + '-datalist');
     search.placeholder = 'Search...';
     search.name = name;
+    search.autocomplete = 'off';
 
     let datalist = document.createElement('datalist');
     datalist.id = name + '-datalist';
 
-    search.addEventListener('keyup', (e: KeyboardEvent) => {
+    let last = '';
+    search.addEventListener('input', ()=>{
       delete_all_children(datalist);
-      autocomplete(url + search.value, search.value, datalist);
     });
+
+    search.addEventListener('keyup', () => {
+      if(last != search.value){
+        autocomplete(url + search.value, search.value, datalist);
+      }
+      last = search.value;
+    });
+    search.addEventListener('mousedown', () => {
+      delete_all_children(datalist);
+    });
+
     return [search, datalist];
   }
 
