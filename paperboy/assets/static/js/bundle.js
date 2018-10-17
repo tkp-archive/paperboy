@@ -9795,6 +9795,7 @@ var DomUtils;
         };
         modal.appendChild(button);
         document.body.appendChild(modal);
+        button.focus();
     }
     DomUtils.createResponseModal = createResponseModal;
 })(DomUtils = exports.DomUtils || (exports.DomUtils = {}));

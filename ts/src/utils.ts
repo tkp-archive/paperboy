@@ -386,5 +386,6 @@ namespace DomUtils {
     }
     modal.appendChild(button);
     document.body.appendChild(modal);
+    button.focus();
   }
 }
