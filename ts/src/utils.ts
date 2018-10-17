@@ -5,11 +5,13 @@ import {
 import {request, requestFormData, RequestResult} from './request';
 
 
+/*** Title Case formatter ***/
 export
 function toProperCase(str: string) {
   return str.replace(/\w\S*/g, function(txt: string){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
+/*** autocomplete key/name pairs from server ***/
 export
 function autocomplete(path: string, value: string, autocomplete: HTMLDataListElement){
     request('get', path).then((res: RequestResult) => {
@@ -27,8 +29,11 @@ function autocomplete(path: string, value: string, autocomplete: HTMLDataListEle
     });
 }
 
+
+/*** A collection of dom builders ***/
 export
 namespace DomUtils {
+  /*** require select ***/
   let default_none = document.createElement('option');
   default_none.selected = false;
   default_none.disabled = true;
@@ -36,6 +41,7 @@ namespace DomUtils {
   default_none.style.display = 'none';
   default_none.value = '';
 
+  /*** build a label ***/
   export 
   function buildLabel(text: string): HTMLLabelElement {
     let label = document.createElement('label');
@@ -43,6 +49,15 @@ namespace DomUtils {
     return label;
   }
 
+  /*** build an input ***/
+  /***
+    allowed:
+      - text
+      - file
+      - checkbox
+      - date picker
+      - submit button
+   ***/
   export
   function buildInput(type?: string,
                       name?: string,
@@ -96,6 +111,8 @@ namespace DomUtils {
         if(name){
           input.name = name;
         }
+        let d = new Date();
+        input.value = d.toISOString().slice(0,16);
         break;        
       }
       case 'submit': {
@@ -112,6 +129,7 @@ namespace DomUtils {
     return input;
   }
 
+  /*** build a textarea ***/
   export 
   function buildTextarea(text: string): HTMLTextAreaElement {
     let area = document.createElement('textarea');
@@ -121,6 +139,7 @@ namespace DomUtils {
   }
 
 
+  /*** build a select ***/
   export
   function buildSelect(name: string, list: string[], def?: string): HTMLSelectElement {
     let select = document.createElement('select');
@@ -143,6 +162,7 @@ namespace DomUtils {
     return select;
   }
 
+  /*** build an autocomplete ***/
   export
   function buildAutocomplete(url: string, name: string, required=false): [HTMLInputElement, HTMLDataListElement] {
     let search = document.createElement('input');
@@ -165,6 +185,48 @@ namespace DomUtils {
     return [search, datalist];
   }
 
+  /*** build a generic element ***/
+  /***
+    allowed:
+    - br
+    - span
+    - p
+    - button
+    - h1
+    - h2
+    - h3
+    - h4
+    - h5
+    - h6
+    - label
+   ***/
+  export
+  function buildGeneric(type: string, content?: string): HTMLElement {
+    switch(type) {
+      case 'br': {}
+      case 'span': {}
+      case 'p': {}
+      case 'button': {}
+      case 'h1': {}
+      case 'h2': {}
+      case 'h3': {}
+      case 'h4': {}
+      case 'h5': {}
+      case 'h6': {
+        let d = document.createElement(type);
+        d.textContent = content || '';
+        return d;
+      }
+      case 'label': {
+        return buildLabel(content || '');
+      }
+      default: {
+        return document.createElement('div');
+      }
+    }
+  }
+
+  /*** create paginated table from data ***/
   export
   function createSubsection(sec: Widget, clazz: string, data: any) : void {
     let page = data['page'];
@@ -225,6 +287,7 @@ namespace DomUtils {
     sec.node.appendChild(p2);
   }
 
+  /*** delete all children of element helper ***/
   export
   function delete_all_children(element: HTMLElement): void{
     while(element.lastChild){
@@ -232,6 +295,16 @@ namespace DomUtils {
     }
   }
 
+  /*** create config from python json ***/
+  /***
+    allowed:
+      - label
+      - text
+      - file
+      - checkbox
+      - date picker
+      - submit button
+  ***/
   export
   function createConfig(sec: HTMLFormElement | null, clazz: string, data: any) : void {
     if(! sec){
@@ -263,13 +336,10 @@ namespace DomUtils {
           sec.onsubmit = () => {
             let form = new FormData(sec);
             requestFormData(data[k]['url'], form).then((res: RequestResult) => {
-              alert(res);
+              createResponseModal(res.json());
             });
             return false;
           };
-
-          // sec.action = data[k]['url'];
-          // sec.method = 'post';
           break;
         }
         case 'autocomplete': {
@@ -285,5 +355,24 @@ namespace DomUtils {
         }
       }
     }
+  }
+
+  /*** create response modal from python json response to config ***/
+  export
+  function createResponseModal(resp: [{[key: string]: string}]): void {
+    let modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    for(let i=0; i<resp.length; i++){
+      let dat = resp[i];
+      modal.appendChild(buildGeneric(dat['type'], dat['content']))
+    }
+
+    let button = buildGeneric('button', 'OK');
+    button.onclick = () => {
+      document.body.removeChild(modal);
+    }
+    modal.appendChild(button);
+    document.body.appendChild(modal);
   }
 }

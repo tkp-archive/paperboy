@@ -1,3 +1,5 @@
+import json
+import nbformat
 from random import randint, choice
 from six.moves.urllib_parse import urljoin
 from .base import NotebookStorage, JobStorage, ReportStorage
@@ -41,7 +43,7 @@ class NotebookDummyStorage(NotebookStorage):
                     } for i in range(10)
                 ]}
 
-    def detail(self):
+    def list(self):
         return {'page': 1,
                 'pages': 1,
                 'count': 25,
@@ -57,6 +59,20 @@ class NotebookDummyStorage(NotebookStorage):
                         'last modified': '10/14/2018 18:25:31'}
                     } for i in range(25)
                    ]}
+
+    def detail(self):
+        return {}
+
+    def store(self, req, resp):
+        name = req.get_param('name')
+        nb = nbformat.reads(req.get_param('file').file.read(), 4)
+        resp.content_type = 'application/json'
+        resp.body = json.dumps([
+            {'type': 'h2',
+             'content': 'Success!'},
+            {'type': 'p',
+             'content': 'Successfully stored notebook {}'.format(name)}
+        ])
 
 
 class JobDummyStorage(JobStorage):
@@ -113,7 +129,7 @@ class JobDummyStorage(JobStorage):
                          } for i in range(10)
                 ]}
 
-    def detail(self):
+    def list(self):
         return {'page': 1,
                 'pages': 6,
                 'count': 25,
@@ -144,6 +160,16 @@ class JobDummyStorage(JobStorage):
                          } for i in range(25)
                 ]}
 
+    def detail(self):
+        return {}
+
+    def store(self, req, resp):
+        resp.content_type = 'application/json'
+        resp.body = json.dumps([
+            {'type': 'h2',
+             'content': 'Success!'},
+        ])
+
 
 class ReportDummyStorage(ReportStorage):
     def form(self):
@@ -153,19 +179,24 @@ class ReportDummyStorage(ReportStorage):
                      'placeholder': 'Name for Report...'},
             'notebook': {'type': 'autocomplete',
                          'label': 'Notebook',
-                         'url': urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial=')},
+                         'url': urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='),
+                         'required': True},
             'job': {'type': 'autocomplete',
                     'label': 'Job',
-                    'url': urljoin(self.config.apiurl, 'autocomplete?type=jobs&partial=')},
+                    'url': urljoin(self.config.apiurl, 'autocomplete?type=jobs&partial='),
+                    'required': True},
             'type': {'type': 'select',
                      'label': 'Type',
-                     'options': ['Run', 'Publish']},
+                     'options': ['Run', 'Publish'],
+                     'required': True},
             'nbconvert': {'type': 'select',
                           'label': 'NBConvert',
-                          'options': ['Email', 'PDF', 'HTML', 'Markdown', 'RST', 'Script']},
+                          'options': ['Email', 'PDF', 'HTML', 'Markdown', 'RST', 'Script'],
+                          'required': True},
             'code': {'type': 'select',
                      'label': 'Strip Code',
-                     'options': ['Yes', 'No']},
+                     'options': ['Yes', 'No'],
+                     'required': True},
             'submit': {'type': 'submit',
                        'value': 'Create',
                        'url': urljoin(self.config.apiurl, 'reports')}
@@ -182,7 +213,7 @@ class ReportDummyStorage(ReportStorage):
                          } for i in range(10)
                 ]}
 
-    def detail(self):
+    def list(self):
         return {'page': 1,
                 'pages': 141,
                 'count': 25,
@@ -199,3 +230,13 @@ class ReportDummyStorage(ReportStorage):
                              }
                          } for i in range(25)
                 ]}
+
+    def detail(self):
+        return {}
+
+    def store(self, req, resp):
+        resp.content_type = 'application/json'
+        resp.body = json.dumps([
+            {'type': 'h2',
+             'content': 'Success!'},
+        ])

@@ -1,6 +1,30 @@
-class BaseStorage(object):
+from six import with_metaclass
+from abc import abstractmethod, ABCMeta
+
+
+class BaseStorage(with_metaclass(ABCMeta)):
     def __init__(self, config, *args, **kwargs):
         self.config = config
+
+    @abstractmethod
+    def form(self):
+        pass
+
+    @abstractmethod
+    def status(self):
+        pass
+
+    @abstractmethod
+    def list(self):
+        pass
+
+    @abstractmethod
+    def detail(self, notebook=None):
+        pass
+
+    @abstractmethod
+    def store(self, req, resp):
+        pass
 
 
 class NotebookStorage(BaseStorage):

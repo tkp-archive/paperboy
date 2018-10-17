@@ -17,4 +17,7 @@ class JobResource(BaseResource):
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
-        resp.body = json.dumps(self.db.jobs.detail())
+        resp.body = json.dumps(self.db.jobs.list())
+
+    def on_post(self, req, resp):
+        self.db.jobs.store(req, resp)
