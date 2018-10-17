@@ -3,6 +3,7 @@ import os
 import os.path
 import mimetypes
 from functools import lru_cache
+from .base import BaseResource
 
 
 # @lru_cache(20)
@@ -14,7 +15,10 @@ def read(file):
         return fp.read()
 
 
-class StaticResource(object):
+class StaticResource(BaseResource):
+    def __init__(self, *args):
+        super(StaticResource, self).__init__(*args)
+
     def on_get(self, req, resp):
         filetype = mimetypes.guess_type(req.path, strict=True)[0]
         resp.content_type = filetype

@@ -22,6 +22,9 @@
 @import './tabbar.css';
 
 
+/**********/
+/* common */
+/**********/
 body {
   display: flex;
   flex-direction: column;
@@ -36,6 +39,21 @@ body {
   overflow: hidden;
   font-family: Arial;
 }
+
+input {
+  min-height:15px;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--highlight-blue);
+}
+/**********/
+/* /common */
+/**********/
 
 body.dark {
   color: var(--dark-color);

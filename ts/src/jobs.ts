@@ -7,8 +7,11 @@ import {DomUtils} from './utils';
 
 class Scheduler extends Widget {
     static createNode(): HTMLElement {
-        let div = document.createElement('form');
+        let div = document.createElement('div');
         div.classList.add('scheduler');
+        let form = document.createElement('form');
+        form.enctype = 'multipart/form-data';
+        div.appendChild(form);
         return div;
     }
 
@@ -17,7 +20,7 @@ class Scheduler extends Widget {
         this.title.closable = false;
         this.title.label = 'Scheduler';
         request('get', '/api/v1/config?type=jobs').then((res: RequestResult) => {
-            DomUtils.createConfig(this.node, 'jobs', res.json());
+            DomUtils.createConfig(this.node.querySelector('form'), 'jobs', res.json());
         });
     }
 }

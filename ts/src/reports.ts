@@ -7,8 +7,11 @@ import {DomUtils} from './utils';
 
 class Configurator extends Widget {
     static createNode(): HTMLElement {
-        let div = document.createElement('form');
+        let div = document.createElement('div');
         div.classList.add('configurator');
+        let form = document.createElement('form');
+        form.enctype = 'multipart/form-data';
+        div.appendChild(form);
         return div;
     }
 
@@ -17,7 +20,7 @@ class Configurator extends Widget {
         this.title.closable = false;
         this.title.label = 'Configurator';
         request('get', '/api/v1/config?type=reports').then((res: RequestResult) => {
-            DomUtils.createConfig(this.node, 'reports', res.json());
+            DomUtils.createConfig(this.node.querySelector('form'), 'reports', res.json());
         });
     }
 }

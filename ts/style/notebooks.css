@@ -57,18 +57,23 @@ body.light .notebooks .p-DockPanel-widget > table > tr > td {
     padding:15px;
 }
 
-.notebooks .uploader > * {
+.notebooks .uploader form {
+    display: flex;
+    flex-direction: column;
+}
+
+.notebooks .uploader form > * {
     width:50%;
     margin-left: auto;
     margin-right: auto;
     margin-top:10px;
 }
 
-.notebooks .uploader > input[type=submit] {
+.notebooks .uploader form > input[type=submit] {
     width:15%;
 }
 
-.notebooks .uploader > input[type=submit]:hover {
+.notebooks .uploader form > input[type=submit]:hover {
     color: white;
     background-color: var(--highlight-blue);
 }

@@ -3,6 +3,8 @@ div.status {
     flex-direction: column;
     font-size: 10px;
     padding-left: 15px;
+    overflow-y: scroll;
+    min-height:275px;
 }
 
 body.dark div.status {

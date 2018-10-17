@@ -105,3 +105,39 @@ export function request(method: 'get' | 'post',
     }
   });
 }
+
+
+export function requestFormData(url: string,
+  formdata: FormData) {
+  let options: RequestOptions = DEFAULT_REQUEST_OPTIONS;
+  const ignoreCache = options.ignoreCache || DEFAULT_REQUEST_OPTIONS.ignoreCache;
+  const headers = options.headers || DEFAULT_REQUEST_OPTIONS.headers;
+  const timeout = options.timeout || DEFAULT_REQUEST_OPTIONS.timeout;
+
+  return new Promise<RequestResult>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('post', withQuery(url, queryParams));
+  
+    Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
+
+    if (ignoreCache) {
+      xhr.setRequestHeader('Cache-Control', 'no-cache');
+    }
+
+    xhr.timeout = timeout;
+
+    xhr.onload = evt => {
+      resolve(parseXHRResult(xhr));
+    };
+
+    xhr.onerror = evt => {
+      resolve(errorResponse(xhr, 'Failed to make request.'));
+    };
+
+    xhr.ontimeout = evt => {
+      resolve(errorResponse(xhr, 'Request took longer than expected.'));
+    };
+
+    xhr.send(formdata);
+  });
+}

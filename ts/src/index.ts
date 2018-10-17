@@ -24,9 +24,6 @@ import {Jobs} from './jobs';
 import {Reports} from './reports';
 
 import '../ts/style/index.css';
-import "@jpmorganchase/perspective-viewer";
-import "@jpmorganchase/perspective-viewer-hypergrid";
-import "@jpmorganchase/perspective-viewer-highcharts";
 
 const commands = new CommandRegistry();
 

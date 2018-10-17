@@ -1,29 +1,33 @@
 from random import randint, choice
+from six.moves.urllib_parse import urljoin
+from .base import NotebookStorage, JobStorage, ReportStorage
 
 
-class NotebookDummyStorage(object):
-    def config(self):
+class NotebookDummyStorage(NotebookStorage):
+    def form(self):
         return {
-            'File': {'type': 'file',
+            'file': {'type': 'file',
                      'label': 'File',
                      'required': True},
-            'Name': {'type': 'text',
+            'name': {'type': 'text',
                      'label': 'Name',
                      'placeholder': 'Name for Notebook...',
                      'required': True},
-            'Privacy': {'type': 'select',
+            'privacy': {'type': 'select',
                         'label': 'Visibility',
                         'options': ['Private', 'Public'],
                         'required': True},
-            'Requirements': {'type': 'file',
+            'build': {'type': 'label',
+                      'label': 'Build options'},
+            'requirements': {'type': 'file',
                              'label': 'requirements.txt',
                              'required': False},
-            'Dockerfile': {'type': 'file',
+            'dockerfile': {'type': 'file',
                            'label': 'Dockerfile',
                            'required': False},
-            'Submit': {'type': 'submit',
+            'submit': {'type': 'submit',
                        'value': 'Create',
-                       'url': 'test'}
+                       'url': urljoin(self.config.apiurl, 'notebooks')}
         }
 
     def status(self):
@@ -55,21 +59,21 @@ class NotebookDummyStorage(object):
                    ]}
 
 
-class JobDummyStorage(object):
-    def config(self):
+class JobDummyStorage(JobStorage):
+    def form(self):
         return {
-            'Name': {'type': 'text',
+            'name': {'type': 'text',
                      'label': 'Name',
                      'placeholder': 'Name for Job...',
                      'required': True},
-            'Notebook': {'type': 'autocomplete',
+            'notebook': {'type': 'autocomplete',
                          'label': 'Notebook',
-                         'url': '/api/v1/autocomplete?type=notebooks&partial=',
+                         'url': urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='),
                          'required': True},
-            'Starttime': {'type': 'datetime',
+            'starttime': {'type': 'datetime',
                           'label': 'Start Time/Date',
                           'required': True},
-            'Interval': {'type': 'select',
+            'interval': {'type': 'select',
                          'label': 'Interval',
                          'options': ['minutely',
                                      '5 minutes',
@@ -84,9 +88,18 @@ class JobDummyStorage(object):
                                      'weekly',
                                      'monthly'],
                          'required': True},
-            'Submit': {'type': 'submit',
+            'options': {'type': 'label',
+                        'label': 'Report options'},
+            'parameters': {'type': 'file',
+                           'label': 'Papermill params (.jsonl)',
+                           'required': False},
+            'autogen': {'type': 'checkbox',
+                        'label': 'Autogenerate reports',
+                        'value': 'true',
+                        'required': False},
+            'submit': {'type': 'submit',
                        'value': 'Create',
-                       'url': 'test'}
+                       'url': urljoin(self.config.apiurl, 'jobs')}
         }
 
     def status(self):
@@ -123,6 +136,8 @@ class JobDummyStorage(object):
                                                 'daily',
                                                 'weekly',
                                                 'monthly']),
+                            'last run': '',
+                            'status': '✘✔✔',
                             'created': '10/14/2018 04:50:33',
                             'last modified': '10/14/2018 18:25:31',
                          }
@@ -130,24 +145,30 @@ class JobDummyStorage(object):
                 ]}
 
 
-class ReportDummyStorage(object):
-    def config(self):
+class ReportDummyStorage(ReportStorage):
+    def form(self):
         return {
-            'Name': {'type': 'text',
+            'name': {'type': 'text',
                      'label': 'Name',
                      'placeholder': 'Name for Report...'},
-            'Notebook': {'type': 'autocomplete',
+            'notebook': {'type': 'autocomplete',
                          'label': 'Notebook',
-                         'url': '/api/v1/autocomplete?type=notebooks&partial='},
-            'Job': {'type': 'autocomplete',
+                         'url': urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial=')},
+            'job': {'type': 'autocomplete',
                     'label': 'Job',
-                    'url': '/api/v1/autocomplete?type=jobs&partial='},
-            'Type': {'type': 'select',
+                    'url': urljoin(self.config.apiurl, 'autocomplete?type=jobs&partial=')},
+            'type': {'type': 'select',
                      'label': 'Type',
-                     'options': ['Email', 'PDF', 'HTML']},
-            'Submit': {'type': 'submit',
+                     'options': ['Run', 'Publish']},
+            'nbconvert': {'type': 'select',
+                          'label': 'NBConvert',
+                          'options': ['Email', 'PDF', 'HTML', 'Markdown', 'RST', 'Script']},
+            'code': {'type': 'select',
+                     'label': 'Strip Code',
+                     'options': ['Yes', 'No']},
+            'submit': {'type': 'submit',
                        'value': 'Create',
-                       'url': 'test'}
+                       'url': urljoin(self.config.apiurl, 'reports')}
         }
 
     def status(self):

@@ -21,15 +21,18 @@ class Paperboy(Application):
 
     api = Instance(falcon.API)
 
+    baseurl = Unicode(default_value='/')
+    apiurl = Unicode(default_value='/api/v1/')
+
     ########################################
     # FIXME doesnt allow default_value yet #
     # notebook_storage = Instance(NotebookStorage, default_value=NotebookInMemoryStorage())
     # job_storage = Instance(JobStorage, default_value=JobInMemoryStorage())
     # report_storage = Instance(ReportStorage, default_value=ReportInMemoryStorage())
 
-    notebook_storage = NotebookDummyStorage()
-    job_storage = JobDummyStorage()
-    report_storage = ReportDummyStorage()
+    notebook_storage = NotebookDummyStorage
+    job_storage = JobDummyStorage
+    report_storage = ReportDummyStorage
     # END                                  #
     ########################################
 

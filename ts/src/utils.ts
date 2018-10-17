@@ -2,7 +2,7 @@ import {
     Widget
 } from '@phosphor/widgets';
 
-import {request, RequestResult} from './request';
+import {request, requestFormData, RequestResult} from './request';
 
 
 export
@@ -45,9 +45,10 @@ namespace DomUtils {
 
   export
   function buildInput(type?: string,
+                      name?: string,
                       placeholder?: string,
                       value?: string,
-                      required = false
+                      required = false,
                       ){
     if (! type ){
       type = 'text';
@@ -67,21 +68,43 @@ namespace DomUtils {
         if(value){
           input.value = value;
         }
+        if(name){
+          input.name = name;
+        }
         break;
       }
       case 'file': {
         input.type = type;
-        input.name = 'files[]';
+        if(name){
+          input.name = name;
+        }
+        input.multiple = false;
+        break;
+      }
+      case 'checkbox': {
+        input.type = type;
+        if(name){
+          input.name = name;
+        }
+        if(value){
+          input.checked = true;
+        }
         break;
       }
       case 'datetime': {
         input.type = 'datetime-local';
+        if(name){
+          input.name = name;
+        }
         break;        
       }
       case 'submit': {
         input.type = type;
         if(value){
           input.value = value;
+        }
+        if(name){
+          input.name = name;
         }
         break;
       }
@@ -99,8 +122,10 @@ namespace DomUtils {
 
 
   export
-  function buildSelect(list: string[], def?: string): HTMLSelectElement {
+  function buildSelect(name: string, list: string[], def?: string): HTMLSelectElement {
     let select = document.createElement('select');
+    select.name = name;
+
     select.appendChild(default_none);
     for(let i=0; i<list.length; i++) {
       let x = list[i];
@@ -128,6 +153,7 @@ namespace DomUtils {
 
     search.setAttribute('list', name + '-datalist');
     search.placeholder = 'Search...';
+    search.name = name;
 
     let datalist = document.createElement('datalist');
     datalist.id = name + '-datalist';
@@ -207,7 +233,10 @@ namespace DomUtils {
   }
 
   export
-  function createConfig(sec: HTMLElement, clazz: string, data: any) : void {
+  function createConfig(sec: HTMLFormElement | null, clazz: string, data: any) : void {
+    if(! sec){
+      return;
+    }
     for(let k of Object.keys(data)){
       let type = data[k]['type'];
 
@@ -216,12 +245,31 @@ namespace DomUtils {
       }
 
       switch(type){
+        case 'label': {
+          //no more
+          break;
+        }
         case 'text': {}
         case 'file': {}
-        case 'datetime': {}
-        case 'submit': {
-          let input = buildInput(type, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+        case 'checkbox': {}
+        case 'datetime': {
+          let input = buildInput(type, k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
           sec.appendChild(input);
+          break;
+        }
+        case 'submit': {
+          let input = buildInput(type, k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+          sec.appendChild(input);
+          sec.onsubmit = () => {
+            let form = new FormData(sec);
+            requestFormData(data[k]['url'], form).then((res: RequestResult) => {
+              alert(res);
+            });
+            return false;
+          };
+
+          // sec.action = data[k]['url'];
+          // sec.method = 'post';
           break;
         }
         case 'autocomplete': {
@@ -231,7 +279,7 @@ namespace DomUtils {
           break;
         }
         case 'select': {
-          let select = buildSelect(data[k]['options']);
+          let select = buildSelect(k, data[k]['options']);
           sec.appendChild(select);
           break;
         }

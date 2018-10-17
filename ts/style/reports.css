@@ -57,18 +57,23 @@ body.light .reports .p-DockPanel-widget > table > tr > td {
     padding:15px;
 }
 
-.reports .configurator > * {
+.reports .configurator form {
+    display: flex;
+    flex-direction: column;
+}
+
+.reports .configurator form > * {
     width:50%;
     margin-top:10px;
     margin-left: auto;
     margin-right: auto;
 }
 
-.reports .configurator > input[type=submit] {
+.reports .configurator form > input[type=submit] {
     width:15%;
 }
 
-.reports .configurator > input[type=submit]:hover {
+.reports .configurator form > input[type=submit]:hover {
     color: white;
     background-color: var(--highlight-blue);
 }

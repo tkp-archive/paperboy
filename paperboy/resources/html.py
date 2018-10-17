@@ -4,6 +4,7 @@ import os.path
 import mimetypes
 import jinja2
 from functools import lru_cache
+from .base import BaseResource
 
 
 # @lru_cache(20)
@@ -15,7 +16,10 @@ def read(file):
         return fp.read()
 
 
-class HTMLResource(object):
+class HTMLResource(BaseResource):
+    def __init__(self, *args):
+        super(HTMLResource, self).__init__(*args)
+
     def on_get(self, req, resp):
         if req.path == '' or req.path == '/':
             path = 'index.html'
@@ -27,7 +31,7 @@ class HTMLResource(object):
 
         file = read(path)
         if file:
-            tpl = jinja2.Template(file).render()
+            tpl = jinja2.Template(file).render(baseurl=self.config.baseurl)
             resp.body = tpl
         else:
             resp.status = falcon.HTTP_404

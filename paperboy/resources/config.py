@@ -13,10 +13,10 @@ class ConfigResource(BaseResource):
         if type is None:
             resp.body = json.dumps(self.config.to_dict())
         elif type == 'notebooks':
-            resp.body = json.dumps(self.db.notebooks.config())
+            resp.body = json.dumps(self.db.notebooks.form())
         elif type == 'jobs':
-            resp.body = json.dumps(self.db.jobs.config())
+            resp.body = json.dumps(self.db.jobs.form())
         elif type == 'reports':
-            resp.body = json.dumps(self.db.reports.config())
+            resp.body = json.dumps(self.db.reports.form())
         else:
             resp.status = falcon.HTTP_404

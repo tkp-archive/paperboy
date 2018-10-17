@@ -13,7 +13,7 @@
 
 div.loader {
   top: 45px;
-  z-index: 1000;
+  z-index: 9;
   position: absolute;
   background-color: rgba(0, 0, 0, .9);
   height:100%;

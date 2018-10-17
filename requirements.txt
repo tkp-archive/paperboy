@@ -1,4 +1,7 @@
 falcon
+falcon-cors
+falcon-jsonify
+falcon-multipart
 gunicorn
 jinja2
 traitlets

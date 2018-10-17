@@ -9,7 +9,7 @@
     text-align: left;
 }
 
-.jobs .p-DockPanel-widget > p {
+.jobs .p-DockPanel-widget form > p {
     height:2.5%;
     margin: auto;
     margin-top: 0;
@@ -57,18 +57,23 @@ body.light .jobs .p-DockPanel-widget > table > tr > td {
     padding:15px;
 }
 
-.jobs .scheduler > * {
+.jobs .scheduler form {
+    display: flex;
+    flex-direction: column;
+}
+
+.jobs .scheduler form > * {
     width:50%;
     margin-top:10px;
     margin-left: auto;
     margin-right: auto;
 }
 
-.jobs .scheduler > input[type=submit] {
+.jobs .scheduler form > input[type=submit] {
     width:15%;
 }
 
-.jobs .scheduler > input[type=submit]:hover {
+.jobs .scheduler form > input[type=submit]:hover {
     color: white;
     background-color: var(--highlight-blue);
 }
