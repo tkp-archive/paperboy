@@ -1,4 +1,5 @@
 falcon
+falcon-auth
 falcon-cors
 falcon-jsonify
 falcon-multipart
