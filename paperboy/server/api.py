@@ -2,7 +2,7 @@ import falcon
 from six.moves.urllib_parse import urljoin
 from ..resources import StaticResource, HTMLResource, StatusResource, AutocompleteResource, ConfigResource
 from ..resources import NotebookResource, JobResource, ReportResource
-from ..resources import NotebookQuickBrowserResource, JobQuickBrowserResource, ReportQuickBrowserResource
+from ..resources import NotebookDetailResource, JobDetailResource, ReportDetailResource
 from ..middleware import CORSMiddleware, MultipartMiddleware, JSONMiddleware, AuthMiddleware, auth_backend
 from ..storage import StorageEngine, StorageError
 
@@ -21,6 +21,11 @@ def FalconAPI(config):
     db = StorageEngine(config.notebook_storage(config), config.job_storage(config), config.report_storage(config))
     api.add_error_handler(StorageError, StorageError.handle)
 
+    #############
+    # Scheduler #
+    #############
+    scheduler = config.scheduler(config)
+
     ####################
     # Static resources #
     ####################
@@ -30,43 +35,47 @@ def FalconAPI(config):
     api.add_route('/index.html', html)
     api.add_sink(static.on_get, prefix='/static')
 
+    kwargs = {'config': config,
+              'db': db,
+              'scheduler': scheduler}
+
     ##########
     # Routes #
     ##########
     # Status
-    status = StatusResource(config, db)
+    status = StatusResource(**kwargs)
     api.add_route(config.apiurl + 'status', status)
 
     # Autocomplete
-    autocomplete = AutocompleteResource(config, db)
+    autocomplete = AutocompleteResource(**kwargs)
     api.add_route(urljoin(config.apiurl, 'autocomplete'), autocomplete)
 
     # Config
-    configresource = ConfigResource(config, db)
+    configresource = ConfigResource(**kwargs)
     api.add_route(urljoin(config.apiurl, 'config'), configresource)
 
     # Notebooks
-    notebooks = NotebookResource(config, db)
+    notebooks = NotebookResource(**kwargs)
     api.add_route(urljoin(config.apiurl, 'notebooks'), notebooks)
 
-    notebooksqb = NotebookQuickBrowserResource(config, db)
-    api.add_route(urljoin(config.apiurl, 'notebooksqb'), notebooksqb)
+    notebooksdetail = NotebookDetailResource(**kwargs)
+    api.add_route(urljoin(config.apiurl, 'notebooks/details'), notebooksdetail)
 
     # Jobs
-    jobs = JobResource(config, db)
+    jobs = JobResource(**kwargs)
     api.add_route(urljoin(config.apiurl, 'jobs'), jobs)
 
-    jobsqb = JobQuickBrowserResource(config, db)
-    api.add_route(urljoin(config.apiurl, 'jobsqb'), jobsqb)
+    jobdetail = JobDetailResource(**kwargs)
+    api.add_route(urljoin(config.apiurl, 'jobs/details'), jobdetail)
 
     # Reports
-    reports = ReportResource(config, db)
+    reports = ReportResource(**kwargs)
     api.add_route(urljoin(config.apiurl, 'reports'), reports)
 
-    reportsqb = ReportQuickBrowserResource(config, db)
-    api.add_route(urljoin(config.apiurl, 'reportsqb'), reportsqb)
+    reportdetail = ReportDetailResource(**kwargs)
+    api.add_route(urljoin(config.apiurl, 'reports/details'), reportdetail)
 
     # Extra handlers
     for route, handler in config.extra_handlers:
-        api.add_route(route, handler)
+        api.add_route(route, handler(**kwargs))
     return api

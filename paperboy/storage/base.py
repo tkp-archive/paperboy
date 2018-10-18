@@ -11,15 +11,11 @@ class BaseStorage(with_metaclass(ABCMeta)):
         pass
 
     @abstractmethod
-    def status(self):
-        pass
-
-    @abstractmethod
     def list(self):
         pass
 
     @abstractmethod
-    def detail(self, notebook=None):
+    def detail(self, req, resp):
         pass
 
     @abstractmethod

@@ -2,18 +2,9 @@ import json
 from .base import BaseResource
 
 
-class JobQuickBrowserResource(BaseResource):
-    def __init__(self, *args):
-        super(JobQuickBrowserResource, self).__init__(*args)
-
-    def on_get(self, req, resp):
-        resp.content_type = 'application/json'
-        resp.body = json.dumps(self.db.jobs.status())
-
-
 class JobResource(BaseResource):
-    def __init__(self, *args):
-        super(JobResource, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(JobResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
@@ -21,3 +12,11 @@ class JobResource(BaseResource):
 
     def on_post(self, req, resp):
         self.db.jobs.store(req, resp)
+
+
+class JobDetailResource(BaseResource):
+    def __init__(self, *args, **kwargs):
+        super(JobDetailResource, self).__init__(*args, **kwargs)
+
+    def on_get(self, req, resp):
+        self.db.jobs.detail(req, resp)

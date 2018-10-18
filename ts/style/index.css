@@ -9,17 +9,10 @@
 @import '~@phosphor/dragdrop/style/index.css';
 @import '~@phosphor/widgets/style/index.css';
 @import './browser.css';
-@import './commandpalette.css';
 @import './dockpanel.css';
-@import './jobs.css';
 @import './header.css';
-@import './loader.css';
 @import './menu.css';
-@import './menubar.css';
 @import './modal.css';
-@import './notebooks.css';
-@import './quickbrowser.css';
-@import './reports.css';
 @import './status.css';
 @import './tabbar.css';
 
@@ -166,3 +159,110 @@ body.dark tr:hover > td {
 body.light tr:hover > td {
   background-color: var(--light-bg-color2)
 }
+
+
+/****** Tables ******/
+.primary .p-DockPanel-widget {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.primary .p-DockPanel-widget > table {
+    height:95%;
+    text-align: left;
+}
+
+.primary .p-DockPanel-widget form > p {
+    height:2.5%;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+body.dark .primary .p-DockPanel-widget > p span.page:hover {
+    color: white;
+}
+
+body.light .primary .p-DockPanel-widget > p span.page:hover {
+    color: #999;
+}
+
+.primary .p-DockPanel-widget > p span.page-active {
+    color: var(--highlight-orange);
+}
+
+
+.primary .p-DockPanel-widget > table > tr > th {
+    padding: 5px;
+}
+
+body.dark .primary .p-DockPanel-widget > table > tr > th {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.light .primary .p-DockPanel-widget > table > tr > th {
+    border-bottom: 1px solid var(--light-border);
+}
+
+.primary .p-DockPanel-widget > table > tr > td {
+    padding: 5px;
+}
+
+body.dark .primary .p-DockPanel-widget > table > tr > td {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.light .primary .p-DockPanel-widget > table > tr > td {
+    border-bottom: 1px solid var(--light-border);
+}
+/****** ******/
+
+
+/****** Forms ******/
+.p-DockPanel-widget > form {
+    padding: 15px;
+}
+
+.p-DockPanel-widget > form {
+    display: flex;
+    flex-direction: column;
+}
+
+.p-DockPanel-widget > form > * {
+    width: 50%;
+    min-height:20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:10px;
+}
+
+.p-DockPanel-widget > form > textarea {
+  min-height: 40px;
+}
+
+.p-DockPanel-widget > form > input[type=submit] {
+    width: 15%;
+}
+
+.p-DockPanel-widget > form > input[type=checkbox] {
+    margin-left:10px;
+}
+
+.p-DockPanel-widget > form > input[type=submit]:hover {
+    color: white;
+    background-color: var(--highlight-blue);
+}
+
+.notebooks .uploader form {
+    min-height: 225px;
+}
+
+.jobs .scheduler form {
+    min-height: 800px;
+}
+
+.reports .configurator form {
+    min-height: 425px;
+}
+/****** ******/

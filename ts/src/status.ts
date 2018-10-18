@@ -1,12 +1,73 @@
 import {
-    Widget
+    Widget, TabPanel, BoxPanel
 } from '@phosphor/widgets';
 
 import {request, RequestResult} from './request';
-import {toProperCase} from './utils';
+import {toProperCase, apiurl, DomUtils} from './utils';
+
 
 export
-class Status extends Widget {
+class StatusBrowser extends TabPanel {
+    constructor(){
+        super();
+        this.nbs = new BoxPanel();
+        this.nbs.title.label = 'Notebooks';
+        this.nbs.node.classList.add('statusbrowser-container');
+
+        this.jbs = new BoxPanel();
+        this.jbs.title.label = 'Jobs';
+        this.jbs.node.classList.add('statusbrowser-container');
+
+        this.rps = new BoxPanel();
+        this.rps.title.label = 'Reports';
+        this.rps.node.classList.add('statusbrowser-container');
+
+        this.addWidget(this.nbs);
+        this.addWidget(this.jbs);
+        this.addWidget(this.rps);
+
+        this.setFlag(Widget.Flag.DisallowLayout);
+        this.title.closable = false;
+        this.node.id = 'statusbrowser';
+        this.node.classList.add('statusbrowser');
+
+        request('get', apiurl() + 'status?type=notebooks').then((res: RequestResult) => {
+            DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
+        });
+        request('get', apiurl() + 'status?type=jobs').then((res: RequestResult) => {
+            DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
+        });
+        request('get', apiurl() + 'status?type=reports').then((res: RequestResult) => {
+            DomUtils.createStatusSection(this.rps, 'reports', res.json());
+        });
+
+        setInterval(() => {
+            request('get', apiurl() + 'status?type=notebooks').then((res: RequestResult) => {
+                DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
+            });
+        }, 60000);
+
+        setInterval(() => {
+            request('get', apiurl() + 'status?type=jobs').then((res: RequestResult) => {
+                DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
+            });
+        }, 60000);
+
+        setInterval(() => {
+            request('get', apiurl() + 'status?type=reports').then((res: RequestResult) => {
+                DomUtils.createStatusSection(this.rps, 'reports', res.json());
+            });
+        }, 60000);
+    }
+
+    private nbs: BoxPanel;
+    private jbs: BoxPanel;
+    private rps: BoxPanel;
+}
+
+
+export
+class StatusOverview extends Widget {
     static createNode(): HTMLElement {
         let node = document.createElement('div');
         node.classList.add('status');
@@ -61,9 +122,9 @@ class Status extends Widget {
     private populateTop(data: any): void {
         this.top.classList.add('status-container');
 
-        let nb = Status.createSubtitle('notebooks', data);
-        let jb = Status.createSubtitle('jobs', data);
-        let rp = Status.createSubtitle('reports', data);
+        let nb = StatusOverview.createSubtitle('notebooks', data);
+        let jb = StatusOverview.createSubtitle('jobs', data);
+        let rp = StatusOverview.createSubtitle('reports', data);
 
         this.top.appendChild(nb);
         this.top.appendChild(jb);
@@ -71,7 +132,7 @@ class Status extends Widget {
     }
 
     constructor(){
-        super({ node: Status.createNode() });
+        super({ node: StatusOverview.createNode() });
         this.setFlag(Widget.Flag.DisallowLayout);
         this.title.closable = false;
         this.node.id = 'status';
@@ -81,12 +142,12 @@ class Status extends Widget {
         this.node.appendChild(this.jbs);
         this.node.appendChild(this.rps);
 
-        request('get', '/api/v1/status').then((res: RequestResult) => {
+        request('get', apiurl() + 'status').then((res: RequestResult) => {
             let data = res.json()
             this.populateTop(data);
-            Status.createSubsection(this.nbs, 'notebooks', 'Notebooks', data);
-            Status.createSubsection(this.jbs, 'jobs', 'Jobs', data);
-            Status.createSubsection(this.rps, 'reports', 'Reports', data);
+            StatusOverview.createSubsection(this.nbs, 'notebooks', 'Notebooks', data);
+            StatusOverview.createSubsection(this.jbs, 'jobs', 'Jobs', data);
+            StatusOverview.createSubsection(this.rps, 'reports', 'Reports', data);
         });
     }
 
@@ -94,4 +155,15 @@ class Status extends Widget {
     private nbs = document.createElement('div');
     private jbs = document.createElement('div');
     private rps = document.createElement('div');
+}
+
+
+
+export
+class Status extends BoxPanel {
+    constructor(){
+        super({ direction: 'top-to-bottom', spacing: 0 });
+        this.addWidget(new StatusOverview());
+        this.addWidget(new StatusBrowser());
+    }
 }

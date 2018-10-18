@@ -4,8 +4,8 @@ from .base import BaseResource
 
 
 class ConfigResource(BaseResource):
-    def __init__(self, *args):
-        super(ConfigResource, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(ConfigResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'

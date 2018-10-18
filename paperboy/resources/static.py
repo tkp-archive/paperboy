@@ -16,8 +16,8 @@ def read(file):
 
 
 class StaticResource(BaseResource):
-    def __init__(self, *args):
-        super(StaticResource, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(StaticResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
         filetype = mimetypes.guess_type(req.path, strict=True)[0]

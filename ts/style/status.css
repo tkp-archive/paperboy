@@ -70,3 +70,82 @@ body.light div.status span.reports,
 body.dark div.status span.reports {
     color: var(--highlight-teal);
 }
+
+
+div.statusbrowser {
+    font-size: 10px;
+}
+div.statusbrowser ul li {
+    flex: 1;
+}
+
+body.dark div.statusbrowser .p-TabBar-content {
+  border-right: 1px solid var(--dark-border);
+}
+
+body.light div.statusbrowser .p-TabBar-content {
+  border-right: 1px solid var(--light-border);
+}
+
+
+body.dark div.statusbrowser .p-StackedPanel {
+    border-right: 1px solid var(--dark-border);
+}
+
+body.light div.statusbrowser .p-StackedPanel {
+    border-right: 1px solid var(--light-border);
+}
+
+div.statusbrowser-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+div.statusbrowser-container table {
+    height:90%;
+    text-align: left;
+}
+
+div.statusbrowser-container table > tr > th {
+    padding: 5px;
+}
+
+body.dark div.statusbrowser-container table > tr > th {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.light div.statusbrowser-container table > tr > th {
+    border-bottom: 1px solid var(--light-border);
+}
+
+div.statusbrowser-container table > tr > td {
+    padding: 5px;
+}
+
+body.dark div.statusbrowser-container table > tr > td {
+    border-bottom: 1px solid var(--dark-border);
+}
+
+body.light div.statusbrowser-container table > tr > td {
+    border-bottom: 1px solid var(--light-border);
+}
+
+div.statusbrowser-container p {
+    height:5%;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+body.dark div.statusbrowser-container p span.page:hover {
+    color: white;
+}
+
+body.light div.statusbrowser-container p span.page:hover {
+    color: #999;
+}
+
+div.statusbrowser-container p span.page-active {
+    color: var(--highlight-orange);
+}

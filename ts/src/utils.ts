@@ -3,7 +3,17 @@ import {
 } from '@phosphor/widgets';
 
 import {request, requestFormData, RequestResult} from './request';
+import {PrimaryTab} from './common';
 
+export
+function baseurl(){
+  return (document as any).baseurl || '/';
+}
+
+export
+function apiurl(){
+  return (document as any).apiurl || '/api/v1/';
+}
 
 /*** Title Case formatter ***/
 export
@@ -21,7 +31,7 @@ function autocomplete(path: string, value: string, autocomplete: HTMLDataListEle
 
             for(let val of jsn){
                 let option = document.createElement('option');
-                option.value = val['name'];
+                option.value = val['id'];
                 option.innerText = val['id'] + ' - ' + val['name'];
                 autocomplete.appendChild(option);
             }
@@ -131,9 +141,22 @@ namespace DomUtils {
 
   /*** build a textarea ***/
   export 
-  function buildTextarea(text: string): HTMLTextAreaElement {
+  function buildTextarea(name?: string,
+                         placeholder?: string,
+                         value?: string,
+                         required = false,
+                      ){
     let area = document.createElement('textarea');
-    area.placeholder = text;
+    if(name){
+      area.name = name;
+    }
+    if(placeholder){
+      area.placeholder = placeholder;
+    }
+    if(value){
+      area.value = value;
+    }
+    area.required = required;
     area.style.marginBottom = '15px';
     return area;
   }
@@ -240,7 +263,42 @@ namespace DomUtils {
 
   /*** create paginated table from data ***/
   export
-  function createSubsection(sec: Widget, clazz: string, data: any) : void {
+  function createStatusSection(sec: Widget, clazz: string, data: any) : void {
+    let table = document.createElement('table');
+    let headerrow = document.createElement('tr');
+    let name = document.createElement('th');
+    name.textContent = 'Name';
+    headerrow.appendChild(name);
+    table.appendChild(headerrow);
+
+    let first = true;
+    for(let i=0; i<data.length; i++){
+      let dat = data[i];
+      let row = document.createElement('tr');
+      let v = document.createElement('td');
+      v.textContent = dat['name'];
+      row.appendChild(v);
+
+      for(let k of Object.keys(dat['meta'])){
+        if(first){
+          let name = document.createElement('th');
+          name.textContent = toProperCase(k);
+          headerrow.appendChild(name);
+        }
+        let v = document.createElement('td');
+        v.textContent = dat['meta'][k];
+        row.appendChild(v);
+      }
+      table.appendChild(row);
+      first = false;
+    }
+    sec.node.appendChild(table);
+  }
+
+  /*** create paginated table from data ***/
+  export
+  function createPrimarySection(widget: PrimaryTab, clazz: string, data: any) : void {
+    let sec = widget.mine;
     let page = data['page'];
     let pages = data['pages'];
     let count = data['count'];
@@ -260,7 +318,9 @@ namespace DomUtils {
     let first = true;
     for(let nb of notebooks){
       let row = document.createElement('tr');
-
+      row.ondblclick = () => {
+        widget.detailView(nb['id']);
+      };
       let v = document.createElement('td');
       v.textContent = nb['name'];
       row.appendChild(v);
@@ -299,6 +359,7 @@ namespace DomUtils {
     sec.node.appendChild(p2);
   }
 
+
   /*** delete all children of element helper ***/
   export
   function delete_all_children(element: HTMLElement): void{
@@ -312,6 +373,7 @@ namespace DomUtils {
     allowed:
       - label
       - text
+      - textarea
       - file
       - checkbox
       - date picker
@@ -339,6 +401,11 @@ namespace DomUtils {
         case 'checkbox': {}
         case 'datetime': {
           let input = buildInput(type, k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+          sec.appendChild(input);
+          break;
+        }
+        case 'textarea': {
+          let input = buildTextarea(k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
           sec.appendChild(input);
           break;
         }

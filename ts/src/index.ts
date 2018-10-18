@@ -12,12 +12,11 @@ import {
 } from '@phosphor/commands';
 
 import {
-  TabPanel, BoxPanel,  SplitPanel, MenuBar, Widget, Menu, CommandPalette
+  TabPanel,  SplitPanel, MenuBar, Widget, Menu, CommandPalette
 } from '@phosphor/widgets';
 
 import {Header} from './header';
 import {Status} from './status';
-import {QuickBrowser} from './quickbrowser';
 import {Browser} from './browser';
 import {Notebooks} from './notebooks';
 import {Jobs} from './jobs';
@@ -83,10 +82,7 @@ function main(): void {
   let home = new SplitPanel();
   home.title.label = "Home";
 
-  let overview = new BoxPanel({ direction: 'top-to-bottom', spacing: 0 });
-  overview.title.label = "Overview"
-  overview.addWidget(new Status());
-  overview.addWidget(new QuickBrowser());
+  let overview = new Status();
 
   home.addWidget(overview);
   home.addWidget(new Browser());

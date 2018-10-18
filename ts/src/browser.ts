@@ -2,8 +2,8 @@ import {
     SplitPanel, BoxPanel, DockPanel
 } from '@phosphor/widgets';
 
-import {DomUtils, autocomplete} from './utils';
-import {NotebookDetail} from './notebooks';
+import {DomUtils, autocomplete, apiurl} from './utils';
+import {PrimaryDetail} from './common';
 
 export
 class Browser extends SplitPanel {
@@ -39,7 +39,7 @@ class Browser extends SplitPanel {
             }
 
             if (e.keyCode !== 13) {
-                autocomplete('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
+                autocomplete(apiurl() + 'autocomplete?partial=' + search.value, search.value, datalist);
             }
 
             last = search.value;
@@ -51,10 +51,10 @@ class Browser extends SplitPanel {
             if (last == search.value){
                 // duplicate
             } else {
-                autocomplete('/api/v1/autocomplete?partial=' + search.value, search.value, datalist);
+                autocomplete(apiurl() + 'autocomplete?partial=' + search.value, search.value, datalist);
                 last = search.value;
             }
-            resultspanel.addWidget(new NotebookDetail(search.value));
+            resultspanel.addWidget(new PrimaryDetail('notebooks', search.value));
         });
 
         holder.appendChild(search);

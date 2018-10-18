@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Paperboy</title>
-  <link href="{{baseurl}}static/css/font-awesome.min.css" rel="stylesheet">
-  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-  <script type="text/javascript" src="{{baseurl}}static/js/bundle.js"></script>
+<link rel="stylesheet" type="text/css" href="{{baseurl}}static/fonts/fonts.css">
+<link href="{{baseurl}}static/css/font-awesome.min.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+<script type="text/javascript" src="{{baseurl}}static/js/bundle.js"></script>
+<script>
+    document.baseurl = '{{ baseurl }}';
+    document.apiurl = '{{ apiurl }}';
+</script>
 </head>
 <body>
-    <div class="footer"><span>Copyright paperboy 2018</span></div>
+<div class="footer"><span>Copyright paperboy 2018</span></div>
 </body>
 </html>

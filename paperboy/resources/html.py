@@ -17,8 +17,8 @@ def read(file):
 
 
 class HTMLResource(BaseResource):
-    def __init__(self, *args):
-        super(HTMLResource, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(HTMLResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
         if req.path == '' or req.path == '/':
@@ -31,7 +31,8 @@ class HTMLResource(BaseResource):
 
         file = read(path)
         if file:
-            tpl = jinja2.Template(file).render(baseurl=self.config.baseurl)
+            tpl = jinja2.Template(file).render(baseurl=self.config.baseurl,
+                                               apiurl=self.config.apiurl)
             resp.body = tpl
         else:
             resp.status = falcon.HTTP_404
