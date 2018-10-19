@@ -83,6 +83,9 @@ class NotebookDummyStorage(NotebookStorage):
             'last modified': {'type': 'datetime',
                               'value': '10/14/2018 18:25:31',
                               'readonly': True},
+            'save': {'type': 'submit',
+                     'value': 'Save',
+                     'url': urljoin(self.config.apiurl, 'notebooks')}
         })
 
     def store(self, req, resp):
@@ -224,6 +227,9 @@ class JobDummyStorage(JobStorage):
             'last modified': {'type': 'datetime',
                               'value': '10/14/2018 18:25:31',
                               'readonly': True},
+            'save': {'type': 'submit',
+                     'value': 'Save',
+                     'url': urljoin(self.config.apiurl, 'notebooks')}
         })
 
     def store(self, req, resp):
@@ -335,6 +341,9 @@ class ReportDummyStorage(ReportStorage):
             'run date': {'type': 'datetime',
                          'value': '10/14/2018 18:25:31',
                          'readonly': True},
+            'save': {'type': 'submit',
+                     'value': 'Save',
+                     'url': urljoin(self.config.apiurl, 'notebooks')}
         })
 
     def store(self, req, resp):

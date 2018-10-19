@@ -54,7 +54,7 @@ class PrimaryDetail extends Widget {
                 let row = document.createElement('tr');
                 let td1 = document.createElement('td');
                 let td2 = document.createElement('td');
-                td1.textContent = k;
+                td1.textContent = toProperCase(k);
 
                 let conts;
                 if(dat[k]['type'] == 'select'){

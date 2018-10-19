@@ -160,6 +160,33 @@ body.light tr:hover > td {
   background-color: var(--light-bg-color2)
 }
 
+div.details > table {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+}
+
+div.details > table > tr > td:nth-child(2) {
+  background-color: transparent !important;
+}
+
+div.details > table > tr > td > * {
+  min-width: 200px;
+}
+
+div.details > table > tr > td > input[type=submit] {
+  min-width: 200px;
+}
+
+div.details > table > tr > td > input[type=submit]:hover {
+  background-color: var(--highlight-blue);
+}
+
+div.details > table > tr > td {
+  border: none;
+  border-bottom: none !important;
+}
 
 /****** Tables ******/
 .primary .p-DockPanel-widget {
@@ -216,6 +243,7 @@ body.dark .primary .p-DockPanel-widget > table > tr > td {
 body.light .primary .p-DockPanel-widget > table > tr > td {
     border-bottom: 1px solid var(--light-border);
 }
+
 /****** ******/
 
 
@@ -255,7 +283,7 @@ body.light .primary .p-DockPanel-widget > table > tr > td {
 }
 
 .notebooks .uploader form {
-    min-height: 225px;
+    min-height: 475px;
 }
 
 .jobs .scheduler form {
@@ -263,6 +291,6 @@ body.light .primary .p-DockPanel-widget > table > tr > td {
 }
 
 .reports .configurator form {
-    min-height: 425px;
+    min-height: 600px;
 }
 /****** ******/
