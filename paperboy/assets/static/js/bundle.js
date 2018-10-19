@@ -10783,14 +10783,21 @@ class PrimaryDetail extends widgets_1.Widget {
         this.title.closable = true;
         request_1.request('get', utils_1.apiurl() + this.type + '/details?id=' + id).then((res) => {
             let dat = res.json();
-            this.title.label = dat['name'];
+            this.title.label = dat['name']['value'];
             let table = document.createElement('table');
             for (let k of Object.keys(dat)) {
                 let row = document.createElement('tr');
                 let td1 = document.createElement('td');
                 let td2 = document.createElement('td');
                 td1.textContent = k;
-                td2.textContent = dat[k];
+                let conts;
+                if (dat[k]['type'] == 'select') {
+                    conts = utils_1.DomUtils.buildSelect(dat[k]['name'], dat[k]['options'], '', dat[k]['required'], dat[k]['readonly']);
+                }
+                else {
+                    conts = utils_1.DomUtils.buildInput(dat[k]['type'], dat[k]['name'], dat[k]['placeholder'], dat[k]['value'], dat[k]['required'], dat[k]['readonly']);
+                }
+                td2.appendChild(conts);
                 row.appendChild(td1);
                 row.appendChild(td2);
                 table.appendChild(row);
@@ -10816,8 +10823,9 @@ class PrimaryTab extends widgets_1.DockPanel {
         request_1.request('get', utils_1.apiurl() + type).then((res) => {
             utils_1.DomUtils.createPrimarySection(this, type, res.json());
         });
+        this.control = this.controlView();
         this.addWidget(this.mine);
-        this.addWidget(this.controlView(), { mode: 'tab-after', ref: this.mine });
+        this.addWidget(this.control, { mode: 'tab-after', ref: this.mine });
     }
     controlView() {
         return new PrimaryForm(this.clz, this.type);
@@ -13958,13 +13966,17 @@ var DomUtils;
         - date picker
         - submit button
      ***/
-    function buildInput(type, name, placeholder, value, required = false) {
+    function buildInput(type, name, placeholder, value, required = false, readonly = false) {
         if (!type) {
             type = 'text';
         }
         let input = document.createElement('input');
         if (required) {
             input.required = true;
+        }
+        if (readonly) {
+            input.readOnly = true;
+            input.disabled = true;
         }
         switch (type) {
             case 'text': {
@@ -14039,9 +14051,15 @@ var DomUtils;
     }
     DomUtils.buildTextarea = buildTextarea;
     /*** build a select ***/
-    function buildSelect(name, list, def) {
+    function buildSelect(name, list, def, required = false, readonly = false) {
         let select = document.createElement('select');
         select.name = name;
+        if (required) {
+            select.required = required;
+        }
+        if (readonly) {
+            select.disabled = true;
+        }
         select.appendChild(default_none);
         for (let i = 0; i < list.length; i++) {
             let x = list[i];
@@ -27174,16 +27192,19 @@ class StatusBrowser extends widgets_1.TabPanel {
         });
         setInterval(() => {
             request_1.request('get', utils_1.apiurl() + 'status?type=notebooks').then((res) => {
+                utils_1.DomUtils.delete_all_children(this.nbs.node);
                 utils_1.DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
             });
         }, 60000);
         setInterval(() => {
             request_1.request('get', utils_1.apiurl() + 'status?type=jobs').then((res) => {
+                utils_1.DomUtils.delete_all_children(this.jbs.node);
                 utils_1.DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
             });
         }, 60000);
         setInterval(() => {
             request_1.request('get', utils_1.apiurl() + 'status?type=reports').then((res) => {
+                utils_1.DomUtils.delete_all_children(this.rps.node);
                 utils_1.DomUtils.createStatusSection(this.rps, 'reports', res.json());
             });
         }, 60000);
@@ -27263,9 +27284,9 @@ class StatusOverview extends widgets_1.Widget {
     }
 }
 exports.StatusOverview = StatusOverview;
-class Status extends widgets_1.BoxPanel {
+class Status extends widgets_1.SplitPanel {
     constructor() {
-        super({ direction: 'top-to-bottom', spacing: 0 });
+        super({ orientation: 'vertical' });
         this.addWidget(new StatusOverview());
         this.addWidget(new StatusBrowser());
     }
@@ -40314,7 +40335,7 @@ exports.i(__webpack_require__(194), "");
 exports.i(__webpack_require__(195), "");
 
 // module
-exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\ninput {\n  min-height:15px;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}\n\n\n/****** Tables ******/\n.primary .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.primary .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.primary .p-DockPanel-widget form > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .primary .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .primary .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.primary .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.primary .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .primary .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .primary .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.primary .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .primary .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .primary .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n/****** ******/\n\n\n/****** Forms ******/\n.p-DockPanel-widget > form {\n    padding: 15px;\n}\n\n.p-DockPanel-widget > form {\n    display: flex;\n    flex-direction: column;\n}\n\n.p-DockPanel-widget > form > * {\n    width: 50%;\n    min-height:20px;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top:10px;\n}\n\n.p-DockPanel-widget > form > textarea {\n  min-height: 40px;\n}\n\n.p-DockPanel-widget > form > input[type=submit] {\n    width: 15%;\n}\n\n.p-DockPanel-widget > form > input[type=checkbox] {\n    margin-left:10px;\n}\n\n.p-DockPanel-widget > form > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n.notebooks .uploader form {\n    min-height: 225px;\n}\n\n.jobs .scheduler form {\n    min-height: 800px;\n}\n\n.reports .configurator form {\n    min-height: 425px;\n}\n/****** ******/\n", ""]);
+exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\ninput {\n  min-height:15px;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}\n\n\n/****** Tables ******/\n.primary .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.primary .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.primary .p-DockPanel-widget form > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .primary .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .primary .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.primary .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.primary .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .primary .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .primary .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.primary .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .primary .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .primary .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n/****** ******/\n\n\n/****** Forms ******/\n.p-DockPanel-widget > form {\n    padding: 15px;\n}\n\n.p-DockPanel-widget > form {\n    display: flex;\n    flex-direction: column;\n}\n\n.p-DockPanel-widget > form > * {\n    width: 50%;\n    min-height:20px;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top:10px;\n}\n\n.p-DockPanel-widget > form > textarea {\n  min-height: 40px;\n}\n\n.p-DockPanel-widget > form > input[type=submit] {\n    width: 15%;\n}\n\n.p-DockPanel-widget > form > input[type=checkbox] {\n    /*margin-left:10px;*/\n}\n\n.p-DockPanel-widget > form > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n.notebooks .uploader form {\n    min-height: 225px;\n}\n\n.jobs .scheduler form {\n    min-height: 800px;\n}\n\n.reports .configurator form {\n    min-height: 425px;\n}\n/****** ******/\n", ""]);
 
 // exports
 
@@ -40356,7 +40377,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n    overflow-y: scroll;\n    min-height:275px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    max-height:40px;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:5px;\n}\n\ndiv.status-breakdown {\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n    margin-top:0px;\n    margin-bottom:0px;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n\n\ndiv.statusbrowser {\n    font-size: 10px;\n}\ndiv.statusbrowser ul li {\n    flex: 1;\n}\n\nbody.dark div.statusbrowser .p-TabBar-content {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser .p-TabBar-content {\n  border-right: 1px solid var(--light-border);\n}\n\n\nbody.dark div.statusbrowser .p-StackedPanel {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser .p-StackedPanel {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.statusbrowser-container table {\n    height:90%;\n    text-align: left;\n}\n\ndiv.statusbrowser-container table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.statusbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.statusbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container p {\n    height:5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.statusbrowser-container p span.page:hover {\n    color: white;\n}\n\nbody.light div.statusbrowser-container p span.page:hover {\n    color: #999;\n}\n\ndiv.statusbrowser-container p span.page-active {\n    color: var(--highlight-orange);\n}\n", ""]);
+exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n    overflow-y: scroll;\n    min-height:325px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    max-height:40px;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:5px;\n}\n\ndiv.status-breakdown {\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n    margin-top:0px;\n    margin-bottom:0px;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n\n\ndiv.statusbrowser {\n    font-size: 10px;\n}\ndiv.statusbrowser ul li {\n    flex: 1;\n}\n\nbody.dark div.statusbrowser .p-TabBar-content {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser .p-TabBar-content {\n  border-right: 1px solid var(--light-border);\n}\n\n\nbody.dark div.statusbrowser .p-StackedPanel {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser .p-StackedPanel {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.statusbrowser-container table {\n    height:90%;\n    text-align: left;\n    overflow-x: scroll;\n}\n\ndiv.statusbrowser-container table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.statusbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.statusbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container p {\n    height:5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.statusbrowser-container p span.page:hover {\n    color: white;\n}\n\nbody.light div.statusbrowser-container p span.page:hover {\n    color: #999;\n}\n\ndiv.statusbrowser-container p span.page-active {\n    color: var(--highlight-orange);\n}\n", ""]);
 
 // exports
 

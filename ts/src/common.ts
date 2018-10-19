@@ -46,7 +46,7 @@ class PrimaryDetail extends Widget {
 
         request('get', apiurl() + this.type + '/details?id=' + id).then((res: RequestResult) => {
             let dat = res.json() as any;
-            this.title.label = dat['name'];
+            this.title.label = dat['name']['value'];
 
             let table = document.createElement('table');
 
@@ -55,7 +55,25 @@ class PrimaryDetail extends Widget {
                 let td1 = document.createElement('td');
                 let td2 = document.createElement('td');
                 td1.textContent = k;
-                td2.textContent = dat[k];
+
+                let conts;
+                if(dat[k]['type'] == 'select'){
+                    conts = DomUtils.buildSelect(dat[k]['name'],
+                        dat[k]['options'],
+                        '',
+                        dat[k]['required'],
+                        dat[k]['readonly']);
+                } else {
+                    conts = DomUtils.buildInput(dat[k]['type'], 
+                        dat[k]['name'],
+                        dat[k]['placeholder'],
+                        dat[k]['value'],
+                        dat[k]['required'],
+                        dat[k]['readonly']);
+                }
+
+                td2.appendChild(conts);
+
                 row.appendChild(td1);
                 row.appendChild(td2);
                 table.appendChild(row);
@@ -86,8 +104,11 @@ class PrimaryTab extends DockPanel {
         request('get', apiurl() + type).then((res: RequestResult) => {
             DomUtils.createPrimarySection(this, type, res.json());
         });
+
+        this.control = this.controlView();
+
         this.addWidget(this.mine);
-        this.addWidget(this.controlView(), {mode: 'tab-after', ref: this.mine});
+        this.addWidget(this.control, {mode: 'tab-after', ref: this.mine});
     }
 
     controlView(): PrimaryForm {
@@ -101,4 +122,5 @@ class PrimaryTab extends DockPanel {
     clz: string;
     type: string;
     mine = new BoxPanel();
+    control: PrimaryForm;
 }

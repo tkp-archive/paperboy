@@ -21,7 +21,10 @@ class DummyScheduler(BaseScheduler):
                  'id': 'Notebook-%d' % i,
                  'meta': {
                     'jobs': randint(4, 100),
-                    'running': choice([1, 2, 3]),
+                    'done': randint(1, 4),
+                    'running': randint(1, 4),
+                    'queued': randint(1, 4),
+                    'disabled': randint(1, 4),
                     'reports': randint(1, 1000),
                  }
                  } for i in range(10)]
@@ -42,9 +45,7 @@ class DummyScheduler(BaseScheduler):
                  'id': 'Report-%d' % i,
                  'meta': {
                     'run': '10/14/2018 04:50:33',
-                    'notebook': 'MyNotebook1',
                     'notebookid': 'Notebook-1',
-                    'job': 'MyJob1',
                     'jobid': 'Job-1',
                     'type': 'run',
                     'nbconvert': 'pdf',
@@ -57,16 +58,16 @@ class DummyScheduler(BaseScheduler):
                     'total': 25,
                     'production': 15,
                     'research': 3,
-                    'mine': 7},
+                    'personal': 7},
                 'jobs': {
                     'total': 150,
                     'done': 25,
                     'running': 10,
-                    'queue': 60,
+                    'queued': 60,
                     'disabled': 55},
                 'reports': {
                     'total': 3250,
-                    'published': 2074,
-                    'unpublished': 276,
-                    'public': 2755,
-                    'private': 495}}
+                    'pdf': 2074,
+                    'HTML': 276,
+                    'email': 2755,
+                    'other': 495}}

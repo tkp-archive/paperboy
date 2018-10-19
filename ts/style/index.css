@@ -246,7 +246,7 @@ body.light .primary .p-DockPanel-widget > table > tr > td {
 }
 
 .p-DockPanel-widget > form > input[type=checkbox] {
-    margin-left:10px;
+    /*margin-left:10px;*/
 }
 
 .p-DockPanel-widget > form > input[type=submit]:hover {

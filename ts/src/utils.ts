@@ -74,14 +74,19 @@ namespace DomUtils {
                       placeholder?: string,
                       value?: string,
                       required = false,
-                      ){
-    if (! type ){
+                      readonly = false,
+                      ): HTMLInputElement{
+    if (!type ){
       type = 'text';
     }
 
     let input = document.createElement('input');
     if(required){
       input.required = true;
+    }
+    if(readonly){
+      input.readOnly = true;
+      input.disabled = true;
     }
 
     switch(type) {
@@ -164,9 +169,15 @@ namespace DomUtils {
 
   /*** build a select ***/
   export
-  function buildSelect(name: string, list: string[], def?: string): HTMLSelectElement {
+  function buildSelect(name: string, list: string[], def?: string, required = false, readonly = false): HTMLSelectElement {
     let select = document.createElement('select');
     select.name = name;
+    if(required){
+      select.required = required;
+    }
+    if(readonly){
+      select.disabled = true;
+    }
 
     select.appendChild(default_none);
     for(let i=0; i<list.length; i++) {

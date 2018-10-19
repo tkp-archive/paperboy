@@ -1,5 +1,5 @@
 import {
-    Widget, TabPanel, BoxPanel
+    Widget, TabPanel, BoxPanel, SplitPanel
 } from '@phosphor/widgets';
 
 import {request, RequestResult} from './request';
@@ -43,18 +43,21 @@ class StatusBrowser extends TabPanel {
 
         setInterval(() => {
             request('get', apiurl() + 'status?type=notebooks').then((res: RequestResult) => {
+                DomUtils.delete_all_children(this.nbs.node);
                 DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
             });
         }, 60000);
 
         setInterval(() => {
             request('get', apiurl() + 'status?type=jobs').then((res: RequestResult) => {
+                DomUtils.delete_all_children(this.jbs.node);
                 DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
             });
         }, 60000);
 
         setInterval(() => {
             request('get', apiurl() + 'status?type=reports').then((res: RequestResult) => {
+                DomUtils.delete_all_children(this.rps.node);
                 DomUtils.createStatusSection(this.rps, 'reports', res.json());
             });
         }, 60000);
@@ -160,9 +163,9 @@ class StatusOverview extends Widget {
 
 
 export
-class Status extends BoxPanel {
+class Status extends SplitPanel {
     constructor(){
-        super({ direction: 'top-to-bottom', spacing: 0 });
+        super({ orientation: 'vertical'});
         this.addWidget(new StatusOverview());
         this.addWidget(new StatusBrowser());
     }
