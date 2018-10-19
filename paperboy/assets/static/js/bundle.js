@@ -10783,19 +10783,21 @@ class PrimaryDetail extends widgets_1.Widget {
         this.title.closable = true;
         request_1.request('get', utils_1.apiurl() + this.type + '/details?id=' + id).then((res) => {
             let dat = res.json();
-            this.title.label = dat['name']['value'];
             let table = document.createElement('table');
-            for (let k of Object.keys(dat)) {
+            for (let i = 0; i < dat.length; i++) {
                 let row = document.createElement('tr');
                 let td1 = document.createElement('td');
                 let td2 = document.createElement('td');
-                td1.textContent = utils_1.toProperCase(k);
+                if (dat[i]['name'] === 'name') {
+                    this.title.label = dat[i]['value'];
+                }
+                td1.textContent = utils_1.toProperCase(dat[i]['name']);
                 let conts;
-                if (dat[k]['type'] == 'select') {
-                    conts = utils_1.DomUtils.buildSelect(dat[k]['name'], dat[k]['options'], '', dat[k]['required'], dat[k]['readonly']);
+                if (dat[i]['type'] == 'select') {
+                    conts = utils_1.DomUtils.buildSelect(dat[i]['name'], dat[i]['options'], '', dat[i]['required'], dat[i]['readonly']);
                 }
                 else {
-                    conts = utils_1.DomUtils.buildInput(dat[k]['type'], dat[k]['name'], dat[k]['placeholder'], dat[k]['value'], dat[k]['required'], dat[k]['readonly']);
+                    conts = utils_1.DomUtils.buildInput(dat[i]['type'], dat[i]['name'], dat[i]['placeholder'], dat[i]['value'], dat[i]['required'], dat[i]['readonly']);
                 }
                 td2.appendChild(conts);
                 row.appendChild(td1);
@@ -14252,10 +14254,11 @@ var DomUtils;
         if (!sec) {
             return;
         }
-        for (let k of Object.keys(data)) {
-            let type = data[k]['type'];
-            if (data[k]['label']) {
-                sec.appendChild(buildLabel(data[k]['label']));
+        for (let i = 0; i < data.length; i++) {
+            let name = data[i]['name'];
+            let type = data[i]['type'];
+            if (data[i]['label']) {
+                sec.appendChild(buildLabel(data[i]['label']));
             }
             switch (type) {
                 case 'label': {
@@ -14266,21 +14269,21 @@ var DomUtils;
                 case 'file': { }
                 case 'checkbox': { }
                 case 'datetime': {
-                    let input = buildInput(type, k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+                    let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
                     sec.appendChild(input);
                     break;
                 }
                 case 'textarea': {
-                    let input = buildTextarea(k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+                    let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
                     sec.appendChild(input);
                     break;
                 }
                 case 'submit': {
-                    let input = buildInput(type, k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+                    let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
                     sec.appendChild(input);
                     sec.onsubmit = () => {
                         let form = new FormData(sec);
-                        request_1.requestFormData(data[k]['url'], form).then((res) => {
+                        request_1.requestFormData(data[i]['url'], form).then((res) => {
                             createResponseModal(res.json());
                         });
                         return false;
@@ -14288,13 +14291,13 @@ var DomUtils;
                     break;
                 }
                 case 'autocomplete': {
-                    let auto = buildAutocomplete(data[k]['url'], k, data[k]['required']);
+                    let auto = buildAutocomplete(data[i]['url'], name, data[i]['required']);
                     sec.appendChild(auto[0]);
                     sec.appendChild(auto[1]);
                     break;
                 }
                 case 'select': {
-                    let select = buildSelect(k, data[k]['options']);
+                    let select = buildSelect(name, data[i]['options']);
                     sec.appendChild(select);
                     break;
                 }
@@ -14308,7 +14311,7 @@ var DomUtils;
         modal.classList.add('modal');
         for (let i = 0; i < resp.length; i++) {
             let dat = resp[i];
-            modal.appendChild(buildGeneric(dat['type'], dat['content']));
+            modal.appendChild(buildGeneric(dat['type'], dat['value']));
         }
         let button = buildGeneric('button', 'OK');
         button.onclick = () => {
@@ -27289,7 +27292,7 @@ class Status extends widgets_1.SplitPanel {
         super({ orientation: 'vertical' });
         this.addWidget(new StatusOverview());
         this.addWidget(new StatusBrowser());
-        this.setRelativeSizes([.5, .5]);
+        this.setRelativeSizes([.6, .4]);
     }
 }
 exports.Status = Status;

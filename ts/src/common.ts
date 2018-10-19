@@ -46,30 +46,33 @@ class PrimaryDetail extends Widget {
 
         request('get', apiurl() + this.type + '/details?id=' + id).then((res: RequestResult) => {
             let dat = res.json() as any;
-            this.title.label = dat['name']['value'];
 
             let table = document.createElement('table');
 
-            for(let k of Object.keys(dat)){
+            for(let i=0; i<dat.length; i++){
                 let row = document.createElement('tr');
                 let td1 = document.createElement('td');
                 let td2 = document.createElement('td');
-                td1.textContent = toProperCase(k);
+                if(dat[i]['name'] === 'name'){
+                    this.title.label = dat[i]['value'];
+                }
+
+                td1.textContent = toProperCase(dat[i]['name']);
 
                 let conts;
-                if(dat[k]['type'] == 'select'){
-                    conts = DomUtils.buildSelect(dat[k]['name'],
-                        dat[k]['options'],
+                if(dat[i]['type'] == 'select'){
+                    conts = DomUtils.buildSelect(dat[i]['name'],
+                        dat[i]['options'],
                         '',
-                        dat[k]['required'],
-                        dat[k]['readonly']);
+                        dat[i]['required'],
+                        dat[i]['readonly']);
                 } else {
-                    conts = DomUtils.buildInput(dat[k]['type'], 
-                        dat[k]['name'],
-                        dat[k]['placeholder'],
-                        dat[k]['value'],
-                        dat[k]['required'],
-                        dat[k]['readonly']);
+                    conts = DomUtils.buildInput(dat[i]['type'], 
+                        dat[i]['name'],
+                        dat[i]['placeholder'],
+                        dat[i]['value'],
+                        dat[i]['required'],
+                        dat[i]['readonly']);
                 }
 
                 td2.appendChild(conts);

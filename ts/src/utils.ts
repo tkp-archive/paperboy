@@ -395,11 +395,12 @@ namespace DomUtils {
     if(! sec){
       return;
     }
-    for(let k of Object.keys(data)){
-      let type = data[k]['type'];
+    for(let i=0; i<data.length; i++){
+      let name = data[i]['name'];
+      let type = data[i]['type'];
 
-      if(data[k]['label']){
-        sec.appendChild(buildLabel(data[k]['label']));
+      if(data[i]['label']){
+        sec.appendChild(buildLabel(data[i]['label']));
       }
 
       switch(type){
@@ -411,21 +412,21 @@ namespace DomUtils {
         case 'file': {}
         case 'checkbox': {}
         case 'datetime': {
-          let input = buildInput(type, k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+          let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
           sec.appendChild(input);
           break;
         }
         case 'textarea': {
-          let input = buildTextarea(k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+          let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
           sec.appendChild(input);
           break;
         }
         case 'submit': {
-          let input = buildInput(type, k, data[k]['placeholder'], data[k]['value'], data[k]['required']);
+          let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
           sec.appendChild(input);
           sec.onsubmit = () => {
             let form = new FormData(sec);
-            requestFormData(data[k]['url'], form).then((res: RequestResult) => {
+            requestFormData(data[i]['url'], form).then((res: RequestResult) => {
               createResponseModal(res.json());
             });
             return false;
@@ -433,13 +434,13 @@ namespace DomUtils {
           break;
         }
         case 'autocomplete': {
-          let auto = buildAutocomplete(data[k]['url'], k, data[k]['required']);
+          let auto = buildAutocomplete(data[i]['url'], name, data[i]['required']);
           sec.appendChild(auto[0]);
           sec.appendChild(auto[1]);
           break;
         }
         case 'select': {
-          let select = buildSelect(k, data[k]['options']);
+          let select = buildSelect(name, data[i]['options']);
           sec.appendChild(select);
           break;
         }
@@ -455,7 +456,7 @@ namespace DomUtils {
 
     for(let i=0; i<resp.length; i++){
       let dat = resp[i];
-      modal.appendChild(buildGeneric(dat['type'], dat['content']))
+      modal.appendChild(buildGeneric(dat['type'], dat['value']))
     }
 
     let button = buildGeneric('button', 'OK');
