@@ -66,6 +66,11 @@ class PrimaryDetail extends Widget {
                         '',
                         dat[i]['required'],
                         dat[i]['readonly']);
+                } else if(dat[i]['type'] == 'textarea'){
+                    conts = DomUtils.buildTextarea(dat[i]['name'],
+                        dat[i]['placeholder'],
+                        dat[i]['value'],
+                        dat[i]['required']);
                 } else {
                     conts = DomUtils.buildInput(dat[i]['type'], 
                         dat[i]['name'],

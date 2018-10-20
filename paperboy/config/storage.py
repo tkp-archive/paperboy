@@ -1,10 +1,10 @@
 import json
 from .base import Notebook, Job, Report
-from .forms import Form, Response
-from traitlets import List, Int, TraitType
+from .forms import Form, Response, FormEntry, DOMEntry
+from traitlets import List, Int, HasTraits, Instance
 
 
-class ListResult(TraitType):
+class ListResult(HasTraits):
     page = Int(default_value=1)
     pages = Int(default_value=1)
     count = Int(default_value=1)
@@ -22,7 +22,7 @@ class ListResult(TraitType):
 
 
 class NotebookListResult(ListResult):
-    notebooks = List(trait=Notebook)
+    notebooks = List(trait=Instance(Notebook))
 
     def to_json(self, string=False):
         ret = super(NotebookListResult, self).to_json()
@@ -33,7 +33,7 @@ class NotebookListResult(ListResult):
 
 
 class JobListResult(ListResult):
-    jobs = List(trait=Job)
+    jobs = List(trait=Instance(Job))
 
     def to_json(self, string=False):
         ret = super(JobListResult, self).to_json()
@@ -44,7 +44,7 @@ class JobListResult(ListResult):
 
 
 class ReportListResult(ListResult):
-    reports = List(trait=Report)
+    reports = List(trait=Instance(Report))
 
     def to_json(self, string=False):
         ret = super(ReportListResult, self).to_json()
@@ -55,8 +55,10 @@ class ReportListResult(ListResult):
 
 
 class DetailResult(Form):
-    pass
+    entries = List()
 
-
-class StoreResult(Response):
-    pass
+    def to_json(self, string=False):
+        ret = [e.to_json() for e in self.entries]
+        if string:
+            return json.dumps(ret)
+        return ret

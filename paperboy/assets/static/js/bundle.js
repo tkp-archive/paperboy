@@ -10796,6 +10796,9 @@ class PrimaryDetail extends widgets_1.Widget {
                 if (dat[i]['type'] == 'select') {
                     conts = utils_1.DomUtils.buildSelect(dat[i]['name'], dat[i]['options'], '', dat[i]['required'], dat[i]['readonly']);
                 }
+                else if (dat[i]['type'] == 'textarea') {
+                    conts = utils_1.DomUtils.buildTextarea(dat[i]['name'], dat[i]['placeholder'], dat[i]['value'], dat[i]['required']);
+                }
                 else {
                     conts = utils_1.DomUtils.buildInput(dat[i]['type'], dat[i]['name'], dat[i]['placeholder'], dat[i]['value'], dat[i]['required'], dat[i]['readonly']);
                 }
