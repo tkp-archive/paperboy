@@ -5,9 +5,6 @@ from paperboy.storage import ReportStorage
 
 
 class ReportDummyStorage(ReportStorage):
-    def object(self):
-        return Report
-
     def form(self):
         return Report(self.config).form()
 

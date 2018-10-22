@@ -33,7 +33,9 @@ class HTMLResource(BaseResource):
         if file:
             tpl = jinja2.Template(file).render(user=req.context.get('user', ''),
                                                baseurl=self.config.baseurl,
-                                               apiurl=self.config.apiurl)
+                                               apiurl=self.config.apiurl,
+                                               loginurl=self.config.loginurl,
+                                               logouturl=self.config.logouturl)
             resp.body = tpl
         else:
             resp.status = falcon.HTTP_404

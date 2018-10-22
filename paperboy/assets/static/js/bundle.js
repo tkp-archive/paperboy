@@ -27386,13 +27386,6 @@ function main() {
     menu.title.label = 'About';
     menu.title.mnemonic = 0;
     let loader = makeLoader();
-    let palette = new widgets_1.CommandPalette({ commands });
-    palette.id = 'palette';
-    palette.addItem({
-        command: 'open-loader',
-        category: 'Loader',
-        rank: 0
-    });
     commands.addCommand('open-loader', {
         label: 'Open Loader',
         mnemonic: 2,
@@ -27402,6 +27395,26 @@ function main() {
             document.body.appendChild(loader);
         }
     });
+    commands.addCommand('login', {
+        label: 'Login',
+        mnemonic: 2,
+        iconClass: 'fa fa-sign-out',
+        execute: () => {
+            window.location.href = document.loginurl;
+        },
+        isEnabled: () => { return document.user === ''; }
+    });
+    commands.addCommand('logout', {
+        label: 'Logout',
+        mnemonic: 2,
+        iconClass: 'fa fa-sign-in',
+        execute: () => {
+            window.location.href = document.logouturl;
+        },
+        isEnabled: () => { return document.user !== ''; }
+    });
+    menu.addItem({ command: 'login' });
+    menu.addItem({ command: 'logout' });
     menu.addItem({ command: 'open-loader' });
     /* Title bar */
     let header = new header_1.Header();

@@ -7,9 +7,6 @@ from paperboy.storage import NotebookStorage
 
 
 class NotebookDummyStorage(NotebookStorage):
-    def object(self):
-        return Notebook
-
     def form(self):
         return Notebook(self.config).form()
 

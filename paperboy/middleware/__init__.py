@@ -12,15 +12,28 @@ from falcon_helpers.middlewares.sqla import SQLAlchemySessionMiddleware
 from falcon_multipart.middleware import MultipartMiddleware
 
 
-class DummyUserMiddleware:
+class NoUserMiddleware(object):
+    def process_request(self, req, resp):
+        req.context['user'] = 'anon'
+
+
+class NoAuthRequiredMiddleware(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def process_resource(self, req, resp, resource, params):
+        pass
+
+
+class DummyUserMiddleware(object):
     def process_request(self, req, resp):
         user_id = req.context.get('auth_token')
         req.context['user'] = user_id
 
 
-class DummyAuthRequiredMiddleware:
+class DummyAuthRequiredMiddleware(object):
     def __init__(self,
-                 when_fails=lambda *args, **kwartgs: None):
+                 when_fails=lambda *args, **kwargs: None):
         self.failed_action = when_fails
 
     def process_request(self, req, resp):

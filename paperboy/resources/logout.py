@@ -4,23 +4,21 @@ from .base import BaseResource
 from .html import read
 
 
-class LoginResource(BaseResource):
+class LogoutResource(BaseResource):
     auth_required = False
 
     def __init__(self, *args, **kwargs):
-        super(LoginResource, self).__init__(*args, **kwargs)
+        super(LogoutResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
         resp.content_type = 'text/html'
-        file = read('login.html')
+        file = read('logout.html')
         tpl = jinja2.Template(file).render(baseurl=self.config.baseurl,
                                            apiurl=self.config.apiurl,
-                                           loginurl=self.config.loginurl,
-                                           include_password=self.config.include_password)
+                                           loginurl=self.config.loginurl)
         resp.body = tpl
 
     def on_post(self, req, resp):
-        username = req.get_param('username') or ''
-        resp.set_cookie('auth_token', username, max_age=self.config.token_timeout, path='/', secure=not self.config.http)  # FIXME unset false
+        resp.unset_cookie('auth_token')
         resp.status = falcon.HTTP_302
         resp.set_header('Location', self.config.baseurl)

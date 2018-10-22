@@ -7,10 +7,6 @@ class BaseStorage(with_metaclass(ABCMeta)):
         self.config = config
 
     @abstractmethod
-    def object(self):
-        pass
-
-    @abstractmethod
     def form(self):
         pass
 

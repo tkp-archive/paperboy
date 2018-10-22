@@ -6,9 +6,6 @@ from paperboy.storage import JobStorage
 
 
 class JobDummyStorage(JobStorage):
-    def object(self):
-        return Job
-
     def form(self):
         return Job(self.config).form()
 
