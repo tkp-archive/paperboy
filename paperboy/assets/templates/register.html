@@ -14,19 +14,18 @@
 <body>
   <div class="background"></div>
     <div class="log-form">
-        <h2>Login to your account</h2>
-        <form action='{{baseurl}}{{loginurl}}' method='post' enctype="multipart/form-data">
+        <h2>Register</h2>
+        <form action='{{baseurl}}{{registerurl}}' method='post' enctype="multipart/form-data">
             <input type="text" name="username" placeholder="username" />
             {% if include_password %}
             <input type="password" name="password" placeholder="password" />
             {% endif %}
-            <button type="submit" class="btn">Login</button>
-            {% if include_register %}
+            <button type="submit" class="btn">Register</button>
+
             <br><br>
-            <span>No Account?</span>
+            <span>Already have an account?</span>
             <br>
-            <button type="button" class="btn" onclick="window.location.href=window.location.href.replace('{{baseurl}}{{loginurl}}', '{{baseurl}}{{registerurl}}');">Register</button>
-            {% endif %}
+            <button type="button" class="btn" onclick="window.location.href=window.location.href.replace('{{baseurl}}{{registerurl}}', '{{baseurl}}{{loginurl}}');">Login</button>
         </form>
     </div>
 </body>

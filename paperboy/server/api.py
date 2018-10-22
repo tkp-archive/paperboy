@@ -1,6 +1,7 @@
 import falcon
 from six.moves.urllib_parse import urljoin
-from ..resources import StaticResource, HTMLResource, LoginResource, LogoutResource, StatusResource, AutocompleteResource, ConfigResource
+from ..resources import StaticResource, HTMLResource, LoginResource, LogoutResource, RegisterResource
+from ..resources import StatusResource, AutocompleteResource, ConfigResource
 from ..resources import NotebookResource, JobResource, ReportResource
 from ..resources import NotebookDetailResource, JobDetailResource, ReportDetailResource
 from ..storage import StorageEngine, StorageError
@@ -44,6 +45,8 @@ def FalconAPI(config):
     api.add_route(from_base(config.loginurl), login)
     logout = LogoutResource(config, db)
     api.add_route(from_base(config.logouturl), logout)
+    register = RegisterResource(config, db)
+    api.add_route(from_base(config.registerurl), register)
 
     ##########
     # Routes #

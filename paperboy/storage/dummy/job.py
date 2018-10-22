@@ -1,4 +1,5 @@
 import json
+import logging
 from random import randint, choice
 from paperboy.config import Job
 from paperboy.config.storage import JobListResult
@@ -98,4 +99,5 @@ class JobDummyStorage(JobStorage):
                             'modified': '10/14/2018 18:25:31',
                              }},
                         self.config).store()
+        logging.critical("Storing job {}".format(name))
         resp.body = json.dumps(store)

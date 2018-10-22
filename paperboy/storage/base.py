@@ -1,3 +1,4 @@
+import falcon
 from six import with_metaclass
 from abc import abstractmethod, ABCMeta
 
@@ -31,9 +32,15 @@ class UserStorage(BaseStorage):
     def login(self, req, resp):
         pass
 
-    @abstractmethod
+    def _do_login(self, token, req, resp):
+        resp.set_cookie('auth_token', token, max_age=self.config.token_timeout, path='/', secure=not self.config.http)
+        resp.status = falcon.HTTP_302
+        resp.set_header('Location', self.config.baseurl)
+
     def logout(self, req, resp):
-        pass
+        resp.unset_cookie('auth_token')
+        resp.status = falcon.HTTP_302
+        resp.set_header('Location', self.config.baseurl)
 
 
 class NotebookStorage(BaseStorage):

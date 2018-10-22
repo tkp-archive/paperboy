@@ -1,4 +1,5 @@
 import json
+import logging
 from paperboy.config import Report
 from paperboy.config.storage import ReportListResult
 from paperboy.storage import ReportStorage
@@ -64,4 +65,5 @@ class ReportDummyStorage(ReportStorage):
                 'run': '10/14/2018 18:25:31',
                  }},
             self.config).store()
+        logging.critical("Storing job {}".format(name))
         resp.body = json.dumps(store)

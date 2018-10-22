@@ -5,6 +5,7 @@ from .job import JobResource, JobDetailResource
 from .login import LoginResource
 from .logout import LogoutResource
 from .notebook import NotebookResource, NotebookDetailResource
+from .register import RegisterResource
 from .report import ReportResource, ReportDetailResource
 from .static import StaticResource
 from .status import StatusResource

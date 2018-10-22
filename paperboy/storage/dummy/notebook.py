@@ -1,5 +1,6 @@
 import json
 import nbformat
+import logging
 from random import randint, choice
 from paperboy.config import Notebook
 from paperboy.config.storage import NotebookListResult
@@ -42,4 +43,5 @@ class NotebookDummyStorage(NotebookStorage):
         nb = nbformat.reads(req.get_param('file').file.read(), 4)
         resp.content_type = 'application/json'
         store = Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', author='Joe Python', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).store()
+        logging.critical("Storing notebook {}".format(name))
         resp.body = json.dumps(store)

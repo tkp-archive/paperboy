@@ -57,6 +57,7 @@ class Paperboy(Application):
     apiurl = Unicode(default_value='/api/v1/')
     loginurl = Unicode(default_value='login')
     logouturl = Unicode(default_value='logout')
+    registerurl = Unicode(default_value='register')
     ########
 
     #############
@@ -64,6 +65,7 @@ class Paperboy(Application):
     #############
     http = Bool(default_value=True)
     include_password = Bool(default_value=False)
+    include_register = Bool(default_value=True)
     token_timeout = Int(default_value=600)
     #############
 
@@ -124,6 +126,7 @@ class Paperboy(Application):
     sql_url = 'sqlite:///:memory:'
     engine = None
     sessionmaker = None
+    sql_user = Bool(default_value=True)
     ##############
 
     def start(self):
@@ -145,6 +148,7 @@ class Paperboy(Application):
             self.sessionmaker = sessionmaker(bind=self.engine)
             self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.sessionmaker())]
             self.user_storage = UserSQLStorage
+            self.sql_user = True
             self.notebook_storage = NotebookSQLStorage
             self.job_storage = JobSQLStorage
             self.report_storage = ReportSQLStorage
@@ -155,6 +159,7 @@ class Paperboy(Application):
             self.notebook_storage = NotebookDummyStorage
             self.job_storage = JobDummyStorage
             self.report_storage = ReportDummyStorage
+            self.sql_user = False
 
         # Preconfigured auth backends
         if self.auth == 'none':

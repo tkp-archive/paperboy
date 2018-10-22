@@ -1,3 +1,5 @@
+import falcon
+import logging
 from paperboy.config import User
 from paperboy.storage import UserStorage
 from sqlalchemy import Column, Integer, String
@@ -19,10 +21,15 @@ class UserSQLStorage(UserStorage):
         return User(self.config).form()
 
     def login(self, req, resp):
-        pass
-
-    def logout(self, req, resp):
-        pass
+        username = req.get_param('username')
+        password = req.get_param('password')
+        user = self.session.query(UserSQL).filter_by(name=username, password=password).first()
+        if user:
+            # FIXME
+            self._do_login(token=username, req=req, resp=resp)
+        else:
+            resp.status = falcon.HTTP_302
+            resp.set_header('Location', self.config.registerurl)
 
     def list(self, req, resp):
         resp.content_type = 'application/json'
@@ -33,5 +40,12 @@ class UserSQLStorage(UserStorage):
         resp.body = '{}'
 
     def store(self, req, resp):
+        username = req.get_param('username')
+        password = req.get_param('password')
+        user = UserSQL(name=username, password=password)
+        logging.critical("Storing user {}".format(username))
+        self.session.add(user)  # may raise exception
+        self.session.commit()
+
         resp.content_type = 'application/json'
         resp.body = '{}'
