@@ -1,4 +1,3 @@
-import falcon
 import jinja2
 from .base import BaseResource
 from .html import read
@@ -20,7 +19,4 @@ class LoginResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        username = req.get_param('username') or ''
-        resp.set_cookie('auth_token', username, max_age=self.config.token_timeout, path='/', secure=not self.config.http)  # FIXME unset false
-        resp.status = falcon.HTTP_302
-        resp.set_header('Location', self.config.baseurl)
+        self.db.users.login(req, resp)

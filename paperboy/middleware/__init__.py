@@ -11,45 +11,8 @@ from falcon_helpers.middlewares.sqla import SQLAlchemySessionMiddleware
 # Form handling middleware
 from falcon_multipart.middleware import MultipartMiddleware
 
+# Dummy auth
+from .dummy import DummyUserMiddleware, DummyAuthRequiredMiddleware
 
-class NoUserMiddleware(object):
-    def __init__(self, config, *args, **kwargs):
-        self.config = config
-
-    def process_request(self, req, resp):
-        req.context['user'] = config.user_storage(id=1, name='anon')
-
-
-class NoAuthRequiredMiddleware(object):
-    def __init__(self, config, *args, **kwargs):
-        self.config = config
-
-    def process_resource(self, req, resp, resource, params):
-        pass
-
-
-class DummyUserMiddleware(object):
-    def __init__(self, config, *args, **kwargs):
-        self.config = config
-
-    def process_request(self, req, resp):
-        user_id = req.context.get('auth_token')
-        req.context['user'] = user_id
-
-
-class DummyAuthRequiredMiddleware(object):
-    def __init__(self, config,
-                 when_fails=lambda *args, **kwargs: None):
-        self.config = config
-        self.failed_action = when_fails
-
-    def process_request(self, req, resp):
-        token_value = req.cookies.get('auth_token', None)
-        req.context['auth_token'] = token_value
-
-    def process_resource(self, req, resp, resource, params):
-        required = getattr(resource, 'auth_required', True)
-        token_value = req.context.get('auth_token', None)
-        token_value = None if isinstance(token_value, Exception) else token_value
-        if required and not token_value:
-            return self.failed_action(req=req, resp=resp, token_value=token_value)
+# No auth
+from .none import NoUserMiddleware, NoAuthRequiredMiddleware

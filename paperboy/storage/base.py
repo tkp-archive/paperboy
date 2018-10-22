@@ -7,11 +7,11 @@ class BaseStorage(with_metaclass(ABCMeta)):
         self.config = config
 
     @abstractmethod
-    def form(self):
+    def form(self, req, resp):
         pass
 
     @abstractmethod
-    def list(self):
+    def list(self, req, resp):
         pass
 
     @abstractmethod
@@ -24,7 +24,16 @@ class BaseStorage(with_metaclass(ABCMeta)):
 
 
 class UserStorage(BaseStorage):
-    pass
+    def __init__(self, config, *args, **kwargs):
+        self.config = config
+
+    @abstractmethod
+    def login(self, req, resp):
+        pass
+
+    @abstractmethod
+    def logout(self, req, resp):
+        pass
 
 
 class NotebookStorage(BaseStorage):

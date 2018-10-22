@@ -7,11 +7,6 @@ from ..storage import StorageEngine, StorageError
 
 
 def FalconAPI(config):
-    api = falcon.API(middleware=[config.auth_required_mw(config, when_fails=config._login_redirect),
-                                 config.load_user_mw(config)] +
-                     config.essential_middleware +
-                     config.extra_middleware)
-
     def from_base(url):
         return urljoin(config.baseurl, url)
 
@@ -21,13 +16,17 @@ def FalconAPI(config):
     ###########
     # Storage #
     ###########
-    db = StorageEngine(config.notebook_storage(config), config.job_storage(config), config.report_storage(config))
+    db = StorageEngine(config.user_storage(config), config.notebook_storage(config), config.job_storage(config), config.report_storage(config))
+    api = falcon.API(middleware=[config.auth_required_mw(config, db, when_fails=config._login_redirect),
+                                 config.load_user_mw(config, db)] +
+                     config.essential_middleware +
+                     config.extra_middleware)
     api.add_error_handler(StorageError, StorageError.handle)
 
     #############
     # Scheduler #
     #############
-    scheduler = config.scheduler(config)
+    scheduler = config.scheduler(config, db)
 
     ####################
     # Static resources #
@@ -41,9 +40,9 @@ def FalconAPI(config):
     ##################
     # Auth Resources #
     ##################
-    login = LoginResource(config)
+    login = LoginResource(config, db)
     api.add_route(from_base(config.loginurl), login)
-    logout = LogoutResource(config)
+    logout = LogoutResource(config, db)
     api.add_route(from_base(config.logouturl), logout)
 
     ##########

@@ -8,16 +8,21 @@ class UserSQL(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    fullname = Column(String)
     password = Column(String)
 
     def __repr__(self):
-        return "<User(name='%s', fullname='%s', password='%s')>" % (self.name, self.fullname, self.password)
+        return "<User(name='%s')>" % (self.name, self.password)
 
 
 class UserSQLStorage(UserStorage):
     def form(self):
         return User(self.config).form()
+
+    def login(self, req, resp):
+        pass
+
+    def logout(self, req, resp):
+        pass
 
     def list(self, req, resp):
         resp.content_type = 'application/json'
