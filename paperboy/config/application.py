@@ -1,15 +1,20 @@
 import falcon
 import logging
 import os
+from six.moves.urllib_parse import urljoin
 
-from ..storage import NotebookStorage, JobStorage, ReportStorage
-from ..storage.dummy import NotebookDummyStorage, JobDummyStorage, ReportDummyStorage
-from ..scheduler import DummyScheduler
 from ..server.api import FalconAPI
 from ..server.deploy import FalconGunicorn
 
+# from ..storage import NotebookStorage, JobStorage, ReportStorage
+from ..storage.dummy import NotebookDummyStorage, JobDummyStorage, ReportDummyStorage
+
+from ..scheduler import DummyScheduler
+from ..middleware import DummyUserMiddleware, DummyAuthRequiredMiddleware
+from ..middleware import CORSMiddleware, MultipartMiddleware
+
 from traitlets.config.application import Application
-from traitlets import Int, Instance, List, Tuple, Type, Unicode
+from traitlets import Int, Instance, List, Tuple, Unicode, Bool
 
 
 class Paperboy(Application):
@@ -24,6 +29,13 @@ class Paperboy(Application):
 
     baseurl = Unicode(default_value='/')
     apiurl = Unicode(default_value='/api/v1/')
+    loginurl = Unicode(default_value='login')
+
+    http = Bool(default_value=True)
+    include_password = Bool(default_value=False)
+
+    def _login_redirect(config, *args, **kwargs):
+        raise falcon.HTTPFound(urljoin(config.baseurl, config.loginurl))
 
     ################################################
     # FIXME doesnt allow default_value yet         #
@@ -35,8 +47,14 @@ class Paperboy(Application):
     report_storage = ReportDummyStorage
     #                                              #
     scheduler = DummyScheduler
+    #                                              #
+    authrequired = DummyAuthRequiredMiddleware
+    loaduser = DummyUserMiddleware
     # END                                          #
     ################################################
+
+    essential_middleware = [CORSMiddleware(allow_all_origins=True).middleware,
+                            MultipartMiddleware()]
 
     extra_middleware = List(default_value=[])  # List of extra middlewares to install
     extra_handlers = List(trait=Tuple(), default_value=[])  # List of tuples (route, handler) of handlers to install

@@ -1,4 +1,4 @@
-div#header {
+div#appheader {
   display:flex;
   align-items: center;
   height:45px;
@@ -6,50 +6,54 @@ div#header {
   position: absolute;
 }
 
-body.dark div#header {
+body.dark div#appheader {
   background-color: var(--dark-bg-color2);
   border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div#header {
+body.light div#appheader {
   background-color: var(--light-bg-color2);
   border-bottom: 1px solid var(--light-border);
 }
 
-div#header > a {
+div#appheader > a {
   height: 40px;
   margin-left: 15px;
   width:15%;
   z-index:3;
 }
 
-div#header > a > img {
+div#appheader > span.username {
+  padding-left:10px;
+}
+
+div#appheader > a > img {
   object-fit: contain;
   height: 100%;
   width: 100%;
 }
 
-#light {
+#lighticon {
   margin-left: 70%;
   z-index: 6;
   height: 25px;
   width: 25px;
 }
 
-#light:before {
+#lighticon:before {
   content: '\f185';
   font-family: 'FontAwesome';
   font-size: 25px;
 }
 
-#dark {
+#darkicon {
   margin-left: 10px;
   z-index: 6;
   height: 25px;
   width: 25px;
 }
 
-#dark:before {
+#darkicon:before {
   content: '\f186';
   font-family: 'FontAwesome';
   font-size: 25px;
@@ -60,10 +64,10 @@ body.light div.active-icon {
   color: var(--highlight-blue);
 }
 
-body.dark #light:hover {
+body.dark #lighticon:hover {
   color: white;
 }
 
-body.light #dark:hover {
+body.light #darkicon:hover {
   color: lightgrey;
 }

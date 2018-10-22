@@ -1,7 +1,6 @@
 falcon
-falcon-auth
 falcon-cors
-falcon-jsonify
+falcon_helpers
 falcon-multipart
 gunicorn
 jinja2

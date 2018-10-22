@@ -31,7 +31,8 @@ class HTMLResource(BaseResource):
 
         file = read(path)
         if file:
-            tpl = jinja2.Template(file).render(baseurl=self.config.baseurl,
+            tpl = jinja2.Template(file).render(user=req.context.get('user', ''),
+                                               baseurl=self.config.baseurl,
                                                apiurl=self.config.apiurl)
             resp.body = tpl
         else:

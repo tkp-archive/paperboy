@@ -16,9 +16,13 @@ class Header extends Widget {
         a.appendChild(h)
         node.appendChild(a);
 
+        let username = document.createElement('span');
+        username.textContent = (document as any).user;
+        username.classList.add('username');
+
         /* icons */
         let light = document.createElement('div');
-        light.id = 'light';
+        light.id = 'lighticon';
         light.onclick = () => {
             document.body.classList.remove('dark');
             document.body.classList.add('light');
@@ -27,7 +31,7 @@ class Header extends Widget {
         }
 
         let dark = document.createElement('div');
-        dark.id = 'dark';
+        dark.id = 'darkicon';
         dark.classList.add('active-icon');
         document.body.classList.add('dark');
         dark.onclick = () => {
@@ -39,7 +43,7 @@ class Header extends Widget {
 
         node.appendChild(light);
         node.appendChild(dark);
-
+        node.appendChild(username);
         return node;
     }
 
@@ -47,6 +51,6 @@ class Header extends Widget {
         super({ node: Header.createNode() });
         this.setFlag(Widget.Flag.DisallowLayout);
         this.title.closable = false;
-        this.node.id = 'header';
+        this.node.id = 'appheader';
     }
 }

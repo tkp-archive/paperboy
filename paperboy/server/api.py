@@ -1,18 +1,15 @@
 import falcon
 from six.moves.urllib_parse import urljoin
-from ..resources import StaticResource, HTMLResource, StatusResource, AutocompleteResource, ConfigResource
+from ..resources import StaticResource, HTMLResource, LoginResource, StatusResource, AutocompleteResource, ConfigResource
 from ..resources import NotebookResource, JobResource, ReportResource
 from ..resources import NotebookDetailResource, JobDetailResource, ReportDetailResource
-from ..middleware import CORSMiddleware, MultipartMiddleware, JSONMiddleware, AuthMiddleware, auth_backend
 from ..storage import StorageEngine, StorageError
 
 
 def FalconAPI(config):
-    api = falcon.API(middleware=[CORSMiddleware(allow_all_origins=True).middleware,
-                                 MultipartMiddleware(),
-                                 # JSONMiddleware(),
-                                 # AuthMiddleware(auth_backend
-                                 ] +
+    api = falcon.API(middleware=[config.authrequired(when_fails=config._login_redirect),
+                                 config.loaduser()] +
+                     config.essential_middleware +
                      config.extra_middleware)
 
     ###########
@@ -35,13 +32,19 @@ def FalconAPI(config):
     api.add_route('/index.html', html)
     api.add_sink(static.on_get, prefix='/static')
 
-    kwargs = {'config': config,
-              'db': db,
-              'scheduler': scheduler}
+    ##################
+    # Auth Resources #
+    ##################
+    login = LoginResource(config)
+    api.add_route('/login', login)
 
     ##########
     # Routes #
     ##########
+    kwargs = {'config': config,
+              'db': db,
+              'scheduler': scheduler}
+
     # Status
     status = StatusResource(**kwargs)
     api.add_route(config.apiurl + 'status', status)

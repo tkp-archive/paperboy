@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Paperboy</title>
+  <link rel="stylesheet" type="text/css" href="{{baseurl}}static/fonts/fonts.css">
+  <link rel="stylesheet" type="text/css" href="{{baseurl}}static/css/login.css">
+  <link href="{{baseurl}}static/css/font-awesome.min.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+  <script>
+    document.baseurl = '{{baseurl}}';
+    document.apiurl = '{{apiurl}}';
+</script>
+</head>
+<body>
+  <div class="background"></div>
+    <div class="log-form">
+        <h2>Login to your account</h2>
+        <form action='{{baseurl}}{{loginurl}}' method='post' enctype="multipart/form-data">
+            <input type="text" name="username" placeholder="username" />
+            {% if include_password %}
+            <input type="password" name="password" placeholder="password" />
+            {% endif %}
+            <button type="submit" class="btn">Login</button>
+            <!-- <a class="forgot" href="#">Forgot Username?</a> -->
+        </form>
+    </div>
+</body>
+</html>

@@ -1,7 +1,5 @@
 import json
 from random import randint, choice
-from six.moves.urllib_parse import urljoin
-
 from paperboy.config import Job
 from paperboy.config.storage import JobListResult
 from paperboy.storage import JobStorage
