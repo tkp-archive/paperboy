@@ -1,6 +1,9 @@
 import falcon
+import logging
 import os
 from six.moves.urllib_parse import urljoin
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from traitlets.config.application import Application
 from traitlets import Int, Instance, List, Tuple, Unicode, Bool, validate, TraitError
 
@@ -11,10 +14,10 @@ from ..server.api import FalconAPI
 from ..server.deploy import FalconGunicorn
 
 # base classes
-from ..storage import NotebookStorage, JobStorage, ReportStorage
+from ..storage import UserStorage, NotebookStorage, JobStorage, ReportStorage
 
 # dummy
-from ..storage.dummy import NotebookDummyStorage, JobDummyStorage, ReportDummyStorage
+from ..storage.dummy import UserDummyStorage, NotebookDummyStorage, JobDummyStorage, ReportDummyStorage
 from ..scheduler import DummyScheduler
 from ..middleware import DummyUserMiddleware, DummyAuthRequiredMiddleware
 
@@ -23,6 +26,10 @@ from ..middleware import NoUserMiddleware, NoAuthRequiredMiddleware
 
 # essential middleware
 from ..middleware import CORSMiddleware, MultipartMiddleware
+
+# sql
+from ..storage.sqla import UserSQLStorage, NotebookSQLStorage, JobSQLStorage, ReportSQLStorage
+from ..middleware import SQLAlchemySessionMiddleware
 
 
 class Paperboy(Application):
@@ -65,9 +72,7 @@ class Paperboy(Application):
 
     ################################################
     # FIXME doesnt allow default_value yet         #
-    # notebook_storage = Type(NotebookStorage, default_value=NotebookDummyStorage)
-    # job_storage = Type(JobStorage, default_value=JobDummyStorage)
-    # report_storage = Type(ReportStorage, default_value=ReportDummyStorage)
+    user_storage = UserDummyStorage
     notebook_storage = NotebookDummyStorage
     job_storage = JobDummyStorage
     report_storage = ReportDummyStorage
@@ -113,6 +118,14 @@ class Paperboy(Application):
         return proposed['value']
     ##########################################
 
+    ##############
+    # SQL extras #
+    ##############
+    sql_url = 'sqlite:///:memory:'
+    engine = None
+    sessionmaker = None
+    ##############
+
     def start(self):
         """Start the whole thing"""
         self.port = os.environ.get('PORT', self.port)
@@ -123,25 +136,38 @@ class Paperboy(Application):
 
         # Preconfigured storage backends
         if self.backend == 'git':
+            logging.critical('Using Git backend')
             raise NotImplemented
 
         elif self.backend == 'sqla':
-            raise NotImplemented
+            logging.critical('Using SQL backend')
+            self.engine = create_engine(self.sql_url, echo=True)
+            self.sessionmaker = sessionmaker(bind=self.engine)
+            self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.sessionmaker())]
+            self.user_storage = UserSQLStorage
+            self.notebook_storage = NotebookSQLStorage
+            self.job_storage = JobSQLStorage
+            self.report_storage = ReportSQLStorage
 
         elif self.backend == 'dummy':
+            logging.critical('Using Dummy backend')
+            self.user_storage = UserDummyStorage
             self.notebook_storage = NotebookDummyStorage
             self.job_storage = JobDummyStorage
             self.report_storage = ReportDummyStorage
 
         # Preconfigured auth backends
         if self.auth == 'none':
+            logging.critical('Using No auth')
             self.auth_required_mw = NoAuthRequiredMiddleware
             self.load_user_mw = NoUserMiddleware
 
         elif self.auth == 'sqla':
+            logging.critical('Using SQL auth')
             raise NotImplemented
 
         elif self.auth == 'dummy':
+            logging.critical('Using Dummy auth')
             self.auth_required_mw = DummyAuthRequiredMiddleware
             self.load_user_mw = DummyUserMiddleware
 

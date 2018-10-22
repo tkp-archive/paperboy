@@ -15,6 +15,52 @@ class Base(HasTraits):
         self.config = config
 
 
+class User(Base):
+    name = Unicode()
+    id = Unicode()
+
+    def to_json(self, string=False):
+        ret = {}
+        ret['name'] = self.name
+        ret['id'] = self.id
+        if string:
+            return json.dumps(ret)
+        return ret
+
+    def form(self, string=False):
+        f = Form()
+        f.entries = [
+            FormEntry(name='name', type='text', label='Name', placeholder='Name for Notebook...', required=True),
+            FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'notebooks')),
+        ]
+        if string:
+            return f.to_json(string)
+        return f.to_json()
+
+    @staticmethod
+    def from_json(jsn, config, string=False):
+        ret = User(config)
+        if string:
+            jsn = json.loads(jsn)
+        ret.name = jsn.pop('name')
+        ret.id = jsn.pop('id')
+        return ret
+
+    def edit(self):
+        f = Form()
+        f.entries = [
+            FormEntry(name='name', type='text', value=self.name, placeholder='Name for Job...', required=True),
+            FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'notebooks'))
+        ]
+        return f.to_json()
+
+    def store(self):
+        ret = []
+        ret.append(DOMEntry(type='p', value='Success!').to_json())
+        ret.append(DOMEntry(type='p', value='Successfully stored user {}'.format(self.name)).to_json())
+        return ret
+
+
 class NotebookMetadata(HasTraits):
     author = Unicode()
     visibility = Unicode()
@@ -124,6 +170,7 @@ class JobMetadata(HasTraits):
     notebook = Instance(Notebook)
     owner = Unicode()
     interval = Unicode()
+    sla = Unicode()
 
     @validate('interval')
     def _validate_interval(self, proposal):
@@ -187,6 +234,7 @@ class Job(Base):
             FormEntry(name='notebook', type='autocomplete', label='Notebook', url=urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='), required=True),
             FormEntry(name='starttime', type='datetime', label='Start Time/Date', required=True),
             FormEntry(name='interval', type='select', label='Interval', options=['minutely', '5 minutes', '10 minutes', '30 minutes', 'hourly', '2 hours', '3 hours', '6 hours', '12 hours', 'daily', 'weekly', 'monthly'], required=True),
+            FormEntry(name='sla', type='select', label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
             FormEntry(name='parameters_inline', type='textarea', label='Papermill params (.jsonl)', placeholder='Upload file or type here...', required=False),
             FormEntry(name='parameters', type='file', label='Papermill params (.jsonl)', required=False),
             FormEntry(name='options', type='label', label='Report options'),
@@ -217,6 +265,7 @@ class Job(Base):
             FormEntry(name='name', type='text', label='Name', value=self.name, placeholder='Name for Job...', required=True),
             FormEntry(name='starttime', type='datetime', label='Start Time/Date', required=True),
             FormEntry(name='interval', type='select', label='Interval', options=['minutely', '5 minutes', '10 minutes', '30 minutes', 'hourly', '2 hours', '3 hours', '6 hours', '12 hours', 'daily', 'weekly', 'monthly'], required=True),
+            FormEntry(name='sla', type='select', label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
             FormEntry(name='parameters_inline', type='textarea', label='Papermill params (.jsonl)', placeholder='Upload file or type here...', required=False),
             FormEntry(name='type', type='select', label='Type', options=['Run', 'Publish'], required=True),
             FormEntry(name='output', type='select', label='Output', options=['Email', 'PDF', 'HTML', 'Script'], required=True),

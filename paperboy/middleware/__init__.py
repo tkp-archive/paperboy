@@ -13,27 +13,34 @@ from falcon_multipart.middleware import MultipartMiddleware
 
 
 class NoUserMiddleware(object):
+    def __init__(self, config, *args, **kwargs):
+        self.config = config
+
     def process_request(self, req, resp):
-        req.context['user'] = 'anon'
+        req.context['user'] = config.user_storage(id=1, name='anon')
 
 
 class NoAuthRequiredMiddleware(object):
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, config, *args, **kwargs):
+        self.config = config
 
     def process_resource(self, req, resp, resource, params):
         pass
 
 
 class DummyUserMiddleware(object):
+    def __init__(self, config, *args, **kwargs):
+        self.config = config
+
     def process_request(self, req, resp):
         user_id = req.context.get('auth_token')
         req.context['user'] = user_id
 
 
 class DummyAuthRequiredMiddleware(object):
-    def __init__(self,
+    def __init__(self, config,
                  when_fails=lambda *args, **kwargs: None):
+        self.config = config
         self.failed_action = when_fails
 
     def process_request(self, req, resp):

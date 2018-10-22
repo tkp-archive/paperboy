@@ -23,6 +23,10 @@ class BaseStorage(with_metaclass(ABCMeta)):
         pass
 
 
+class UserStorage(BaseStorage):
+    pass
+
+
 class NotebookStorage(BaseStorage):
     pass
 

@@ -7,8 +7,8 @@ from ..storage import StorageEngine, StorageError
 
 
 def FalconAPI(config):
-    api = falcon.API(middleware=[config.auth_required_mw(when_fails=config._login_redirect),
-                                 config.load_user_mw()] +
+    api = falcon.API(middleware=[config.auth_required_mw(config, when_fails=config._login_redirect),
+                                 config.load_user_mw(config)] +
                      config.essential_middleware +
                      config.extra_middleware)
 

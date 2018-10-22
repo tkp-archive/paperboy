@@ -36,6 +36,7 @@ body {
   position:absolute;
   height:100%;
   width: 100%;
+  background-color: black;
 }
 
 div.background {
@@ -88,7 +89,7 @@ div.background {
   padding: 2em;
 }
 .log-form h2 {
-  color: #5d5d5d;
+  color: white;
   font-family: 'open sans condensed';
   font-size: 1.35em;
   display: block;
