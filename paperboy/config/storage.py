@@ -52,13 +52,3 @@ class ReportListResult(ListResult):
         if string:
             return json.dumps(ret)
         return ret
-
-
-class DetailResult(Form):
-    entries = List()
-
-    def to_json(self, string=False):
-        ret = [e.to_json() for e in self.entries]
-        if string:
-            return json.dumps(ret)
-        return ret

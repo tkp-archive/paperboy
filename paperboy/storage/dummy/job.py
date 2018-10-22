@@ -12,7 +12,7 @@ class JobDummyStorage(JobStorage):
         return Job
 
     def form(self):
-        return Job().to_form(self.config)
+        return Job(self.config).form()
 
     def list(self, req, resp):
         resp.content_type = 'application/json'
@@ -22,30 +22,29 @@ class JobDummyStorage(JobStorage):
         result.count = 25
         result.total = 3520
         result.jobs = [
-                    Job.from_json(
-                        {'name': 'TestJob%d' % i,
-                         'id': 'Job-%d' % i,
-                         'meta': {
-                            # 'notebook': 'TestNotebook',
-                            # 'notebookid': 'Notebook-%d' % i,
-                            'owner': 'TestOwner',
-                            'reports': randint(1, 1000),
-                            'interval': choice(['minutely',
-                                                '5 minutes',
-                                                '10 minutes',
-                                                '30 minutes',
-                                                'hourly',
-                                                '2 hours',
-                                                '3 hours',
-                                                '6 hours',
-                                                '12 hours',
-                                                'daily',
-                                                'weekly',
-                                                'monthly']),
-                            'created': '10/14/2018 04:50:33',
-                            'modified': '10/14/2018 18:25:31',
-                             }
-                         }) for i in range(25)
+                    Job.from_json({'name': 'TestJob%d' % i,
+                                   'id': 'Job-%d' % i,
+                                   'meta': {
+                                      # 'notebook': 'TestNotebook',
+                                      # 'notebookid': 'Notebook-%d' % i,
+                                      'owner': 'TestOwner',
+                                      'reports': randint(1, 1000),
+                                      'interval': choice(['minutely',
+                                                          '5 minutes',
+                                                          '10 minutes',
+                                                          '30 minutes',
+                                                          'hourly',
+                                                          '2 hours',
+                                                          '3 hours',
+                                                          '6 hours',
+                                                          '12 hours',
+                                                          'daily',
+                                                          'weekly',
+                                                          'monthly']),
+                                      'created': '10/14/2018 04:50:33',
+                                      'modified': '10/14/2018 18:25:31',
+                                       }
+                                   }, self.config) for i in range(25)
                 ]
         resp.body = result.to_json(True)
 
@@ -72,9 +71,8 @@ class JobDummyStorage(JobStorage):
                                                 'weekly',
                                                 'monthly']),
                             'created': '10/14/2018 04:50:33',
-                            'modified': '10/14/2018 18:25:31',
-                             }
-                         }).details(self.config)
+                            'modified': '10/14/2018 18:25:31'}},
+                        self.config).edit()
         resp.body = json.dumps(store)
 
     def store(self, req, resp):
@@ -103,6 +101,6 @@ class JobDummyStorage(JobStorage):
                                                 'monthly']),
                             'created': '10/14/2018 04:50:33',
                             'modified': '10/14/2018 18:25:31',
-                             }
-                         }).store(self.config)
+                             }},
+                        self.config).store()
         resp.body = json.dumps(store)

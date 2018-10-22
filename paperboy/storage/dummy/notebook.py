@@ -11,7 +11,7 @@ class NotebookDummyStorage(NotebookStorage):
         return Notebook
 
     def form(self):
-        return Notebook().to_form(self.config)
+        return Notebook(self.config).form()
 
     def list(self, req, resp):
         resp.content_type = 'application/json'
@@ -30,18 +30,19 @@ class NotebookDummyStorage(NotebookStorage):
                      'jobs': randint(1, 100),
                      'reports': randint(1, 1000),
                      'created': '10/14/2018 04:50:33',
-                     'modified': '10/14/2018 18:25:31'}})
+                     'modified': '10/14/2018 18:25:31'}},
+                self.config)
             for i in range(25)]
         resp.body = result.to_json(True)
 
     def detail(self, req, resp):
         resp.content_type = 'application/json'
-        details =Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', author='Joe Python', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31')).details(self.config)
+        details =Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', author='Joe Python', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).edit()
         resp.body = json.dumps(details)
 
     def store(self, req, resp):
         name = req.get_param('name')
         nb = nbformat.reads(req.get_param('file').file.read(), 4)
         resp.content_type = 'application/json'
-        store = Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', author='Joe Python', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31')).store(self.config)
+        store = Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', author='Joe Python', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).store()
         resp.body = json.dumps(store)

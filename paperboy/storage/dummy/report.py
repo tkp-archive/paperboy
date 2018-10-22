@@ -9,7 +9,7 @@ class ReportDummyStorage(ReportStorage):
         return Report
 
     def form(self):
-        return Report().to_form(self.config)
+        return Report(self.config).form()
 
     def list(self, req, resp):
         resp.content_type = 'application/json'
@@ -28,9 +28,8 @@ class ReportDummyStorage(ReportStorage):
                             # 'job': 'TestJob',
                             # 'jobid': 'Job-%d' % i,
                             'created': '10/14/2018 04:50:33',
-                            'run': '10/14/2018 18:25:31',
-                             }
-                         }) for i in range(25)
+                            'run': '10/14/2018 18:25:31'}},
+                        self.config) for i in range(25)
                 ]
         resp.body = result.to_json(True)
 
@@ -46,8 +45,8 @@ class ReportDummyStorage(ReportStorage):
                 # 'jobid': 'Job-%d' % i,
                 'created': '10/14/2018 04:50:33',
                 'run': '10/14/2018 18:25:31',
-                 }
-             }).details(self.config)
+                 }},
+            self.config).edit()
         resp.body = json.dumps(details)
 
     def store(self, req, resp):
@@ -66,6 +65,6 @@ class ReportDummyStorage(ReportStorage):
                 # 'jobid': 'Job-%d' % i,
                 'created': '10/14/2018 04:50:33',
                 'run': '10/14/2018 18:25:31',
-                 }
-             }).store(self.config)
+                 }},
+            self.config).store()
         resp.body = json.dumps(store)
