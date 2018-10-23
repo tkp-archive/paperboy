@@ -31,7 +31,7 @@ from ..middleware import CORSMiddleware, MultipartMiddleware
 # sql
 from ..storage.sqla import Base
 from ..storage.sqla import UserSQLStorage, NotebookSQLStorage, JobSQLStorage, ReportSQLStorage
-from ..middleware import SQLAlchemySessionMiddleware
+from ..middleware import SQLAlchemySessionMiddleware, SQLUserMiddleware, SQLAuthRequiredMiddleware
 
 
 class Paperboy(Application):
@@ -147,6 +147,7 @@ class Paperboy(Application):
 
         elif self.backend == 'sqla':
             logging.critical('Using SQL backend')
+
             self.engine = create_engine(self.sql_url, echo=False)
             Base.metadata.create_all(self.engine)
 
@@ -158,6 +159,7 @@ class Paperboy(Application):
             self.notebook_storage = NotebookSQLStorage
             self.job_storage = JobSQLStorage
             self.report_storage = ReportSQLStorage
+            self.auth = 'sqla'
 
         elif self.backend == 'dummy':
 
@@ -176,7 +178,8 @@ class Paperboy(Application):
 
         elif self.auth == 'sqla':
             logging.critical('Using SQL auth')
-            raise NotImplemented
+            self.auth_required_mw = SQLAuthRequiredMiddleware
+            self.load_user_mw = SQLUserMiddleware
 
         elif self.auth == 'dummy':
             logging.critical('Using Dummy auth')

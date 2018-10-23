@@ -16,6 +16,8 @@ def read(file):
 
 
 class StaticResource(BaseResource):
+    auth_required = False
+
     def __init__(self, *args, **kwargs):
         super(StaticResource, self).__init__(*args, **kwargs)
 

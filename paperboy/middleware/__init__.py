@@ -16,3 +16,6 @@ from .dummy import DummyUserMiddleware, DummyAuthRequiredMiddleware
 
 # No auth
 from .none import NoUserMiddleware, NoAuthRequiredMiddleware
+
+# SQL
+from .sqla import SQLUserMiddleware, SQLAuthRequiredMiddleware

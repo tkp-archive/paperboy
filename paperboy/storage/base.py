@@ -8,19 +8,19 @@ class BaseStorage(with_metaclass(ABCMeta)):
         self.config = config
 
     @abstractmethod
-    def form(self, req, resp):
+    def form(self, req, resp, *args, **kwargs):
         pass
 
     @abstractmethod
-    def list(self, req, resp):
+    def list(self, req, resp, *args, **kwargs):
         pass
 
     @abstractmethod
-    def detail(self, req, resp):
+    def detail(self, req, resp, *args, **kwargs):
         pass
 
     @abstractmethod
-    def store(self, req, resp):
+    def store(self, req, resp, *args, **kwargs):
         pass
 
 
@@ -29,15 +29,15 @@ class UserStorage(BaseStorage):
         self.config = config
 
     @abstractmethod
-    def login(self, req, resp):
+    def login(self, req, resp, *args, **kwargs):
         pass
 
-    def _do_login(self, token, req, resp):
+    def _do_login(self, token, req, resp, *args, **kwargs):
         resp.set_cookie('auth_token', token, max_age=self.config.token_timeout, path='/', secure=not self.config.http)
         resp.status = falcon.HTTP_302
         resp.set_header('Location', self.config.baseurl)
 
-    def logout(self, req, resp):
+    def logout(self, req, resp, *args, **kwargs):
         resp.unset_cookie('auth_token')
         resp.status = falcon.HTTP_302
         resp.set_header('Location', self.config.baseurl)

@@ -1,6 +1,6 @@
 from paperboy.config import Job
 from paperboy.storage import JobStorage
-from sqlalchemy import Column, Integer, String, DateTime, JSON, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base
@@ -11,44 +11,24 @@ class JobSQL(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    owner = Column(Integer, nullable=True)  # Possibly FK in Users table
+    userId = Column(Integer, ForeignKey('users.id'))
+    user = relationship('UserSQL', back_populates='jobs')
 
-    nb_id = Column(Integer, ForeignKey('notebooks.id'))
-    notebook = relationship('Notebook', back_populates='jobs')
+    notebookId = Column(Integer, ForeignKey('notebooks.id'))
+    notebook = relationship('NotebookSQL', back_populates='jobs')
+
+    reports = relationship('ReportSQL', back_populates='job')
 
     start_time = Column(DateTime)
     interval = Column(String)
     sla = Column(String, nullable=True)
-    params = Column(JSON)
+    params = Column(String)
     type = Column(String)
     output = Column(String)
     strip_code = Column(Boolean)
 
     def __repr__(self):
-        return "<Job(name='%s')>" % (self.name, self.fullname, self.password)
-
-
-class JobUserSQL(Base):
-    __tablename__ = 'jobs_usql'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-
-    owner = Column(Integer, ForeignKey('users.id'))
-    user = relationship('User', back_populates='jobs_usql')
-
-    nb_id = Column(Integer, ForeignKey('notebooks_usql.id'))
-    notebook = relationship('Notebook', back_populates='jobs_usql')
-
-    start_time = Column(DateTime)
-    interval = Column(String)
-    sla = Column(String, nullable=True)
-    params = Column(JSON)
-    type = Column(String)
-    output = Column(String)
-    strip_code = Column(Boolean)
-
-    def __repr__(self):
-        return "<Job(name='%s')>" % (self.name, self.fullname, self.password)
+        return "<Job(name='%s')>" % (self.name)
 
 
 class JobSQLStorage(JobStorage):

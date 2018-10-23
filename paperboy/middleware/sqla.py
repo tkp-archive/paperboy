@@ -1,9 +1,8 @@
 import falcon
-from paperboy.config import User
 from six.moves.urllib_parse import urljoin
 
 
-class DummyUserMiddleware(object):
+class SQLUserMiddleware(object):
     def __init__(self, config, db, *args, **kwargs):
         self.config = config
         self.db = db
@@ -11,15 +10,22 @@ class DummyUserMiddleware(object):
     def process_request(self, req, resp):
         if req.context.get('auth_token') is None:
             if req.path not in (urljoin(self.config.baseurl, self.config.loginurl), urljoin(self.config.baseurl, self.config.registerurl)) and \
-                 urljoin(self.config.baseurl, 'static') not in req.path:
+               urljoin(self.config.baseurl, 'static') not in req.path:
                 raise falcon.HTTPFound(urljoin(self.config.baseurl, self.config.loginurl))
         else:
-            req.context['user'] = User(self.config, id='1', name=req.context.get('auth_token'))
-            if req.path in (urljoin(self.config.baseurl, self.config.loginurl), urljoin(self.config.baseurl, self.config.registerurl)):
-                raise falcon.HTTPFound(self.config.baseurl)
+            # try to get user
+            session = self.config.sessionmaker()
+            self.db.users.detail(req, resp, session)
+            if req.context.get('user') is not None:
+                if req.path in (urljoin(self.config.baseurl, self.config.loginurl), urljoin(self.config.baseurl, self.config.registerurl)):
+                    raise falcon.HTTPFound(self.config.baseurl)
+
+            elif req.path not in (urljoin(self.config.baseurl, self.config.loginurl), urljoin(self.config.baseurl, self.config.registerurl), urljoin(self.config.baseurl, self.config.logouturl)) and \
+                    urljoin(self.config.baseurl, 'static') not in req.path:
+                raise falcon.HTTPFound(urljoin(self.config.baseurl, self.config.loginurl))
 
 
-class DummyAuthRequiredMiddleware(object):
+class SQLAuthRequiredMiddleware(object):
     def __init__(self,
                  config,
                  db):

@@ -5,4 +5,5 @@ falcon-multipart
 gunicorn
 jinja2
 nbformat
+PyJWT
 traitlets

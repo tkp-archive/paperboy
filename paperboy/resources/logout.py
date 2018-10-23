@@ -19,4 +19,4 @@ class LogoutResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        self.db.users.login(req, resp)
+        self.db.users.logout(req, resp)
