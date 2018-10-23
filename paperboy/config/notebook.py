@@ -123,5 +123,5 @@ class Notebook(Base):
     def store(self):
         ret = []
         ret.append(DOMEntry(type='p', value='Success!').to_json())
-        ret.append(DOMEntry(type='p', value='Successfully stored notebook {}'.format(self.name)).to_json())
+        ret.append(DOMEntry(type='p', value='Successfully stored notebook: {}'.format(self.name)).to_json())
         return ret

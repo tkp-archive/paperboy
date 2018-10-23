@@ -62,3 +62,8 @@ def lookfor(s):
                 .replace('*', '%')\
                 .replace('?', '_')
     return '%{0}%'.format(s)
+
+
+def justid(id):
+    if '-' in id:
+        return id.split('-', 1)[-1]

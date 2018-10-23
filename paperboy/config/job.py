@@ -106,14 +106,11 @@ class Job(Base):
     def edit(self):
         f = Form()
         f.entries = [
-            FormEntry(name='name', type='text', label='Name', value=self.name, placeholder='Name for Job...', required=True),
-            FormEntry(name='starttime', type='datetime', label='Start Time/Date', required=True),
-            FormEntry(name='interval', type='select', label='Interval', options=_INTERVAL_TYPES, required=True),
-            FormEntry(name='sla', type='select', label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
-            FormEntry(name='parameters_inline', type='textarea', label='Papermill params (.jsonl)', placeholder='Upload file or type here...', required=False),
-            FormEntry(name='type', type='select', label='Type', options=['Run', 'Publish'], required=True),
-            FormEntry(name='output', type='select', label='Output', options=['Email', 'PDF', 'HTML', 'Script'], required=True),
-            FormEntry(name='code', type='select', label='Strip Code', options=['Yes', 'No'], required=True),
+            FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Job...', required=True),
+            FormEntry(name='starttime', value=self.start_time.strftime('%Y-%m-%dT%H:%M'), type='datetime', label='Start Time/Date', required=True),
+            FormEntry(name='interval', type='select', value=self.interval, label='Interval', options=_INTERVAL_TYPES, required=True),
+            FormEntry(name='sla', type='select', value=self.sla, label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
+            FormEntry(name='reports', type='text', value=self.reports, readonly=True),
             FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs'))
         ]
         return f.to_json()
@@ -121,6 +118,6 @@ class Job(Base):
     def store(self):
         ret = []
         ret.append(DOMEntry(type='h2', value='Success!').to_json())
-        ret.append(DOMEntry(type='p', value='Successfully configured job 1!').to_json())
-        ret.append(DOMEntry(type='p', value='Notebook: {}'.format('')).to_json())
+        ret.append(DOMEntry(type='p', value='Successfully configured job: {}'.format(self.name)).to_json())
+        ret.append(DOMEntry(type='p', value='Notebook: {}'.format(self.meta.notebook.name)).to_json())
         return ret

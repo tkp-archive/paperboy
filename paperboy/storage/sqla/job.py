@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 from paperboy.config import Job, JobMetadata
 from paperboy.config.storage import JobListResult
 from paperboy.storage import JobStorage
-from .base import Base, BaseSQLStorageMixin
+from .base import Base, BaseSQLStorageMixin, justid
 from .user import UserSQL
 from .notebook import NotebookSQL
 
@@ -93,7 +93,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         user_sql = session.query(UserSQL).get(int(user.id))
 
         notebook = req.get_param('notebook')
-        nb_sql = session.query(NotebookSQL).get(int(notebook))
+        nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
 
         start_time = datetime.strptime(req.get_param('starttime'), '%Y-%m-%dT%H:%M')
         interval = req.get_param('interval') or ''
