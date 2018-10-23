@@ -12,11 +12,14 @@ A web frontend for scheduling Jupyter Notebooks as reports
 # Overview
 Paperboy is a production-grade application for scheduling reports. It has a flexible architecture and extensible APIs, and can integrate into a wide variety of deployments. It is composed of various industrial-strength technologies from the open source world.
 
-- Jupyter Notebooks for the reports themselves
-    - Jupyter notebooks are an ideal report template, and with NBConvert support a wide variety of output types, including PDFs, HTML, Emails, etc
-- SQLAlchemy for Storage
-- Apache Airflow for Scheduling
-- PhosphorJS for the frontend
+- [Jupyter Notebooks](https://jupyter.org/documentation) for the reports themselves
+    - Jupyter notebooks are an ideal report template, and with [NBConvert](https://github.com/jupyter/nbconvert) support a wide variety of output types, including PDFs, HTML, Emails, etc
+- [SQLAlchemy](https://www.sqlalchemy.org) for Storage
+- [Apache Airflow](https://airflow.apache.org) for Scheduling
+- [Dask](https://dask.org) for [Airflow Workers](https://airflow.readthedocs.io/en/stable/howto/executor/use-dask.html)
+- [Kubernetes](https://kubernetes.io) for worker instances
+- [PhosphorJS](https://phosphorjs.github.io) for the frontend
+- Support for Python [Virtualenvs](https://virtualenv.pypa.io/en/stable/) via `requirements.txt` or custom [Docker](https://www.docker.com) images via `Dockerfile`s on a per-notebook level
 
 
 Some future options include:
