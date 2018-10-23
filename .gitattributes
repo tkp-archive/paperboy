@@ -3,3 +3,11 @@ docs/* linguist-documentation
 paperboy/assets/static/css/* linguist-vendored
 paperboy/assets/static/js/* linguist-vendored
 paperboy/assets/static/fonts/* linguist-vendored
+setup.py linguist-vendored
+setup.cfg linguist-vendored
+package.json linguist-vendored
+Makefile linguist-vendored
+tsconfig.json linguist-vendored
+webpack.config.js linguist-vendored
+MANIFEST.in linguist-documentation
+LICENSE linguist-documentation
