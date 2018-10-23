@@ -28,6 +28,7 @@ class NotebookDummyStorage(NotebookStorage):
                  'meta': {
                      'username': 'Test Author',
                      'userid': '1',
+                     'notebook': '{}',
                      'privacy': choice(['public'] * 10 + ['private']),
                      'jobs': randint(1, 100),
                      'reports': randint(1, 1000),
@@ -39,13 +40,13 @@ class NotebookDummyStorage(NotebookStorage):
 
     def detail(self, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
-        details =Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', username='Joe Python', userid='1', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).edit()
+        details =Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', username='Joe Python', userid='1', notebook='{}', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).edit()
         resp.body = json.dumps(details)
 
     def store(self, req, resp, session, *args, **kwargs):
         name = req.get_param('name')
         nb = nbformat.reads(req.get_param('file').file.read(), 4)
         resp.content_type = 'application/json'
-        store = Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', username='Joe Python', userid='1', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).store()
+        store = Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', username='Joe Python', userid='1', notebook=nb, jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).store()
         logging.critical("Storing notebook {}".format(name))
         resp.body = json.dumps(store)

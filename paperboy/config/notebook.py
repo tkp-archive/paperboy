@@ -10,6 +10,7 @@ class NotebookMetadata(HasTraits):
     username = Unicode()
     userid = Unicode()
 
+    notebook = Unicode()
     privacy = Unicode()
     sla = Unicode()
     requirements = Unicode(allow_none=True)
@@ -25,6 +26,7 @@ class NotebookMetadata(HasTraits):
         ret = {}
         ret['username'] = self.username
         ret['userid'] = self.userid
+        ret['notebook'] = self.notebook
 
         if self.privacy:
             ret['privacy'] = self.privacy
@@ -91,6 +93,7 @@ class Notebook(Base):
         ret = Notebook(config)
         if string:
             jsn = json.loads(jsn)
+
         ret.name = jsn.pop('name')
         ret.id = jsn.pop('id')
 
@@ -98,6 +101,7 @@ class Notebook(Base):
             ret.meta = NotebookMetadata.from_json(jsn['meta'])
         else:
             ret.meta = NotebookMetadata.from_json(jsn)
+
         return ret
 
     def edit(self):
@@ -106,10 +110,14 @@ class Notebook(Base):
             FormEntry(name='name', type='text', value=self.name, placeholder='Name for Job...', required=True),
             FormEntry(name='privacy', type='select', value=self.meta.privacy, label='Visibility', options=['Private', 'Public'], required=True),
             FormEntry(name='sla', type='select', value=self.meta.sla, label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
-            # FormEntry(name='requirements', type='file', label='requirements.txt', required=False),
-            # FormEntry(name='dockerfile', type='file', label='Dockerfile', required=False),
-            FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'notebooks'))
+            FormEntry(name='notebook', type='json', value=self.meta.notebook, placeholder='Notebook json...', required=True)
         ]
+        if self.meta.requirements:
+            f.entries.append(FormEntry(name='requirements', type='textarea', value=self.meta.requirements, label='requirements.txt', required=False))
+        if self.meta.dockerfile:
+            f.entries.append(FormEntry(name='dockerfile', type='textarea', value=self.meta.dockerfile, label='Dockerfile', required=False))
+
+        f.entries.append(FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'notebooks')))
         return f.to_json()
 
     def store(self):

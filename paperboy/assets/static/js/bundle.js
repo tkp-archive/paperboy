@@ -14017,7 +14017,7 @@ var DomUtils;
     }
     DomUtils.buildInput = buildInput;
     /*** build a textarea ***/
-    function buildTextarea(name, placeholder, value, required = false) {
+    function buildTextarea(name, placeholder, value, required = false, json = false) {
         let area = document.createElement('textarea');
         if (name) {
             area.name = name;
@@ -14026,7 +14026,12 @@ var DomUtils;
             area.placeholder = placeholder;
         }
         if (value) {
-            area.value = value;
+            if (json) {
+                area.value = JSON.stringify(JSON.parse(value), undefined, 4);
+            }
+            else {
+                area.value = value;
+            }
         }
         area.required = required;
         area.style.marginBottom = '15px';
@@ -14262,6 +14267,11 @@ var DomUtils;
                     sec.appendChild(input);
                     break;
                 }
+                case 'json': {
+                    let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required'], true);
+                    sec.appendChild(input);
+                    break;
+                }
                 case 'submit': {
                     let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
                     sec.appendChild(input);
@@ -14319,14 +14329,22 @@ var DomUtils;
             }
             td1.textContent = toProperCase(data[i]['name']);
             let conts;
-            if (data[i]['type'] == 'select') {
-                conts = DomUtils.buildSelect(data[i]['name'], data[i]['options'], data[i]['value'], data[i]['required'], data[i]['readonly']);
-            }
-            else if (data[i]['type'] == 'textarea') {
-                conts = DomUtils.buildTextarea(data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required']);
-            }
-            else {
-                conts = DomUtils.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly']);
+            switch (data[i]['type']) {
+                case 'select': {
+                    conts = DomUtils.buildSelect(data[i]['name'], data[i]['options'], data[i]['value'], data[i]['required'], data[i]['readonly']);
+                    break;
+                }
+                case 'textarea': {
+                    conts = DomUtils.buildTextarea(data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required']);
+                    break;
+                }
+                case 'json': {
+                    conts = DomUtils.buildTextarea(data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], true);
+                    break;
+                }
+                default: {
+                    conts = DomUtils.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly']);
+                }
             }
             td2.appendChild(conts);
             row.appendChild(td1);
@@ -40379,7 +40397,7 @@ exports.i(__webpack_require__(194), "");
 exports.i(__webpack_require__(195), "");
 
 // module
-exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\ninput {\n  min-height:15px;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}\n\ndiv.details > table {\n  width: 50%;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 5px;\n}\n\ndiv.details > table > tr > td:nth-child(2) {\n  background-color: transparent !important;\n}\n\ndiv.details > table > tr > td > * {\n  min-width: 200px;\n}\n\ndiv.details > table > tr > td > input[type=submit] {\n  min-width: 200px;\n}\n\ndiv.details > table > tr > td > input[type=submit]:hover {\n  background-color: var(--highlight-blue);\n}\n\ndiv.details > table > tr > td {\n  border: none;\n  border-bottom: none !important;\n}\n\n/****** Tables ******/\n.primary .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.primary .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.primary .p-DockPanel-widget form > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .primary .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .primary .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.primary .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.primary .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .primary .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .primary .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.primary .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .primary .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .primary .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n/****** ******/\n\n\n/****** Forms ******/\n.p-DockPanel-widget > form {\n    padding: 15px;\n}\n\n.p-DockPanel-widget > form {\n    display: flex;\n    flex-direction: column;\n}\n\n.p-DockPanel-widget > form > * {\n    width: 50%;\n    min-height:20px;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top:10px;\n}\n\n.p-DockPanel-widget > form > textarea {\n  min-height: 40px;\n}\n\n.p-DockPanel-widget > form > input[type=submit] {\n    width: 15%;\n}\n\n.p-DockPanel-widget > form > input[type=checkbox] {\n    /*margin-left:10px;*/\n}\n\n.p-DockPanel-widget > form > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n.notebooks .uploader form {\n    min-height: 475px;\n}\n\n.jobs .scheduler form {\n    min-height: 800px;\n}\n\n.reports .configurator form {\n    min-height: 600px;\n}\n/****** ******/\n", ""]);
+exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\ninput {\n  min-height:15px;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n\ntextarea {\n  min-height: 50px;\n}\n\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}\n\ndiv.details {\n  overflow-y: scroll;\n}\n\ndiv.details > table {\n  width: 50%;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 5px;\n}\n\ndiv.details > table > tr > td:nth-child(2) {\n  background-color: transparent !important;\n}\n\ndiv.details > table > tr > td > * {\n  min-width: 200px;\n}\n\ndiv.details > table > tr > td > input[type=submit] {\n  min-width: 200px;\n}\n\ndiv.details > table > tr > td > input[type=submit]:hover {\n  background-color: var(--highlight-blue);\n}\n\ndiv.details > table > tr > td {\n  border: none;\n  border-bottom: none !important;\n}\n\n/****** Tables ******/\n.primary .p-DockPanel-widget {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.primary .p-DockPanel-widget > table {\n    height:95%;\n    text-align: left;\n}\n\n.primary .p-DockPanel-widget form > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .primary .p-DockPanel-widget > p span.page:hover {\n    color: white;\n}\n\nbody.light .primary .p-DockPanel-widget > p span.page:hover {\n    color: #999;\n}\n\n.primary .p-DockPanel-widget > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.primary .p-DockPanel-widget > table > tr > th {\n    padding: 5px;\n}\n\nbody.dark .primary .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .primary .p-DockPanel-widget > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\n.primary .p-DockPanel-widget > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .primary .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light .primary .p-DockPanel-widget > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\n/****** ******/\n\n\n/****** Forms ******/\n.p-DockPanel-widget > form {\n    padding: 15px;\n}\n\n.p-DockPanel-widget > form {\n    display: flex;\n    flex-direction: column;\n}\n\n.p-DockPanel-widget > form > * {\n    width: 50%;\n    min-height:20px;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top:10px;\n}\n\n.p-DockPanel-widget > form > input[type=submit] {\n    width: 15%;\n}\n\n.p-DockPanel-widget > form > input[type=checkbox] {\n    /*margin-left:10px;*/\n}\n\n.p-DockPanel-widget > form > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n.notebooks .uploader form {\n    min-height: 475px;\n}\n\n.jobs .scheduler form {\n    min-height: 800px;\n}\n\n.reports .configurator form {\n    min-height: 600px;\n}\n/****** ******/\n", ""]);
 
 // exports
 

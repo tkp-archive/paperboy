@@ -150,6 +150,7 @@ namespace DomUtils {
                          placeholder?: string,
                          value?: string,
                          required = false,
+                         json = false
                       ){
     let area = document.createElement('textarea');
     if(name){
@@ -159,7 +160,11 @@ namespace DomUtils {
       area.placeholder = placeholder;
     }
     if(value){
-      area.value = value;
+      if(json){
+        area.value = JSON.stringify(JSON.parse(value), undefined, 4);
+      } else {
+        area.value = value;
+      }
     }
     area.required = required;
     area.style.marginBottom = '15px';
@@ -429,6 +434,11 @@ namespace DomUtils {
           sec.appendChild(input);
           break;
         }
+        case 'json': {
+          let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required'], true);
+          sec.appendChild(input);
+          break;
+        }
         case 'submit': {
           let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
           sec.appendChild(input);
@@ -491,24 +501,38 @@ namespace DomUtils {
         td1.textContent = toProperCase(data[i]['name']);
 
         let conts;
-        if(data[i]['type'] == 'select'){
+        switch(data[i]['type']){
+          case 'select': {
             conts = DomUtils.buildSelect(data[i]['name'],
                 data[i]['options'],
                 data[i]['value'],
                 data[i]['required'],
                 data[i]['readonly']);
-        } else if(data[i]['type'] == 'textarea'){
+            break
+          }
+          case 'textarea': {
             conts = DomUtils.buildTextarea(data[i]['name'],
                 data[i]['placeholder'],
                 data[i]['value'],
                 data[i]['required']);
-        } else {
+            break;
+          }
+          case 'json': {
+            conts = DomUtils.buildTextarea(data[i]['name'],
+                data[i]['placeholder'],
+                data[i]['value'],
+                data[i]['required'],
+                true);
+            break;
+          }
+          default: {
             conts = DomUtils.buildInput(data[i]['type'], 
                 data[i]['name'],
                 data[i]['placeholder'],
                 data[i]['value'],
                 data[i]['required'],
                 data[i]['readonly']);
+          }
         }
 
         td2.appendChild(conts);

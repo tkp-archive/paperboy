@@ -30,14 +30,18 @@ class BaseSQLStorageMixin(object):
     def _detail(self, SqlCls, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
 
-        id = int(req.get_param('id'))
+        id = int(req.get_param('id') or -1)
+        if id < 0:
+            resp.body = '{}'
+            return
+
         nb_sql = session.query(SqlCls).get(id)
         logging.critical('detail : {}, result : {}'.format(id, nb_sql))
 
         if nb_sql:
             resp.body = json.dumps(nb_sql.to_config(self.config).edit())
-        else:
-            resp.body = '{}'
+            return
+        resp.body = '{}'
 
 
 def lookfor(s):

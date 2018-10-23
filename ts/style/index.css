@@ -46,6 +46,11 @@ input {
 ::-webkit-scrollbar-thumb {
     background: var(--highlight-blue);
 }
+
+textarea {
+  min-height: 50px;
+}
+
 /**********/
 /* /common */
 /**********/
@@ -160,6 +165,10 @@ body.light tr:hover > td {
   background-color: var(--light-bg-color2)
 }
 
+div.details {
+  overflow-y: scroll;
+}
+
 div.details > table {
   width: 50%;
   margin-left: auto;
@@ -263,10 +272,6 @@ body.light .primary .p-DockPanel-widget > table > tr > td {
     margin-left: auto;
     margin-right: auto;
     margin-top:10px;
-}
-
-.p-DockPanel-widget > form > textarea {
-  min-height: 40px;
 }
 
 .p-DockPanel-widget > form > input[type=submit] {

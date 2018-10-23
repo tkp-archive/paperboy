@@ -24,7 +24,7 @@ class NotebookSQL(Base):
     jobs = relationship('JobSQL', back_populates='notebook')
     reports = relationship('ReportSQL', back_populates='notebook')
 
-    nb = Column(String)
+    notebook = Column(String)
     privacy = Column(String, nullable=True)
     sla = Column(String, nullable=True)
     requirements = Column(String, nullable=True)
@@ -38,7 +38,7 @@ class NotebookSQL(Base):
         # FIXME
         return NotebookSQL(name=nb.name,
                            userId=int(nb.user.id),
-                           nb=nb.nb,
+                           notebook=nb.notebook,
                            privacy=nb.privacy,
                            sla=nb.sla,
                            requirements=nb.requirements,
@@ -56,7 +56,7 @@ class NotebookSQL(Base):
         meta.username = self.user.name
         meta.userid = str(self.user.id)
 
-        meta.nb = self.nb
+        meta.notebook = self.notebook
         meta.privacy = self.privacy
         meta.sla = self.sla
 
@@ -94,7 +94,7 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         user = req.context['user']
         user_sql = session.query(UserSQL).get(int(user.id))
 
-        nb = str(strip_outputs(nbformat.reads(req.get_param('file').file.read(), 4)))
+        notebook = nbformat.writes(strip_outputs(nbformat.reads(req.get_param('file').file.read(), 4)))
         privacy = req.get_param('privacy') or ''
         sla = req.get_param('sla') or ''
         requirements = req.get_param('requirements') or ''
@@ -105,7 +105,7 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         nb = NotebookSQL(name=name,
                          userId=int(user.id),
                          user=user_sql,
-                         nb=nb,
+                         notebook=notebook,
                          privacy=privacy,
                          sla=sla,
                          requirements=requirements,

@@ -1,1 +1,1 @@
-web: python3 -m paperboy.server
+web: python3 -m paperboy.server --backend='sqla' --auth='sqla'
