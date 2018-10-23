@@ -25,6 +25,7 @@ Some future options include:
 - MongoDB storage
 - Luigi scheduler
 
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/ss.png)
 
 ## Arch
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/arch.png)
