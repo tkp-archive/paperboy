@@ -11,16 +11,19 @@ from .job import Job
 class ReportMetadata(HasTraits):
     notebook = Instance(Notebook)
     job = Instance(Job)
-    created = Instance(datetime)
 
     username = Unicode()
     userid = Unicode()
 
     run = Instance(datetime)
-    params = Unicode()
+    parameters = Unicode()
     type = Unicode()
     output = Unicode()
     strip_code = Bool()
+
+    run = Instance(datetime)
+    created = Instance(datetime)
+    modified = Instance(datetime)
 
     def to_json(self, string=False):
         ret = {}
@@ -30,11 +33,22 @@ class ReportMetadata(HasTraits):
         ret['job'] = self.job.name
         ret['jobid'] = self.job.id
 
-        if self.created:
-            ret['created'] = self.created.strftime('%m/%d/%Y %H:%M:%S')
-
         if self.run:
             ret['run'] = self.run.strftime('%m/%d/%Y %H:%M:%S')
+        if self.parameters:
+            ret['parameters'] = self.parameters
+        if self.type:
+            ret['type'] = self.type
+        if self.output:
+            ret['output'] = self.output
+        if self.strip_code:
+            ret['strip_code'] = self.strip_code
+        if self.run:
+            ret['run'] = self.run.strftime('%m/%d/%Y %H:%M:%S')
+        if self.created:
+            ret['created'] = self.created.strftime('%m/%d/%Y %H:%M:%S')
+        if self.modified:
+            ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
 
         if string:
             return json.dumps(ret)
@@ -46,7 +60,7 @@ class ReportMetadata(HasTraits):
         if string:
             jsn = json.loads(jsn)
         for k, v in jsn.items():
-            if k in ('created', 'run'):
+            if k in ('created', 'modified', 'run'):
                 ret.set_trait(k, datetime.strptime(v, '%m/%d/%Y %H:%M:%S'))
             else:
                 ret.set_trait(k, v)
@@ -73,7 +87,7 @@ class Report(Base):
             FormEntry(name='name', type='text', label='Name', placeholder='Name for Report...', required=True),
             FormEntry(name='notebook', type='autocomplete', label='Notebook', url=urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='), required=True),
             FormEntry(name='job', type='autocomplete', label='Job', url=urljoin(self.config.apiurl, 'autocomplete?type=jobs&partial='), required=True),
-            FormEntry(name='params', type='textarea', label='Parameters', placeholder='JSON Parameters...'),
+            FormEntry(name='parameters', type='textarea', label='Parameters', placeholder='JSON Parameters...'),
             FormEntry(name='type', type='select', label='Type', options=['Run', 'Publish'], required=True),
             FormEntry(name='output', type='select', label='Output', options=['Email', 'PDF', 'HTML', 'Script'], required=True),
             FormEntry(name='code', type='select', label='Strip Code', options=['Yes', 'No'], required=True),
@@ -98,13 +112,13 @@ class Report(Base):
     def edit(self):
         f = Form()
         f.entries = [
-            FormEntry(name='name', type='text', label='Name', value=self.name, placeholder='Name for Report...', required=True),
-            FormEntry(name='notebook', type='autocomplete', label='Notebook', url=urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='), required=True),
-            FormEntry(name='job', type='autocomplete', label='Job', url=urljoin(self.config.apiurl, 'autocomplete?type=jobs&partial='), required=True),
-            FormEntry(name='params', type='textarea', label='Parameters', placeholder='JSON Parameters...'),
-            FormEntry(name='type', type='select', label='Type', options=['Run', 'Publish'], required=True),
-            FormEntry(name='output', type='select', label='Output', options=['Email', 'PDF', 'HTML', 'Script'], required=True),
-            FormEntry(name='code', type='select', label='Strip Code', options=['Yes', 'No'], required=True),
+            FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Report...', required=True),
+            FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
+            FormEntry(name='job', type='text', value=self.meta.job.name, label='Job', required=True, readonly=True),
+            FormEntry(name='parameters', type='textarea', value=self.meta.parameters, label='Parameters', placeholder='JSON Parameters...'),
+            FormEntry(name='type', type='select', value=self.meta.type, label='Type', options=['Run', 'Publish'], required=True),
+            FormEntry(name='output', type='select', value=self.meta.output, label='Output', options=['Email', 'PDF', 'HTML', 'Script'], required=True),
+            FormEntry(name='code', type='select', value=self.meta.strip_code, label='Strip Code', options=['Yes', 'No'], required=True),
             FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs'))
         ]
         return f.to_json()
@@ -112,6 +126,7 @@ class Report(Base):
     def store(self):
         ret = []
         ret.append(DOMEntry(type='h2', value='Success!').to_json())
-        ret.append(DOMEntry(type='p', value='Successfully configured job 1!').to_json())
-        ret.append(DOMEntry(type='p', value='Notebook: {}'.format('')).to_json())
+        ret.append(DOMEntry(type='p', value='Successfully configured report: {}!'.format(self.name)).to_json())
+        ret.append(DOMEntry(type='p', value='Notebook: {}'.format(self.meta.notebook.name)).to_json())
+        ret.append(DOMEntry(type='p', value='Job: {}'.format(self.meta.job.name)).to_json())
         return ret

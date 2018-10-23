@@ -107,6 +107,7 @@ class Job(Base):
         f = Form()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Job...', required=True),
+            FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
             FormEntry(name='starttime', value=self.start_time.strftime('%Y-%m-%dT%H:%M'), type='datetime', label='Start Time/Date', required=True),
             FormEntry(name='interval', type='select', value=self.interval, label='Interval', options=_INTERVAL_TYPES, required=True),
             FormEntry(name='sla', type='select', value=self.sla, label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
