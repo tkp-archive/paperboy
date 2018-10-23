@@ -1,5 +1,4 @@
 import json
-from six import string_types
 from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Int, Instance, validate, TraitError

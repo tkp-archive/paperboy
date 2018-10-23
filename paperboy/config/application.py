@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from traitlets.config.application import Application
 from traitlets import Int, Instance, List, Tuple, Unicode, Bool, validate, TraitError
+from uuid import uuid4
 
 # falcon api
 from ..server.api import FalconAPI
@@ -28,6 +29,7 @@ from ..middleware import NoUserMiddleware, NoAuthRequiredMiddleware
 from ..middleware import CORSMiddleware, MultipartMiddleware
 
 # sql
+from ..storage.sqla import Base
 from ..storage.sqla import UserSQLStorage, NotebookSQLStorage, JobSQLStorage, ReportSQLStorage
 from ..middleware import SQLAlchemySessionMiddleware
 
@@ -40,33 +42,33 @@ class Paperboy(Application):
     ############
     # Gunicorn #
     ############
-    workers = Int(default_value=2)
-    port = Unicode(default_value='8080')
+    workers = Int(default_value=2, help="Number of gunicorn workers").tag(config=True)
+    port = Unicode(default_value='8080', help="Port to run on").tag(config=True)
     ############
 
     ##########
     # Falcon #
     ##########
-    api = Instance(falcon.API)
+    api = Instance(falcon.API, help="A Falcon API instance").tag(config=True)
     ##########
 
     ########
     # URLs #
     ########
-    baseurl = Unicode(default_value='/')
-    apiurl = Unicode(default_value='/api/v1/')
-    loginurl = Unicode(default_value='login')
-    logouturl = Unicode(default_value='logout')
-    registerurl = Unicode(default_value='register')
+    baseurl = Unicode(default_value='/', help="Base URL (for reverse proxies)").tag(config=True)
+    apiurl = Unicode(default_value='/api/v1/', help="API base URL (for reverse proxies)").tag(config=True)
+    loginurl = Unicode(default_value='login', help="login url").tag(config=True)
+    logouturl = Unicode(default_value='logout', help="logout url").tag(config=True)
+    registerurl = Unicode(default_value='register', help="register url").tag(config=True)
     ########
 
     #############
     # Misc Auth #
     #############
-    http = Bool(default_value=True)
-    include_password = Bool(default_value=False)
-    include_register = Bool(default_value=True)
-    token_timeout = Int(default_value=600)
+    http = Bool(default_value=True, help="Running on HTTP (as opposed to https, so token is insecure)").tag(config=True)
+    include_password = Bool(default_value=False).tag(config=True)
+    include_register = Bool(default_value=True).tag(config=True)
+    token_timeout = Int(default_value=600).tag(config=True)
     #############
 
     def _login_redirect(config, *args, **kwargs):
@@ -104,8 +106,9 @@ class Paperboy(Application):
     #        Predefined Configurations       #
     #
     ##########################################
-    backend = Unicode(default_value='dummy')
-    auth = Unicode(default_value='dummy')
+    backend = Unicode(default_value='dummy', help="Backend set to use, options are {dummy, git, sqla, custom}").tag(config=True)
+    auth = Unicode(default_value='dummy', help="Authentication backend set to use, options are {dummy, none, sqla, custom}").tag(config=True)
+    secret = Unicode()
 
     @validate('backend')
     def _validate_backend(self, proposed):
@@ -123,7 +126,7 @@ class Paperboy(Application):
     ##############
     # SQL extras #
     ##############
-    sql_url = 'sqlite:///:memory:'
+    sql_url = Unicode(default_value='sqlite:///:memory:', help="SQL Alchemy url").tag(config=True)
     engine = None
     sessionmaker = None
     sql_user = Bool(default_value=True)
@@ -136,7 +139,7 @@ class Paperboy(Application):
             'bind': '0.0.0.0:{}'.format(self.port),
             'workers': self.workers
         }
-
+        self.secret = str(uuid4())
         # Preconfigured storage backends
         if self.backend == 'git':
             logging.critical('Using Git backend')
@@ -144,9 +147,12 @@ class Paperboy(Application):
 
         elif self.backend == 'sqla':
             logging.critical('Using SQL backend')
-            self.engine = create_engine(self.sql_url, echo=True)
+            self.engine = create_engine(self.sql_url, echo=False)
+            Base.metadata.create_all(self.engine)
+
             self.sessionmaker = sessionmaker(bind=self.engine)
-            self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.sessionmaker())]
+            session = self.sessionmaker()
+            self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(session)]
             self.user_storage = UserSQLStorage
             self.sql_user = True
             self.notebook_storage = NotebookSQLStorage
@@ -154,6 +160,7 @@ class Paperboy(Application):
             self.report_storage = ReportSQLStorage
 
         elif self.backend == 'dummy':
+
             logging.critical('Using Dummy backend')
             self.user_storage = UserDummyStorage
             self.notebook_storage = NotebookDummyStorage
@@ -188,3 +195,11 @@ class Paperboy(Application):
                 'description': self.description,
                 'workers': self.workers,
                 'port': self.port}
+    aliases = {
+        'workers': 'Paperboy.workers',
+        'port': 'Paperboy.port',
+        'baseurl': 'Paperboy.baseurl',
+        'backend': 'Paperboy.backend',
+        'auth': 'Paperboy.auth',
+        'sql_url': 'Paperboy.sql_url'
+    }

@@ -1,6 +1,12 @@
 run:  ## run server
 	python3 -m paperboy.server
 
+runnoauth:  ## run server without auth
+	python3 -m paperboy.server --auth='none'
+
+runsql:  ## run server with sql backend
+	python3 -m paperboy.server --backend='sqla'
+
 tests: clean ## Clean and Make unit tests
 	python3 -m nose -v tests --with-coverage --cover-erase --cover-package=`find paperboy -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/\.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 
