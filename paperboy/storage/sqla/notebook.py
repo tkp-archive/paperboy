@@ -81,10 +81,10 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         return self._form(Notebook)
 
     def search(self, count, id=None, name=None, session=None, *args, **kwargs):
-        return self._search(NotebookSQL, count, id, name, session, *args, **kwargs)
+        return self._search(NotebookSQL, 'Notebook', count, id, name, session, *args, **kwargs)
 
     def list(self, req, resp, session, *args, **kwargs):
-        return self._list(NotebookSQL, NotebookListResult, req, resp, session, *args, **kwargs)
+        return self._list(NotebookSQL, NotebookListResult, 'notebooks', req, resp, session, *args, **kwargs)
 
     def detail(self, req, resp, session, *args, **kwargs):
         return self._detail(NotebookSQL, req, resp, session, *args, **kwargs)

@@ -1,9 +1,9 @@
 import json
 import logging
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from paperboy.config import Report
+from paperboy.config import Report, ReportMetadata
 from paperboy.config.storage import ReportListResult
 from paperboy.storage import ReportStorage
 from .base import Base, BaseSQLStorageMixin
@@ -29,6 +29,33 @@ class ReportSQL(Base):
     output = Column(String)
     strip_code = Column(Boolean)
 
+    created = Column(DateTime)
+    modified = Column(DateTime)
+
+    @staticmethod
+    def from_config(rp):
+        # FIXME
+        return ReportSQL(name=rp.name,
+                         userId=int(rp.user.id),
+                         # user=jb.user,
+                         notebookId=int(rp.notebook.id),
+                         # notebook=jb.notebook,
+                         reports=rp.reports,
+                         start_time=rp.start_time,
+                         interval=rp.interval,
+                         sla=rp.sla,
+                         created=rp.created,
+                         modified=rp.modified)
+
+    def to_config(self, config):
+        ret = Report(config)
+        ret.id = str(self.id)
+        ret.name = self.name
+
+        meta = ReportMetadata()
+        ret.meta = meta
+        return ret
+
     def __repr__(self):
         return "<Report(name='%s')>" % (self.name)
 
@@ -38,10 +65,10 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         return self._form(Report)
 
     def search(self, count, id=None, name=None, session=None, *args, **kwargs):
-        return self._search(ReportSQL, count, id, name, session, *args, **kwargs)
+        return self._search(ReportSQL, 'Report', count, id, name, session, *args, **kwargs)
 
     def list(self, req, resp, session, *args, **kwargs):
-        return self._list(ReportSQL, ReportListResult, req, resp, session, *args, **kwargs)
+        return self._list(ReportSQL, ReportListResult, 'reports', req, resp, session, *args, **kwargs)
 
     def detail(self, req, resp, session, *args, **kwargs):
         return self._detail(ReportSQL, req, resp, session, *args, **kwargs)

@@ -29,7 +29,7 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
         return self._form(User)
 
     def search(self, count, id=None, name=None, session=None, *args, **kwargs):
-        return self._search(UserSQL, count, id, name, session, *args, **kwargs)
+        return self._search(UserSQL, 'User', count, id, name, session, *args, **kwargs)
 
     def login(self, req, resp, session, *args, **kwargs):
         '''username/password -> user/token'''

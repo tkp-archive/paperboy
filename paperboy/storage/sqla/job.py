@@ -29,6 +29,9 @@ class JobSQL(Base):
     interval = Column(String)
     sla = Column(String, nullable=True)
 
+    created = Column(DateTime)
+    modified = Column(DateTime)
+
     @staticmethod
     def from_config(jb):
         # FIXME
@@ -50,8 +53,7 @@ class JobSQL(Base):
         ret.name = self.name
 
         meta = JobMetadata()
-
-        meta.notebook = self.notebook.to_config(self.config)
+        meta.notebook = self.notebook.to_config(config)
         meta.username = self.user.name
         meta.userid = str(self.user.id)
 
@@ -68,7 +70,7 @@ class JobSQL(Base):
         return ret
 
     def __repr__(self):
-        return "<Job(name='%s')>" % (self.name)
+        return "<Job(name='{}', user='{}', notebook='{}', start='{}', interval='{}'>".format(self.name, self.user, self.notebook, self.start_time, self.interval)
 
 
 class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
@@ -76,10 +78,10 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         return self._form(Job)
 
     def search(self, count, id=None, name=None, session=None, *args, **kwargs):
-        return self._search(JobSQL, count, id, name, session, *args, **kwargs)
+        return self._search(JobSQL, 'Job', count, id, name, session, *args, **kwargs)
 
     def list(self, req, resp, session, *args, **kwargs):
-        return self._list(JobSQL, JobListResult, req, resp, session, *args, **kwargs)
+        return self._list(JobSQL, JobListResult, 'jobs', req, resp, session, *args, **kwargs)
 
     def detail(self, req, resp, session, *args, **kwargs):
         return self._detail(JobSQL, req, resp, session, *args, **kwargs)
@@ -93,10 +95,9 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         notebook = req.get_param('notebook')
         nb_sql = session.query(NotebookSQL).get(int(notebook))
 
-        start_time = req.get_param('starttime')
+        start_time = datetime.strptime(req.get_param('starttime'), '%Y-%m-%dT%H:%M')
         interval = req.get_param('interval') or ''
         sla = req.get_param('sla') or ''
-        reports = 0
         created = datetime.now()
         modified = datetime.now()
 
@@ -105,7 +106,6 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
                     user=user_sql,
                     notebookId=notebook,
                     notebook=nb_sql,
-                    reports=reports,
                     start_time=start_time,
                     interval=interval,
                     sla=sla,
@@ -119,5 +119,5 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
 
         resp.content_type = 'application/json'
         store = jb.to_config(self.config).store()
-        logging.critical("Storing job {}".format(name))
+        logging.critical("Storing job {}".format(jb))
         resp.body = json.dumps(store)
