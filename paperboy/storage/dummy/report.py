@@ -9,6 +9,9 @@ class ReportDummyStorage(ReportStorage):
     def form(self):
         return Report(self.config).form()
 
+    def search(self, count, id=None, name=None):
+        return [{'id': i, 'name': 'TestReport{}'.format(i)} for i in range(20)]
+
     def list(self, req, resp, *args, **kwargs):
         resp.content_type = 'application/json'
         result = ReportListResult()

@@ -9,7 +9,10 @@ from .notebook import Notebook
 
 class JobMetadata(HasTraits):
     notebook = Instance(Notebook)
-    owner = Unicode()
+    username = Unicode()
+    userid = Unicode()
+
+    start_time = Instance(datetime)
     interval = Unicode()
     sla = Unicode()
 

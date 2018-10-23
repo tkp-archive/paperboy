@@ -35,8 +35,9 @@ class NotebookSQL(Base):
 
     @staticmethod
     def from_config(nb):
+        # FIXME
         return NotebookSQL(name=nb.name,
-                           userId=nb.user.id,
+                           userId=int(nb.user.id),
                            nb=nb.nb,
                            privacy=nb.privacy,
                            sla=nb.sla,
@@ -53,7 +54,7 @@ class NotebookSQL(Base):
         meta = NotebookMetadata()
 
         meta.username = self.user.name
-        meta.userid = self.user.id
+        meta.userid = str(self.user.id)
 
         meta.nb = self.nb
         meta.privacy = self.privacy
@@ -93,13 +94,18 @@ class NotebookSQLStorage(NotebookStorage):
 
     def detail(self, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
-        details =Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', author='Joe Python', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).edit()
-        resp.body = json.dumps(details)
+
+        id = int(req.get_param('id'))
+        nb_sql = session.query(NotebookSQL).get(id)
+        if nb_sql:
+            resp.body = json.dumps(nb_sql.to_config(self.config).edit())
+        else:
+            resp.body = '{}'
 
     def store(self, req, resp, session, *args, **kwargs):
         name = req.get_param('name')
         user = req.context['user']
-        user_sql = session.query(UserSQL).get(user.id)
+        user_sql = session.query(UserSQL).get(int(user.id))
 
         nb = str(strip_outputs(nbformat.reads(req.get_param('file').file.read(), 4)))
         privacy = req.get_param('privacy') or ''
@@ -110,7 +116,7 @@ class NotebookSQLStorage(NotebookStorage):
         modified = datetime.now()
 
         nb = NotebookSQL(name=name,
-                         userId=user.id,
+                         userId=int(user.id),
                          user=user_sql,
                          nb=nb,
                          privacy=privacy,
@@ -120,8 +126,10 @@ class NotebookSQLStorage(NotebookStorage):
                          created=created,
                          modified=modified)
         session.add(nb)
-        session.commit()
+
+        # generate id
         session.flush()
+        session.refresh(nb)
 
         resp.content_type = 'application/json'
         store = nb.to_config(self.config).store()

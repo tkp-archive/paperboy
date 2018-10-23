@@ -12,6 +12,10 @@ class BaseStorage(with_metaclass(ABCMeta)):
         pass
 
     @abstractmethod
+    def search(self, count, id=None, name=None):
+        pass
+
+    @abstractmethod
     def list(self, req, resp, *args, **kwargs):
         pass
 

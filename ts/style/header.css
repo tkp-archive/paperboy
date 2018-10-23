@@ -31,6 +31,7 @@ div#appheader > a > img {
   object-fit: contain;
   height: 100%;
   width: 100%;
+  min-width:100px;
 }
 
 #lighticon {

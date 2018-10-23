@@ -10,6 +10,9 @@ class JobDummyStorage(JobStorage):
     def form(self):
         return Job(self.config).form()
 
+    def search(self, count, id=None, name=None):
+        return [{'id': i, 'name': 'TestJob{}'.format(i)} for i in range(20)]
+
     def list(self, req, resp, *args, **kwargs):
         resp.content_type = 'application/json'
         result = JobListResult()
@@ -23,7 +26,8 @@ class JobDummyStorage(JobStorage):
                                    'meta': {
                                       # 'notebook': 'TestNotebook',
                                       # 'notebookid': 'Notebook-%d' % i,
-                                      'owner': 'TestOwner',
+                                      'username': 'TestOwner',
+                                      'userid': '1',
                                       'reports': randint(1, 1000),
                                       'interval': choice(['minutely',
                                                           '5 minutes',
@@ -52,7 +56,8 @@ class JobDummyStorage(JobStorage):
                          'meta': {
                             # 'notebook': 'TestNotebook',
                             # 'notebookid': 'Notebook-%d' % i,
-                            'owner': 'TestOwner',
+                            'username': 'TestOwner',
+                            'userid': '1',
                             'reports': randint(1, 1000),
                             'interval': choice(['minutely',
                                                 '5 minutes',
@@ -81,7 +86,8 @@ class JobDummyStorage(JobStorage):
                          'meta': {
                             # 'notebook': 'TestNotebook',
                             # 'notebookid': 'Notebook-%d' % i,
-                            'owner': 'TestOwner',
+                            'username': 'TestOwner',
+                            'userid': '1',
                             'reports': randint(1, 1000),
                             'interval': choice(['minutely',
                                                 '5 minutes',

@@ -152,14 +152,13 @@ class Paperboy(Application):
             Base.metadata.create_all(self.engine)
 
             self.sessionmaker = sessionmaker(bind=self.engine)
-            session = self.sessionmaker()
-            self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(session)]
-            self.user_storage = UserSQLStorage
-            self.sql_user = True
+            self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.sessionmaker)]
             self.notebook_storage = NotebookSQLStorage
             self.job_storage = JobSQLStorage
             self.report_storage = ReportSQLStorage
-            # self.auth = 'sqla'
+            self.user_storage = UserSQLStorage
+            self.sql_user = True
+            self.auth = 'sqla'
 
         elif self.backend == 'dummy':
 

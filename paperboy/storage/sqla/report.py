@@ -7,6 +7,7 @@ from paperboy.config import Report
 from paperboy.config.storage import ReportListResult
 from paperboy.storage import ReportStorage
 from .base import Base
+from .user import UserSQL
 
 
 class ReportSQL(Base):
@@ -36,41 +37,58 @@ class ReportSQLStorage(ReportStorage):
     def form(self):
         return Report(self.config).form()
 
-    def list(self, req, resp, *args, **kwargs):
+    def list(self, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
         result = ReportListResult()
+        result.total = session.query(ReportSQL).count()
+        result.count = min(result.total, 25)
         result.page = 1
-        result.pages = 1
-        result.count = 0
-        result.total = 0
-        result.reports = []
+        result.pages = int(result.total/result.count) if result.count > 0 else 1
+
+        nbs = session.query(ReportSQL).limit(25).all()
+        result.notebooks = [x.to_config(self.config) for x in nbs]
         resp.body = result.to_json(True)
 
-    def detail(self, req, resp, *args, **kwargs):
+    def detail(self, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
-        details = Report.from_json(
-            {'name': 'TestReport1',
-             'id': 'Report-1',
-             'meta': {
-                'created': '10/14/2018 04:50:33',
-                'run': '10/14/2018 18:25:31',
-                 }},
-            self.config).edit()
-        resp.body = json.dumps(details)
 
-    def store(self, req, resp, *args, **kwargs):
+        id = int(req.get_param('id'))
+        rp_sql = session.query(ReportSQL).get(id)
+        if rp_sql:
+            resp.body = json.dumps(rp_sql.to_config(self.config).edit())
+        else:
+            resp.body = '{}'
+
+    def store(self, req, resp, session, *args, **kwargs):
         name = req.get_param('name')
-        nb_name = req.get_param('notebook')
-        rp_name = req.get_param('report')
-        resp.content_type = 'application/json'
+        user = req.context['user']
+        user_sql = session.query(UserSQL).get(int(user.id))
 
-        store = Report.from_json(
-            {'name': 'TestReport1',
-             'id': 'Report-1',
-             'meta': {
-                'created': '10/14/2018 04:50:33',
-                'run': '10/14/2018 18:25:31',
-                 }},
-            self.config).store()
-        logging.critical("Storing job {}".format(name))
+        nb = str(strip_outputs(nbformat.reads(req.get_param('file').file.read(), 4)))
+        privacy = req.get_param('privacy') or ''
+        sla = req.get_param('sla') or ''
+        requirements = req.get_param('requirements') or ''
+        dockerfile = req.get_param('dockerfile') or ''
+        created = datetime.now()
+        modified = datetime.now()
+
+        nb = NotebookSQL(name=name,
+                         userId=user.id,
+                         user=user_sql,
+                         nb=nb,
+                         privacy=privacy,
+                         sla=sla,
+                         requirements=requirements,
+                         dockerfile=dockerfile,
+                         created=created,
+                         modified=modified)
+        session.add(nb)
+
+        # generate id
+        session.flush()
+        session.refresh(nb)
+
+        resp.content_type = 'application/json'
+        store = nb.to_config(self.config).store()
+        logging.critical("Storing notebook {}".format(name))
         resp.body = json.dumps(store)

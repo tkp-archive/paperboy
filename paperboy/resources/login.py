@@ -22,7 +22,7 @@ class LoginResource(BaseResource):
 
     def on_post(self, req, resp):
         self.db.users.login(req, resp, self.session)
-        if req.context.get('auth_token') is None:
+        if req.context.get('auth_token') is None or req.context.get('user') is None:
             resp.content_type = 'text/html'
             file = read('login.html')
             tpl = jinja2.Template(file).render(baseurl=self.config.baseurl,

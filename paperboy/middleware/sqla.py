@@ -2,6 +2,31 @@ import falcon
 from six.moves.urllib_parse import urljoin
 
 
+class SQLAlchemySessionMiddleware(object):
+    '''variant of https://gitlab.com/skosh/falcon-helpers/blob/master/falcon_helpers/middlewares/sqla.py'''
+    def __init__(self, sessionmaker=None):
+        self.sessionmaker = sessionmaker
+
+    def process_resource(self, req, resp, resource, params):
+        self.session = self.sessionmaker()
+        resource.session = self.session
+
+    def process_response(self, req, resp, resource, req_succeeded):
+        if not hasattr(resource, 'session'):
+            return
+
+        try:
+            if not req_succeeded:
+                self.session.rollback()
+            else:
+                self.session.commit()
+        except Exception:
+            self.session.remove()
+            raise
+        finally:
+            self.session.close()
+
+
 class SQLUserMiddleware(object):
     def __init__(self, config, db, *args, **kwargs):
         self.config = config

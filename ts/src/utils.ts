@@ -395,7 +395,7 @@ namespace DomUtils {
       - submit button
   ***/
   export
-  function createConfig(sec: HTMLFormElement | null, clazz: string, data: any) : void {
+  function createConfig(sec: HTMLFormElement | null, clazz: string, data: any, callback=()=>{}) : void {
     if(! sec){
       return;
     }
@@ -431,7 +431,7 @@ namespace DomUtils {
           sec.onsubmit = () => {
             let form = new FormData(sec);
             requestFormData(data[i]['url'], form).then((res: RequestResult) => {
-              createResponseModal(res.json());
+              createResponseModal(res.json(), callback);
             });
             return false;
           };
@@ -454,7 +454,7 @@ namespace DomUtils {
 
   /*** create response modal from python json response to config ***/
   export
-  function createResponseModal(resp: [{[key: string]: string}]): void {
+  function createResponseModal(resp: [{[key: string]: string}], callback= ()=> {}): void {
     let modal = document.createElement('div');
     modal.classList.add('modal');
 
@@ -466,6 +466,7 @@ namespace DomUtils {
     let button = buildGeneric('button', 'OK');
     button.onclick = () => {
       document.body.removeChild(modal);
+      callback();
     }
     modal.appendChild(button);
     document.body.appendChild(modal);

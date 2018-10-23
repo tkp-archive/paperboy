@@ -1,7 +1,7 @@
 import json
 from six.moves.urllib_parse import urljoin
 from datetime import datetime
-from traitlets import HasTraits, Unicode, Instance
+from traitlets import HasTraits, Unicode, Instance, Bool
 from .forms import Form, FormEntry, DOMEntry
 from .base import Base
 from .notebook import Notebook
@@ -12,7 +12,15 @@ class ReportMetadata(HasTraits):
     notebook = Instance(Notebook)
     job = Instance(Job)
     created = Instance(datetime)
+
+    username = Unicode()
+    userid = Unicode()
+
     run = Instance(datetime)
+    params = Unicode()
+    type = Unicode()
+    output = Unicode()
+    strip_code = Bool()
 
     def to_json(self, string=False):
         ret = {}

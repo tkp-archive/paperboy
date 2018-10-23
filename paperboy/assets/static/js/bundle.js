@@ -14234,7 +14234,7 @@ var DomUtils;
         - date picker
         - submit button
     ***/
-    function createConfig(sec, clazz, data) {
+    function createConfig(sec, clazz, data, callback = () => { }) {
         if (!sec) {
             return;
         }
@@ -14268,7 +14268,7 @@ var DomUtils;
                     sec.onsubmit = () => {
                         let form = new FormData(sec);
                         request_1.requestFormData(data[i]['url'], form).then((res) => {
-                            createResponseModal(res.json());
+                            createResponseModal(res.json(), callback);
                         });
                         return false;
                     };
@@ -14290,7 +14290,7 @@ var DomUtils;
     }
     DomUtils.createConfig = createConfig;
     /*** create response modal from python json response to config ***/
-    function createResponseModal(resp) {
+    function createResponseModal(resp, callback = () => { }) {
         let modal = document.createElement('div');
         modal.classList.add('modal');
         for (let i = 0; i < resp.length; i++) {
@@ -14300,6 +14300,7 @@ var DomUtils;
         let button = buildGeneric('button', 'OK');
         button.onclick = () => {
             document.body.removeChild(modal);
+            callback();
         };
         modal.appendChild(button);
         document.body.appendChild(modal);
@@ -40355,7 +40356,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "div#appheader {\n  display:flex;\n  align-items: center;\n  height:45px;\n  width: 85%;\n  position: absolute;\n}\n\nbody.dark div#appheader {\n  background-color: var(--dark-bg-color2);\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div#appheader {\n  background-color: var(--light-bg-color2);\n  border-bottom: 1px solid var(--light-border);\n}\n\ndiv#appheader > a {\n  height: 40px;\n  margin-left: 15px;\n  width:15%;\n  z-index:3;\n}\n\ndiv#appheader > span.username {\n  padding-left:10px;\n}\n\ndiv#appheader > a > img {\n  object-fit: contain;\n  height: 100%;\n  width: 100%;\n}\n\n#lighticon {\n  margin-left: 70%;\n  z-index: 6;\n  height: 25px;\n  width: 25px;\n}\n\n#lighticon:before {\n  content: '\\F185';\n  font-family: 'FontAwesome';\n  font-size: 25px;\n}\n\n#darkicon {\n  margin-left: 10px;\n  z-index: 6;\n  height: 25px;\n  width: 25px;\n}\n\n#darkicon:before {\n  content: '\\F186';\n  font-family: 'FontAwesome';\n  font-size: 25px;\n}\n\nbody.dark div.active-icon,\nbody.light div.active-icon {\n  color: var(--highlight-blue);\n}\n\nbody.dark #lighticon:hover {\n  color: white;\n}\n\nbody.light #darkicon:hover {\n  color: lightgrey;\n}\n", ""]);
+exports.push([module.i, "div#appheader {\n  display:flex;\n  align-items: center;\n  height:45px;\n  width: 85%;\n  position: absolute;\n}\n\nbody.dark div#appheader {\n  background-color: var(--dark-bg-color2);\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div#appheader {\n  background-color: var(--light-bg-color2);\n  border-bottom: 1px solid var(--light-border);\n}\n\ndiv#appheader > a {\n  height: 40px;\n  margin-left: 15px;\n  width:15%;\n  z-index:3;\n}\n\ndiv#appheader > span.username {\n  padding-left:10px;\n}\n\ndiv#appheader > a > img {\n  object-fit: contain;\n  height: 100%;\n  width: 100%;\n  min-width:100px;\n}\n\n#lighticon {\n  margin-left: 70%;\n  z-index: 6;\n  height: 25px;\n  width: 25px;\n}\n\n#lighticon:before {\n  content: '\\F185';\n  font-family: 'FontAwesome';\n  font-size: 25px;\n}\n\n#darkicon {\n  margin-left: 10px;\n  z-index: 6;\n  height: 25px;\n  width: 25px;\n}\n\n#darkicon:before {\n  content: '\\F186';\n  font-family: 'FontAwesome';\n  font-size: 25px;\n}\n\nbody.dark div.active-icon,\nbody.light div.active-icon {\n  color: var(--highlight-blue);\n}\n\nbody.dark #lighticon:hover {\n  color: white;\n}\n\nbody.light #darkicon:hover {\n  color: lightgrey;\n}\n", ""]);
 
 // exports
 

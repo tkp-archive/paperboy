@@ -1,13 +1,15 @@
 import json
 import logging
-from random import randint, choice
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from paperboy.config import Job
+from paperboy.config import Job, JobMetadata
 from paperboy.config.storage import JobListResult
 from paperboy.storage import JobStorage
 from .base import Base
+from .user import UserSQL
+from .notebook import NotebookSQL
 
 
 class JobSQL(Base):
@@ -26,10 +28,44 @@ class JobSQL(Base):
     start_time = Column(DateTime)
     interval = Column(String)
     sla = Column(String, nullable=True)
-    params = Column(String)
-    type = Column(String)
-    output = Column(String)
-    strip_code = Column(Boolean)
+
+    @staticmethod
+    def from_config(jb):
+        # FIXME
+        return JobSQL(name=jb.name,
+                      userId=int(jb.user.id),
+                      # user=jb.user,
+                      notebookId=int(jb.notebook.id),
+                      # notebook=jb.notebook,
+                      reports=jb.reports,
+                      start_time=jb.start_time,
+                      interval=jb.interval,
+                      sla=jb.sla,
+                      created=jb.created,
+                      modified=jb.modified)
+
+    def to_config(self, config):
+        ret = Job(config)
+        ret.id = str(self.id)
+        ret.name = self.name
+
+        meta = JobMetadata()
+
+        meta.notebook = self.notebook.to_config(self.config)
+        meta.username = self.user.name
+        meta.userid = str(self.user.id)
+
+        meta.start_time = self.start_time
+        meta.interval = self.interval
+        meta.sla = self.sla
+
+        meta.reports = len(self.reports)
+
+        meta.created = self.created
+        meta.modified = self.modified
+
+        ret.meta = meta
+        return ret
 
     def __repr__(self):
         return "<Job(name='%s')>" % (self.name)
@@ -39,70 +75,62 @@ class JobSQLStorage(JobStorage):
     def form(self):
         return Job(self.config).form()
 
-    def list(self, req, resp, *args, **kwargs):
+    def list(self, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
         result = JobListResult()
+        result.total = session.query(JobSQL).count()
+        result.count = min(result.total, 25)
         result.page = 1
-        result.pages = 1
-        result.count = 0
-        result.total = 0
-        result.jobs = []
+        result.pages = int(result.total/result.count) if result.count > 0 else 1
+
+        nbs = session.query(JobSQL).limit(25).all()
+        result.notebooks = [x.to_config(self.config) for x in nbs]
         resp.body = result.to_json(True)
 
-    def detail(self, req, resp, *args, **kwargs):
+    def detail(self, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
-        store = Job.from_json(
-                        {'name': 'TestJob1',
-                         'id': 'Job-1',
-                         'meta': {
-                            # 'notebook': 'TestNotebook',
-                            # 'notebookid': 'Notebook-%d' % i,
-                            'owner': 'TestOwner',
-                            'reports': randint(1, 1000),
-                            'interval': choice(['minutely',
-                                                '5 minutes',
-                                                '10 minutes',
-                                                '30 minutes',
-                                                'hourly',
-                                                '2 hours',
-                                                '3 hours',
-                                                '6 hours',
-                                                '12 hours',
-                                                'daily',
-                                                'weekly',
-                                                'monthly']),
-                            'created': '10/14/2018 04:50:33',
-                            'modified': '10/14/2018 18:25:31'}},
-                        self.config).edit()
-        resp.body = json.dumps(store)
 
-    def store(self, req, resp, *args, **kwargs):
+        id = int(req.get_param('id'))
+        jb_sql = session.query(JobSQL).get(id)
+        if jb_sql:
+            resp.body = json.dumps(jb_sql.to_config(self.config).edit())
+        else:
+            resp.body = '{}'
+
+    def store(self, req, resp, session, *args, **kwargs):
         name = req.get_param('name')
-        nb_name = req.get_param('notebook')
+
+        user = req.context['user']
+        user_sql = session.query(UserSQL).get(int(user.id))
+
+        notebook = req.get_param('notebook')
+        nb_sql = session.query(NotebookSQL).get(int(notebook))
+
+        start_time = req.get_param('starttime')
+        interval = req.get_param('interval') or ''
+        sla = req.get_param('sla') or ''
+        reports = 0
+        created = datetime.now()
+        modified = datetime.now()
+
+        jb = JobSQL(name=name,
+                    userId=user.id,
+                    user=user_sql,
+                    notebookId=notebook,
+                    notebook=nb_sql,
+                    reports=reports,
+                    start_time=start_time,
+                    interval=interval,
+                    sla=sla,
+                    created=created,
+                    modified=modified)
+        session.add(jb)
+
+        # generate id
+        session.flush()
+        session.refresh(jb)
+
         resp.content_type = 'application/json'
-        store = Job.from_json(
-                        {'name': 'TestJob1',
-                         'id': 'Job-1',
-                         'meta': {
-                            # 'notebook': 'TestNotebook',
-                            # 'notebookid': 'Notebook-%d' % i,
-                            'owner': 'TestOwner',
-                            'reports': randint(1, 1000),
-                            'interval': choice(['minutely',
-                                                '5 minutes',
-                                                '10 minutes',
-                                                '30 minutes',
-                                                'hourly',
-                                                '2 hours',
-                                                '3 hours',
-                                                '6 hours',
-                                                '12 hours',
-                                                'daily',
-                                                'weekly',
-                                                'monthly']),
-                            'created': '10/14/2018 04:50:33',
-                            'modified': '10/14/2018 18:25:31',
-                             }},
-                        self.config).store()
+        store = jb.to_config(self.config).store()
         logging.critical("Storing job {}".format(name))
         resp.body = json.dumps(store)
