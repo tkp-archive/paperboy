@@ -32,6 +32,7 @@ industrial-strength technologies from the open source world.
       `NBConvert <https://github.com/jupyter/nbconvert>`__ support a
       wide variety of output types, including PDFs, HTML, Emails, etc
 
+-  `Papermill <https://github.com/nteract/papermill>`__ to parameterize notebooks
 -  `SQLAlchemy <https://www.sqlalchemy.org>`__ for Storage
 -  `Apache Airflow <https://airflow.apache.org>`__ for Scheduling
 -  `Dask <https://dask.org>`__ for `Airflow

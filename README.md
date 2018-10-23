@@ -12,6 +12,7 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
 
 - [Jupyter Notebooks](https://jupyter.org/documentation) for the reports themselves
     - Jupyter notebooks are an ideal report template, and with [NBConvert](https://github.com/jupyter/nbconvert) support a wide variety of output types, including PDFs, HTML, Emails, etc
+- [Papermill](https://github.com/nteract/papermill) to parameterize notebooks
 - [SQLAlchemy](https://www.sqlalchemy.org) for Storage
 - [Apache Airflow](https://airflow.apache.org) for Scheduling
 - [Dask](https://dask.org) for [Airflow Workers](https://airflow.readthedocs.io/en/stable/howto/executor/use-dask.html)
