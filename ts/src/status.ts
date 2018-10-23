@@ -43,24 +43,33 @@ class StatusBrowser extends TabPanel {
 
         setInterval(() => {
             request('get', apiurl() + 'status?type=notebooks').then((res: RequestResult) => {
+                if(!res.url.includes(apiurl() + 'status?type=notebooks')){
+                  window.location.href = (document as any).loginurl;
+                }
                 DomUtils.delete_all_children(this.nbs.node);
                 DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
             });
-        }, 60000);
+        }, 10000);
 
         setInterval(() => {
             request('get', apiurl() + 'status?type=jobs').then((res: RequestResult) => {
+                if(!res.url.includes(apiurl() + 'status?type=jobs')){
+                  window.location.href = (document as any).loginurl;
+                }
                 DomUtils.delete_all_children(this.jbs.node);
                 DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
             });
-        }, 60000);
+        }, 10000);
 
         setInterval(() => {
             request('get', apiurl() + 'status?type=reports').then((res: RequestResult) => {
+                if(!res.url.includes(apiurl() + 'status?type=reports')){
+                  window.location.href = (document as any).loginurl;
+                }
                 DomUtils.delete_all_children(this.rps.node);
                 DomUtils.createStatusSection(this.rps, 'reports', res.json());
             });
-        }, 60000);
+        }, 10000);
     }
 
     private nbs: BoxPanel;

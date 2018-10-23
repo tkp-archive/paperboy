@@ -46,47 +46,7 @@ class PrimaryDetail extends Widget {
 
         request('get', apiurl() + this.type + '/details?id=' + id).then((res: RequestResult) => {
             let dat = res.json() as any;
-
-            let table = document.createElement('table');
-
-            for(let i=0; i<dat.length; i++){
-                let row = document.createElement('tr');
-                let td1 = document.createElement('td');
-                let td2 = document.createElement('td');
-                if(dat[i]['name'] === 'name'){
-                    this.title.label = dat[i]['value'];
-                }
-
-                td1.textContent = toProperCase(dat[i]['name']);
-
-                let conts;
-                if(dat[i]['type'] == 'select'){
-                    conts = DomUtils.buildSelect(dat[i]['name'],
-                        dat[i]['options'],
-                        '',
-                        dat[i]['required'],
-                        dat[i]['readonly']);
-                } else if(dat[i]['type'] == 'textarea'){
-                    conts = DomUtils.buildTextarea(dat[i]['name'],
-                        dat[i]['placeholder'],
-                        dat[i]['value'],
-                        dat[i]['required']);
-                } else {
-                    conts = DomUtils.buildInput(dat[i]['type'], 
-                        dat[i]['name'],
-                        dat[i]['placeholder'],
-                        dat[i]['value'],
-                        dat[i]['required'],
-                        dat[i]['readonly']);
-                }
-
-                td2.appendChild(conts);
-
-                row.appendChild(td1);
-                row.appendChild(td2);
-                table.appendChild(row);
-            }
-            this.node.appendChild(table);
+            DomUtils.createDetail(dat, this.title, this.node);
         });
     }
 
@@ -107,7 +67,7 @@ class PrimaryTab extends DockPanel {
         this.node.classList.add(type);
 
         this.mine.title.closable = false;
-        this.mine.title.label = 'My ' + this.title.label;
+        this.mine.title.label = this.title.label;
 
         request('get', apiurl() + type).then((res: RequestResult) => {
             DomUtils.createPrimarySection(this, type, res.json());

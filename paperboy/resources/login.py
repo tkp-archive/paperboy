@@ -21,7 +21,7 @@ class LoginResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        self.db.users.login(req, resp, session=getattr(self, 'session', None))
+        self.db.users.login(req, resp, self.session)
         if req.context.get('auth_token') is None:
             resp.content_type = 'text/html'
             file = read('login.html')

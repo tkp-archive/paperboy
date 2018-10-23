@@ -9,7 +9,7 @@ class ReportDummyStorage(ReportStorage):
     def form(self):
         return Report(self.config).form()
 
-    def list(self, req, resp):
+    def list(self, req, resp, *args, **kwargs):
         resp.content_type = 'application/json'
         result = ReportListResult()
         result.page = 1
@@ -31,7 +31,7 @@ class ReportDummyStorage(ReportStorage):
                 ]
         resp.body = result.to_json(True)
 
-    def detail(self, req, resp):
+    def detail(self, req, resp, *args, **kwargs):
         resp.content_type = 'application/json'
         details = Report.from_json(
             {'name': 'TestReport1',
@@ -47,7 +47,7 @@ class ReportDummyStorage(ReportStorage):
             self.config).edit()
         resp.body = json.dumps(details)
 
-    def store(self, req, resp):
+    def store(self, req, resp, *args, **kwargs):
         name = req.get_param('name')
         nb_name = req.get_param('notebook')
         rp_name = req.get_param('report')

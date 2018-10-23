@@ -19,4 +19,4 @@ class RegisterResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        self.db.users.store(req, resp, getattr(self, 'session', None))
+        self.db.users.store(req, resp, self.session)

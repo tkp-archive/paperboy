@@ -1,5 +1,7 @@
 import json
-from .base import Notebook, Job, Report
+from .job import Job
+from .notebook import Notebook
+from .report import Report
 from .forms import Form, Response, FormEntry, DOMEntry
 from traitlets import List, Int, HasTraits, Instance
 

@@ -7,3 +7,4 @@ class BaseResource(object):
         self.db = db
         self.scheduler = scheduler
         self.logger = logging.getLogger('paperboy.' + __name__)
+        self.session = None  # May be overridden by middleware

@@ -45,7 +45,6 @@ class UserSQLStorage(UserStorage):
     def detail(self, req, resp, session, *args, **kwargs):
         '''token -> user'''
         encoded = req.context.get('auth_token')
-
         try:
             user = jwt.decode(encoded, self.config.secret, algorithms=['HS256'])
         except jwt.exceptions.InvalidSignatureError:
@@ -59,6 +58,7 @@ class UserSQLStorage(UserStorage):
 
         session.add(user)  # may raise exception
         session.commit()
+        session.flush()
         token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
         logging.critical("Storing user {} {} {}".format(username, token, user.id))
         self._do_login(token=token, req=req, resp=resp)

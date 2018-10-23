@@ -10783,31 +10783,7 @@ class PrimaryDetail extends widgets_1.Widget {
         this.title.closable = true;
         request_1.request('get', utils_1.apiurl() + this.type + '/details?id=' + id).then((res) => {
             let dat = res.json();
-            let table = document.createElement('table');
-            for (let i = 0; i < dat.length; i++) {
-                let row = document.createElement('tr');
-                let td1 = document.createElement('td');
-                let td2 = document.createElement('td');
-                if (dat[i]['name'] === 'name') {
-                    this.title.label = dat[i]['value'];
-                }
-                td1.textContent = utils_1.toProperCase(dat[i]['name']);
-                let conts;
-                if (dat[i]['type'] == 'select') {
-                    conts = utils_1.DomUtils.buildSelect(dat[i]['name'], dat[i]['options'], '', dat[i]['required'], dat[i]['readonly']);
-                }
-                else if (dat[i]['type'] == 'textarea') {
-                    conts = utils_1.DomUtils.buildTextarea(dat[i]['name'], dat[i]['placeholder'], dat[i]['value'], dat[i]['required']);
-                }
-                else {
-                    conts = utils_1.DomUtils.buildInput(dat[i]['type'], dat[i]['name'], dat[i]['placeholder'], dat[i]['value'], dat[i]['required'], dat[i]['readonly']);
-                }
-                td2.appendChild(conts);
-                row.appendChild(td1);
-                row.appendChild(td2);
-                table.appendChild(row);
-            }
-            this.node.appendChild(table);
+            utils_1.DomUtils.createDetail(dat, this.title, this.node);
         });
     }
 }
@@ -10824,7 +10800,7 @@ class PrimaryTab extends widgets_1.DockPanel {
         this.node.classList.add('primary');
         this.node.classList.add(type);
         this.mine.title.closable = false;
-        this.mine.title.label = 'My ' + this.title.label;
+        this.mine.title.label = this.title.label;
         request_1.request('get', utils_1.apiurl() + type).then((res) => {
             utils_1.DomUtils.createPrimarySection(this, type, res.json());
         });
@@ -13835,6 +13811,7 @@ function parseXHRResult(xhr) {
         headers: xhr.getAllResponseHeaders(),
         data: xhr.responseText,
         json: () => JSON.parse(xhr.responseText),
+        url: xhr.responseURL
     };
 }
 function errorResponse(xhr, message = null) {
@@ -13845,6 +13822,7 @@ function errorResponse(xhr, message = null) {
         headers: xhr.getAllResponseHeaders(),
         data: message || xhr.statusText,
         json: () => JSON.parse(message || xhr.statusText),
+        url: xhr.responseURL
     };
 }
 function request(method, url, queryParams = {}, body = null, options = exports.DEFAULT_REQUEST_OPTIONS) {
@@ -14195,26 +14173,30 @@ var DomUtils;
         headerrow.appendChild(name);
         table.appendChild(headerrow);
         let first = true;
-        for (let nb of notebooks) {
-            let row = document.createElement('tr');
-            row.ondblclick = () => {
-                widget.detailView(nb['id']);
-            };
-            let v = document.createElement('td');
-            v.textContent = nb['name'];
-            row.appendChild(v);
-            for (let k of Object.keys(nb['meta'])) {
-                if (first) {
-                    let name = document.createElement('th');
-                    name.textContent = toProperCase(k);
-                    headerrow.appendChild(name);
-                }
+        if (notebooks.length > 0) {
+            for (let nb of notebooks) {
+                let row = document.createElement('tr');
+                row.ondblclick = () => {
+                    widget.detailView(nb['id']);
+                };
                 let v = document.createElement('td');
-                v.textContent = nb['meta'][k];
+                v.textContent = nb['name'];
                 row.appendChild(v);
+                for (let k of Object.keys(nb['meta'])) {
+                    if (first) {
+                        let name = document.createElement('th');
+                        name.textContent = toProperCase(k);
+                        headerrow.appendChild(name);
+                    }
+                    let v = document.createElement('td');
+                    v.textContent = nb['meta'][k];
+                    row.appendChild(v);
+                }
+                table.appendChild(row);
+                first = false;
             }
-            table.appendChild(row);
-            first = false;
+            // only add table if it has data
+            sec.node.appendChild(table);
         }
         let p1 = document.createElement('p');
         p1.textContent = 'Showing ' + count + ' of ' + total;
@@ -14230,7 +14212,6 @@ var DomUtils;
             }
             p2.appendChild(span);
         }
-        sec.node.appendChild(table);
         sec.node.appendChild(p1);
         sec.node.appendChild(p2);
     }
@@ -14325,6 +14306,35 @@ var DomUtils;
         button.focus();
     }
     DomUtils.createResponseModal = createResponseModal;
+    /*** create detail view from python json response to detail ***/
+    function createDetail(data, title, node) {
+        let table = document.createElement('table');
+        for (let i = 0; i < data.length; i++) {
+            let row = document.createElement('tr');
+            let td1 = document.createElement('td');
+            let td2 = document.createElement('td');
+            if (data[i]['name'] === 'name') {
+                title.label = data[i]['value'];
+            }
+            td1.textContent = toProperCase(data[i]['name']);
+            let conts;
+            if (data[i]['type'] == 'select') {
+                conts = DomUtils.buildSelect(data[i]['name'], data[i]['options'], '', data[i]['required'], data[i]['readonly']);
+            }
+            else if (data[i]['type'] == 'textarea') {
+                conts = DomUtils.buildTextarea(data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required']);
+            }
+            else {
+                conts = DomUtils.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly']);
+            }
+            td2.appendChild(conts);
+            row.appendChild(td1);
+            row.appendChild(td2);
+            table.appendChild(row);
+        }
+        node.appendChild(table);
+    }
+    DomUtils.createDetail = createDetail;
 })(DomUtils = exports.DomUtils || (exports.DomUtils = {}));
 
 
@@ -27202,22 +27212,31 @@ class StatusBrowser extends widgets_1.TabPanel {
         });
         setInterval(() => {
             request_1.request('get', utils_1.apiurl() + 'status?type=notebooks').then((res) => {
+                if (!res.url.includes(utils_1.apiurl() + 'status?type=notebooks')) {
+                    window.location.href = document.loginurl;
+                }
                 utils_1.DomUtils.delete_all_children(this.nbs.node);
                 utils_1.DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
             });
-        }, 60000);
+        }, 10000);
         setInterval(() => {
             request_1.request('get', utils_1.apiurl() + 'status?type=jobs').then((res) => {
+                if (!res.url.includes(utils_1.apiurl() + 'status?type=jobs')) {
+                    window.location.href = document.loginurl;
+                }
                 utils_1.DomUtils.delete_all_children(this.jbs.node);
                 utils_1.DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
             });
-        }, 60000);
+        }, 10000);
         setInterval(() => {
             request_1.request('get', utils_1.apiurl() + 'status?type=reports').then((res) => {
+                if (!res.url.includes(utils_1.apiurl() + 'status?type=reports')) {
+                    window.location.href = document.loginurl;
+                }
                 utils_1.DomUtils.delete_all_children(this.rps.node);
                 utils_1.DomUtils.createStatusSection(this.rps, 'reports', res.json());
             });
-        }, 60000);
+        }, 10000);
     }
 }
 exports.StatusBrowser = StatusBrowser;

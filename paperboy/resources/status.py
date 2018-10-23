@@ -6,4 +6,4 @@ class StatusResource(BaseResource):
         super(StatusResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
-        self.scheduler.status(req, resp)
+        self.scheduler.status(req, resp, self.session)

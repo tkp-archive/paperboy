@@ -8,5 +8,5 @@ class BaseScheduler(with_metaclass(ABCMeta)):
         self.db = db
 
     @abstractmethod
-    def status(self, req, resp):
+    def status(self, req, resp, *args, **kwargs):
         pass

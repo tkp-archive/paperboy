@@ -10,7 +10,7 @@ class JobDummyStorage(JobStorage):
     def form(self):
         return Job(self.config).form()
 
-    def list(self, req, resp):
+    def list(self, req, resp, *args, **kwargs):
         resp.content_type = 'application/json'
         result = JobListResult()
         result.page = 1
@@ -44,7 +44,7 @@ class JobDummyStorage(JobStorage):
                 ]
         resp.body = result.to_json(True)
 
-    def detail(self, req, resp):
+    def detail(self, req, resp, *args, **kwargs):
         resp.content_type = 'application/json'
         store = Job.from_json(
                         {'name': 'TestJob1',
@@ -71,7 +71,7 @@ class JobDummyStorage(JobStorage):
                         self.config).edit()
         resp.body = json.dumps(store)
 
-    def store(self, req, resp):
+    def store(self, req, resp, *args, **kwargs):
         name = req.get_param('name')
         nb_name = req.get_param('notebook')
         resp.content_type = 'application/json'

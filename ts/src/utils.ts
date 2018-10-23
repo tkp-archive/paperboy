@@ -327,27 +327,32 @@ namespace DomUtils {
     table.appendChild(headerrow);
 
     let first = true;
-    for(let nb of notebooks){
-      let row = document.createElement('tr');
-      row.ondblclick = () => {
-        widget.detailView(nb['id']);
-      };
-      let v = document.createElement('td');
-      v.textContent = nb['name'];
-      row.appendChild(v);
-
-      for(let k of Object.keys(nb['meta'])){
-        if(first){
-          let name = document.createElement('th');
-          name.textContent = toProperCase(k);
-          headerrow.appendChild(name);
-        }
+    if(notebooks.length > 0) {
+      for(let nb of notebooks){
+        let row = document.createElement('tr');
+        row.ondblclick = () => {
+          widget.detailView(nb['id']);
+        };
         let v = document.createElement('td');
-        v.textContent = nb['meta'][k];
+        v.textContent = nb['name'];
         row.appendChild(v);
+
+        for(let k of Object.keys(nb['meta'])){
+          if(first){
+            let name = document.createElement('th');
+            name.textContent = toProperCase(k);
+            headerrow.appendChild(name);
+          }
+          let v = document.createElement('td');
+          v.textContent = nb['meta'][k];
+          row.appendChild(v);
+        }
+        table.appendChild(row);
+        first = false;
       }
-      table.appendChild(row);
-      first = false;
+
+      // only add table if it has data
+      sec.node.appendChild(table);
     }
     
     let p1 = document.createElement('p');
@@ -365,7 +370,6 @@ namespace DomUtils {
       p2.appendChild(span);
     }
     
-    sec.node.appendChild(table);
     sec.node.appendChild(p1);
     sec.node.appendChild(p2);
   }
@@ -466,5 +470,48 @@ namespace DomUtils {
     modal.appendChild(button);
     document.body.appendChild(modal);
     button.focus();
+  }
+
+  /*** create detail view from python json response to detail ***/
+  export
+  function createDetail(data: any, title: any, node: HTMLElement){
+    let table = document.createElement('table');
+    for(let i=0; i<data.length; i++){
+        let row = document.createElement('tr');
+        let td1 = document.createElement('td');
+        let td2 = document.createElement('td');
+        if(data[i]['name'] === 'name'){
+            title.label = data[i]['value'];
+        }
+        td1.textContent = toProperCase(data[i]['name']);
+
+        let conts;
+        if(data[i]['type'] == 'select'){
+            conts = DomUtils.buildSelect(data[i]['name'],
+                data[i]['options'],
+                '',
+                data[i]['required'],
+                data[i]['readonly']);
+        } else if(data[i]['type'] == 'textarea'){
+            conts = DomUtils.buildTextarea(data[i]['name'],
+                data[i]['placeholder'],
+                data[i]['value'],
+                data[i]['required']);
+        } else {
+            conts = DomUtils.buildInput(data[i]['type'], 
+                data[i]['name'],
+                data[i]['placeholder'],
+                data[i]['value'],
+                data[i]['required'],
+                data[i]['readonly']);
+        }
+
+        td2.appendChild(conts);
+
+        row.appendChild(td1);
+        row.appendChild(td2);
+        table.appendChild(row);
+    }
+    node.appendChild(table);
   }
 }

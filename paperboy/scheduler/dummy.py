@@ -4,7 +4,7 @@ from .base import BaseScheduler
 
 
 class DummyScheduler(BaseScheduler):
-    def status(self, req, resp):
+    def status(self, req, resp, *args, **kwargs):
         resp.content_type = 'application/json'
         type = req.params.get('type', '')
         if type == 'notebooks':

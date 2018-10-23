@@ -159,7 +159,7 @@ class Paperboy(Application):
             self.notebook_storage = NotebookSQLStorage
             self.job_storage = JobSQLStorage
             self.report_storage = ReportSQLStorage
-            self.auth = 'sqla'
+            # self.auth = 'sqla'
 
         elif self.backend == 'dummy':
 

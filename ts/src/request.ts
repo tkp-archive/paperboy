@@ -26,6 +26,7 @@ export interface RequestResult {
   data: string;
   json: <T>() => T;
   headers: string;
+  url: string;
 }
 
 function queryParams(params: any = {}) {
@@ -47,6 +48,7 @@ function parseXHRResult(xhr: XMLHttpRequest): RequestResult {
     headers: xhr.getAllResponseHeaders(),
     data: xhr.responseText,
     json: <T>() => JSON.parse(xhr.responseText) as T,
+    url: xhr.responseURL
   };
 }
 
@@ -58,6 +60,7 @@ function errorResponse(xhr: XMLHttpRequest, message: string | null = null): Requ
     headers: xhr.getAllResponseHeaders(),
     data: message || xhr.statusText,
     json: <T>() => JSON.parse(message || xhr.statusText) as T,
+    url: xhr.responseURL
   };
 }
 
