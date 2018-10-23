@@ -5,9 +5,7 @@ A web frontend for scheduling Jupyter Notebooks as reports
 [![Waffle.io](https://badge.waffle.io/timkpaine/paperboy.png?label=ready&title=Ready)](https://waffle.io/timkpaine/paperboy?utm_source=badge)
 [![Coverage](https://codecov.io/gh/timkpaine/paperboy/branch/master/graph/badge.svg)](https://codecov.io/gh/timkpaine/paperboy)
 [![Docs](https://img.shields.io/readthedocs/paperboy.svg)](https://paperboy.readthedocs.io)
-
-
-[Link](https://paperboy-jp.herokuapp.com/)
+[![Site](https://img.shields.io/badge/Site--grey.svg?colorB=FFFFFF)](https://paperboy-jp.herokuapp.com/)
 
 # Overview
 Paperboy is a production-grade application for scheduling reports. It has a flexible architecture and extensible APIs, and can integrate into a wide variety of deployments. It is composed of various industrial-strength technologies from the open source world.
