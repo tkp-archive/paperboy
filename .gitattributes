@@ -1,2 +1,5 @@
 sample.ipynb linguist-documentation
 docs/* linguist-documentation
+paperboy/assets/static/css/* linguist-vendored
+paperboy/assets/static/js/* linguist-vendored
+paperboy/assets/static/fonts/* linguist-vendored
