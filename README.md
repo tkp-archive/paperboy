@@ -1,5 +1,5 @@
 # paperboy
-A web frontend for scheduling notebooks
+A web frontend for scheduling Jupyter Notebooks as reports
 
 [![Build Status](https://travis-ci.org/timkpaine/paperboy.svg?branch=master)](https://travis-ci.org/timkpaine/paperboy)
 [![Waffle.io](https://badge.waffle.io/timkpaine/paperboy.png?label=ready&title=Ready)](https://waffle.io/timkpaine/paperboy?utm_source=badge)
