@@ -7,7 +7,7 @@ class UserDummyStorage(UserStorage):
     def form(self, *args, **kwargs):
         return User(self.config).form()
 
-    def search(self, count, id=None, name=None):
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
         raise NotImplemented
 
     def login(self, req, resp, *args, **kwargs):

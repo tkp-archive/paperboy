@@ -169,7 +169,11 @@ namespace DomUtils {
 
   /*** build a select ***/
   export
-  function buildSelect(name: string, list: string[], def?: string, required = false, readonly = false): HTMLSelectElement {
+  function buildSelect(name: string,
+                       list: string[],
+                       def?: string,
+                       required = false,
+                       readonly = false): HTMLSelectElement {
     let select = document.createElement('select');
     select.name = name;
     if(required){
@@ -490,7 +494,7 @@ namespace DomUtils {
         if(data[i]['type'] == 'select'){
             conts = DomUtils.buildSelect(data[i]['name'],
                 data[i]['options'],
-                '',
+                data[i]['value'],
                 data[i]['required'],
                 data[i]['readonly']);
         } else if(data[i]['type'] == 'textarea'){

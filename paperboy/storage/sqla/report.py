@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from paperboy.config import Report
 from paperboy.config.storage import ReportListResult
 from paperboy.storage import ReportStorage
-from .base import Base
+from .base import Base, BaseSQLStorageMixin
 from .user import UserSQL
 
 
@@ -33,31 +33,18 @@ class ReportSQL(Base):
         return "<Report(name='%s')>" % (self.name)
 
 
-class ReportSQLStorage(ReportStorage):
+class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
     def form(self):
-        return Report(self.config).form()
+        return self._form(Report)
+
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
+        return self._search(ReportSQL, count, id, name, session, *args, **kwargs)
 
     def list(self, req, resp, session, *args, **kwargs):
-        resp.content_type = 'application/json'
-        result = ReportListResult()
-        result.total = session.query(ReportSQL).count()
-        result.count = min(result.total, 25)
-        result.page = 1
-        result.pages = int(result.total/result.count) if result.count > 0 else 1
-
-        nbs = session.query(ReportSQL).limit(25).all()
-        result.notebooks = [x.to_config(self.config) for x in nbs]
-        resp.body = result.to_json(True)
+        return self._list(ReportSQL, ReportListResult, req, resp, session, *args, **kwargs)
 
     def detail(self, req, resp, session, *args, **kwargs):
-        resp.content_type = 'application/json'
-
-        id = int(req.get_param('id'))
-        rp_sql = session.query(ReportSQL).get(id)
-        if rp_sql:
-            resp.body = json.dumps(rp_sql.to_config(self.config).edit())
-        else:
-            resp.body = '{}'
+        return self._detail(ReportSQL, req, resp, session, *args, **kwargs)
 
     def store(self, req, resp, session, *args, **kwargs):
         name = req.get_param('name')

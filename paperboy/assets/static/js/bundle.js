@@ -14320,7 +14320,7 @@ var DomUtils;
             td1.textContent = toProperCase(data[i]['name']);
             let conts;
             if (data[i]['type'] == 'select') {
-                conts = DomUtils.buildSelect(data[i]['name'], data[i]['options'], '', data[i]['required'], data[i]['readonly']);
+                conts = DomUtils.buildSelect(data[i]['name'], data[i]['options'], data[i]['value'], data[i]['required'], data[i]['readonly']);
             }
             else if (data[i]['type'] == 'textarea') {
                 conts = DomUtils.buildTextarea(data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required']);

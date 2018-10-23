@@ -9,7 +9,7 @@ class ReportDummyStorage(ReportStorage):
     def form(self):
         return Report(self.config).form()
 
-    def search(self, count, id=None, name=None):
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
         return [{'id': i, 'name': 'TestReport{}'.format(i)} for i in range(20)]
 
     def list(self, req, resp, *args, **kwargs):

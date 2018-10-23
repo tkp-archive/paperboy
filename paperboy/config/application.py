@@ -42,7 +42,7 @@ class Paperboy(Application):
     ############
     # Gunicorn #
     ############
-    workers = Int(default_value=2, help="Number of gunicorn workers").tag(config=True)
+    workers = Int(default_value=1, help="Number of gunicorn workers").tag(config=True)
     port = Unicode(default_value='8080', help="Port to run on").tag(config=True)
     ############
 

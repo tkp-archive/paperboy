@@ -10,7 +10,7 @@ class JobDummyStorage(JobStorage):
     def form(self):
         return Job(self.config).form()
 
-    def search(self, count, id=None, name=None):
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
         return [{'id': i, 'name': 'TestJob{}'.format(i)} for i in range(20)]
 
     def list(self, req, resp, *args, **kwargs):

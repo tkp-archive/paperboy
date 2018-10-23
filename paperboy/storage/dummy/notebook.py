@@ -11,7 +11,7 @@ class NotebookDummyStorage(NotebookStorage):
     def form(self):
         return Notebook(self.config).form()
 
-    def search(self, count, id=None, name=None):
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
         return [{'id': i, 'name': 'TestNB{}'.format(i)} for i in range(20)]
 
     def list(self, req, resp, session, *args, **kwargs):

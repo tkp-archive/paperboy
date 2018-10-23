@@ -1,13 +1,13 @@
 import json
 import logging
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from paperboy.config import Job, JobMetadata
 from paperboy.config.storage import JobListResult
 from paperboy.storage import JobStorage
-from .base import Base
+from .base import Base, BaseSQLStorageMixin
 from .user import UserSQL
 from .notebook import NotebookSQL
 
@@ -71,31 +71,18 @@ class JobSQL(Base):
         return "<Job(name='%s')>" % (self.name)
 
 
-class JobSQLStorage(JobStorage):
+class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
     def form(self):
-        return Job(self.config).form()
+        return self._form(Job)
+
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
+        return self._search(JobSQL, count, id, name, session, *args, **kwargs)
 
     def list(self, req, resp, session, *args, **kwargs):
-        resp.content_type = 'application/json'
-        result = JobListResult()
-        result.total = session.query(JobSQL).count()
-        result.count = min(result.total, 25)
-        result.page = 1
-        result.pages = int(result.total/result.count) if result.count > 0 else 1
-
-        nbs = session.query(JobSQL).limit(25).all()
-        result.notebooks = [x.to_config(self.config) for x in nbs]
-        resp.body = result.to_json(True)
+        return self._list(JobSQL, JobListResult, req, resp, session, *args, **kwargs)
 
     def detail(self, req, resp, session, *args, **kwargs):
-        resp.content_type = 'application/json'
-
-        id = int(req.get_param('id'))
-        jb_sql = session.query(JobSQL).get(id)
-        if jb_sql:
-            resp.body = json.dumps(jb_sql.to_config(self.config).edit())
-        else:
-            resp.body = '{}'
+        return self._detail(JobSQL, req, resp, session, *args, **kwargs)
 
     def store(self, req, resp, session, *args, **kwargs):
         name = req.get_param('name')

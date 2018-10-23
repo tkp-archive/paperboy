@@ -12,7 +12,7 @@ class BaseStorage(with_metaclass(ABCMeta)):
         pass
 
     @abstractmethod
-    def search(self, count, id=None, name=None):
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
         pass
 
     @abstractmethod

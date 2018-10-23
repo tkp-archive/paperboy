@@ -104,10 +104,10 @@ class Notebook(Base):
         f = Form()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, placeholder='Name for Job...', required=True),
-            FormEntry(name='privacy', type='select', label='Visibility', options=['Private', 'Public'], required=True),
-            FormEntry(name='sla', type='select', label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
-            FormEntry(name='requirements', type='file', label='requirements.txt', required=False),
-            FormEntry(name='dockerfile', type='file', label='Dockerfile', required=False),
+            FormEntry(name='privacy', type='select', value=self.meta.privacy, label='Visibility', options=['Private', 'Public'], required=True),
+            FormEntry(name='sla', type='select', value=self.meta.sla, label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
+            # FormEntry(name='requirements', type='file', label='requirements.txt', required=False),
+            # FormEntry(name='dockerfile', type='file', label='Dockerfile', required=False),
             FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'notebooks'))
         ]
         return f.to_json()

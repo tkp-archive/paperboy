@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 from paperboy.config import Notebook, NotebookMetadata
 from paperboy.config.storage import NotebookListResult
 from paperboy.storage import NotebookStorage
-from .base import Base
+from .base import Base, BaseSQLStorageMixin
 from .user import UserSQL
 from ..utils import strip_outputs
 
@@ -73,34 +73,21 @@ class NotebookSQL(Base):
         return ret
 
     def __repr__(self):
-        return "<Notebook(name='%s')>" % (self.name)
+        return "<Notebook(name='{}', user='{}', privacy='{}', sla='{}'>".format(self.name, self.user, self.privacy, self.sla)
 
 
-class NotebookSQLStorage(NotebookStorage):
+class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
     def form(self):
-        return Notebook(self.config).form()
+        return self._form(Notebook)
+
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
+        return self._search(NotebookSQL, count, id, name, session, *args, **kwargs)
 
     def list(self, req, resp, session, *args, **kwargs):
-        resp.content_type = 'application/json'
-        result = NotebookListResult()
-        result.total = session.query(NotebookSQL).count()
-        result.count = min(result.total, 25)
-        result.page = 1
-        result.pages = int(result.total/result.count) if result.count > 0 else 1
-
-        nbs = session.query(NotebookSQL).limit(25).all()
-        result.notebooks = [x.to_config(self.config) for x in nbs]
-        resp.body = result.to_json(True)
+        return self._list(NotebookSQL, NotebookListResult, req, resp, session, *args, **kwargs)
 
     def detail(self, req, resp, session, *args, **kwargs):
-        resp.content_type = 'application/json'
-
-        id = int(req.get_param('id'))
-        nb_sql = session.query(NotebookSQL).get(id)
-        if nb_sql:
-            resp.body = json.dumps(nb_sql.to_config(self.config).edit())
-        else:
-            resp.body = '{}'
+        return self._detail(NotebookSQL, req, resp, session, *args, **kwargs)
 
     def store(self, req, resp, session, *args, **kwargs):
         name = req.get_param('name')
@@ -133,5 +120,5 @@ class NotebookSQLStorage(NotebookStorage):
 
         resp.content_type = 'application/json'
         store = nb.to_config(self.config).store()
-        logging.critical("Storing notebook {}".format(name))
+        logging.critical("Storing notebook {}".format(nb))
         resp.body = json.dumps(store)

@@ -4,7 +4,7 @@ from paperboy.config import User
 from paperboy.storage import UserStorage
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from .base import Base
+from .base import Base, BaseSQLStorageMixin
 
 
 class UserSQL(Base):
@@ -21,12 +21,15 @@ class UserSQL(Base):
         return "<User(name='%s')>" % self.name
 
 
-class UserSQLStorage(UserStorage):
+class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
     def __init__(self, *args, **kwargs):
         super(UserSQLStorage, self).__init__(*args, **kwargs)
 
     def form(self):
-        return User(self.config).form()
+        return self._form(User)
+
+    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
+        return self._search(UserSQL, count, id, name, session, *args, **kwargs)
 
     def login(self, req, resp, session, *args, **kwargs):
         '''username/password -> user/token'''
