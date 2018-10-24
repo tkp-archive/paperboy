@@ -45,14 +45,14 @@ Some future options include:
             - script
         - strip or keep code
 - To edit or create additional reports on a job, configure reports
-        - run or publish
-        - output
-            - notebook
-            - pdf
-            - html
-            - email
-            - script
-        - strip or keep code
+    - run or publish
+    - output
+        - notebook
+        - pdf
+        - html
+        - email
+        - script
+    - strip or keep code
 
 ## Storage Arch
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/arch.png)
