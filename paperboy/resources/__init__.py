@@ -8,4 +8,5 @@ from .notebook import NotebookResource, NotebookDetailResource
 from .register import RegisterResource
 from .report import ReportResource, ReportDetailResource
 from .static import StaticResource
+from .scheduler import SchedulerResource
 from .status import StatusResource

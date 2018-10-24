@@ -8,6 +8,12 @@ from paperboy.storage import NotebookStorage
 
 
 class NotebookDummyStorage(NotebookStorage):
+    def status(self, *args, **kwargs):
+        return {'total': 25,
+                'production': 15,
+                'research': 3,
+                'personal': 7}
+
     def form(self):
         return Notebook(self.config).form()
 

@@ -27188,32 +27188,32 @@ class StatusBrowser extends widgets_1.TabPanel {
         super();
         this.nbs = new widgets_1.BoxPanel();
         this.nbs.title.label = 'Notebooks';
-        this.nbs.node.classList.add('statusbrowser-container');
+        this.nbs.node.classList.add('schedulerbrowser-container');
         this.jbs = new widgets_1.BoxPanel();
         this.jbs.title.label = 'Jobs';
-        this.jbs.node.classList.add('statusbrowser-container');
+        this.jbs.node.classList.add('schedulerbrowser-container');
         this.rps = new widgets_1.BoxPanel();
         this.rps.title.label = 'Reports';
-        this.rps.node.classList.add('statusbrowser-container');
+        this.rps.node.classList.add('schedulerbrowser-container');
         this.addWidget(this.nbs);
         this.addWidget(this.jbs);
         this.addWidget(this.rps);
         this.setFlag(widgets_1.Widget.Flag.DisallowLayout);
         this.title.closable = false;
-        this.node.id = 'statusbrowser';
-        this.node.classList.add('statusbrowser');
-        request_1.request('get', utils_1.apiurl() + 'status?type=notebooks').then((res) => {
+        this.node.id = 'schedulerbrowser';
+        this.node.classList.add('schedulerbrowser');
+        request_1.request('get', utils_1.apiurl() + 'scheduler?type=notebooks').then((res) => {
             utils_1.DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
         });
-        request_1.request('get', utils_1.apiurl() + 'status?type=jobs').then((res) => {
+        request_1.request('get', utils_1.apiurl() + 'scheduler?type=jobs').then((res) => {
             utils_1.DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
         });
-        request_1.request('get', utils_1.apiurl() + 'status?type=reports').then((res) => {
+        request_1.request('get', utils_1.apiurl() + 'scheduler?type=reports').then((res) => {
             utils_1.DomUtils.createStatusSection(this.rps, 'reports', res.json());
         });
         setInterval(() => {
-            request_1.request('get', utils_1.apiurl() + 'status?type=notebooks').then((res) => {
-                if (!res.url.includes(utils_1.apiurl() + 'status?type=notebooks')) {
+            request_1.request('get', utils_1.apiurl() + 'scheduler?type=notebooks').then((res) => {
+                if (!res.url.includes(utils_1.apiurl() + 'scheduler?type=notebooks')) {
                     window.location.href = document.loginurl;
                 }
                 utils_1.DomUtils.delete_all_children(this.nbs.node);
@@ -27221,8 +27221,8 @@ class StatusBrowser extends widgets_1.TabPanel {
             });
         }, 10000);
         setInterval(() => {
-            request_1.request('get', utils_1.apiurl() + 'status?type=jobs').then((res) => {
-                if (!res.url.includes(utils_1.apiurl() + 'status?type=jobs')) {
+            request_1.request('get', utils_1.apiurl() + 'scheduler?type=jobs').then((res) => {
+                if (!res.url.includes(utils_1.apiurl() + 'scheduler?type=jobs')) {
                     window.location.href = document.loginurl;
                 }
                 utils_1.DomUtils.delete_all_children(this.jbs.node);
@@ -27230,8 +27230,8 @@ class StatusBrowser extends widgets_1.TabPanel {
             });
         }, 10000);
         setInterval(() => {
-            request_1.request('get', utils_1.apiurl() + 'status?type=reports').then((res) => {
-                if (!res.url.includes(utils_1.apiurl() + 'status?type=reports')) {
+            request_1.request('get', utils_1.apiurl() + 'scheduler?type=reports').then((res) => {
+                if (!res.url.includes(utils_1.apiurl() + 'scheduler?type=reports')) {
                     window.location.href = document.loginurl;
                 }
                 utils_1.DomUtils.delete_all_children(this.rps.node);
@@ -40421,7 +40421,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n    overflow-y: scroll;\n    min-height:325px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    max-height:40px;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:5px;\n}\n\ndiv.status-breakdown {\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n    margin-top:0px;\n    margin-bottom:0px;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n\n\ndiv.statusbrowser {\n    font-size: 10px;\n}\ndiv.statusbrowser ul li {\n    flex: 1;\n}\n\nbody.dark div.statusbrowser .p-TabBar-content {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser .p-TabBar-content {\n  border-right: 1px solid var(--light-border);\n}\n\n\nbody.dark div.statusbrowser .p-StackedPanel {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser .p-StackedPanel {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.statusbrowser-container table {\n    height:90%;\n    text-align: left;\n    overflow-x: scroll;\n}\n\ndiv.statusbrowser-container table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.statusbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.statusbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.statusbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.statusbrowser-container p {\n    height:5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.statusbrowser-container p span.page:hover {\n    color: white;\n}\n\nbody.light div.statusbrowser-container p span.page:hover {\n    color: #999;\n}\n\ndiv.statusbrowser-container p span.page-active {\n    color: var(--highlight-orange);\n}\n", ""]);
+exports.push([module.i, "div.status {\n    display: flex;\n    flex-direction: column;\n    font-size: 10px;\n    padding-left: 15px;\n    overflow-y: scroll;\n    min-height:325px;\n}\n\nbody.dark div.status {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.status {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.status-container {\n    max-height:40px;\n    display:flex;\n    flex-direction: row;\n    margin-bottom:5px;\n}\n\ndiv.status-breakdown {\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.status-breakdown td {\n    width: 50%;\n}\n\ndiv.status-breakdown td.status-data {\n    width: 50%;\n}\n\ndiv.status span.number {\n    font-size: 20px;\n    width:100%;\n}\n\ndiv.status span.subtitle {\n    font-size: 10px;\n    width:100%;\n}\n\ndiv.status-notebooks,\ndiv.status-jobs,\ndiv.status-reports {\n    width:30%;\n    display:flex;\n    flex-direction: column;\n    margin: auto;\n    margin-top:0px;\n    margin-bottom:0px;\n}\n\nbody.light div.status span.notebooks,\nbody.dark div.status span.notebooks {\n    color: var(--highlight-orange);\n}\n\nbody.light div.status span.jobs,\nbody.dark div.status span.jobs {\n    color: var(--highlight-blue);\n}\n\nbody.light div.status span.reports,\nbody.dark div.status span.reports {\n    color: var(--highlight-teal);\n}\n\n\ndiv.schedulerbrowser {\n    font-size: 10px;\n}\ndiv.schedulerbrowser ul li {\n    flex: 1;\n}\n\nbody.dark div.schedulerbrowser .p-TabBar-content {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.schedulerbrowser .p-TabBar-content {\n  border-right: 1px solid var(--light-border);\n}\n\n\nbody.dark div.schedulerbrowser .p-StackedPanel {\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light div.schedulerbrowser .p-StackedPanel {\n    border-right: 1px solid var(--light-border);\n}\n\ndiv.schedulerbrowser-container {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\ndiv.schedulerbrowser-container table {\n    height:90%;\n    text-align: left;\n    overflow-x: scroll;\n}\n\ndiv.schedulerbrowser-container table > tr > th {\n    padding: 5px;\n}\n\nbody.dark div.schedulerbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.schedulerbrowser-container table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.schedulerbrowser-container table > tr > td {\n    padding: 5px;\n}\n\nbody.dark div.schedulerbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light div.schedulerbrowser-container table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n}\n\ndiv.schedulerbrowser-container p {\n    height:5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark div.schedulerbrowser-container p span.page:hover {\n    color: white;\n}\n\nbody.light div.schedulerbrowser-container p span.page:hover {\n    color: #999;\n}\n\ndiv.schedulerbrowser-container p span.page-active {\n    color: var(--highlight-orange);\n}\n", ""]);
 
 // exports
 

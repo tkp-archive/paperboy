@@ -1,7 +1,7 @@
 import falcon
 from six.moves.urllib_parse import urljoin
 from ..resources import StaticResource, HTMLResource, LoginResource, LogoutResource, RegisterResource
-from ..resources import StatusResource, AutocompleteResource, ConfigResource
+from ..resources import StatusResource, AutocompleteResource, ConfigResource, SchedulerResource
 from ..resources import NotebookResource, JobResource, ReportResource
 from ..resources import NotebookDetailResource, JobDetailResource, ReportDetailResource
 from ..storage import StorageEngine, StorageError
@@ -58,6 +58,10 @@ def FalconAPI(config):
     # Status
     status = StatusResource(**kwargs)
     api.add_route(from_api('status'), status)
+
+    # Scheduler
+    schedulerresource = SchedulerResource(**kwargs)
+    api.add_route(from_api('scheduler'), schedulerresource)
 
     # Autocomplete
     autocomplete = AutocompleteResource(**kwargs)

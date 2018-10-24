@@ -4,6 +4,9 @@ from paperboy.storage import UserStorage
 
 
 class UserDummyStorage(UserStorage):
+    def status(self, *args, **kwargs):
+        return {}
+
     def form(self, *args, **kwargs):
         return User(self.config).form()
 

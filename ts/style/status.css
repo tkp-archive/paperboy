@@ -72,81 +72,81 @@ body.dark div.status span.reports {
 }
 
 
-div.statusbrowser {
+div.schedulerbrowser {
     font-size: 10px;
 }
-div.statusbrowser ul li {
+div.schedulerbrowser ul li {
     flex: 1;
 }
 
-body.dark div.statusbrowser .p-TabBar-content {
+body.dark div.schedulerbrowser .p-TabBar-content {
   border-right: 1px solid var(--dark-border);
 }
 
-body.light div.statusbrowser .p-TabBar-content {
+body.light div.schedulerbrowser .p-TabBar-content {
   border-right: 1px solid var(--light-border);
 }
 
 
-body.dark div.statusbrowser .p-StackedPanel {
+body.dark div.schedulerbrowser .p-StackedPanel {
     border-right: 1px solid var(--dark-border);
 }
 
-body.light div.statusbrowser .p-StackedPanel {
+body.light div.schedulerbrowser .p-StackedPanel {
     border-right: 1px solid var(--light-border);
 }
 
-div.statusbrowser-container {
+div.schedulerbrowser-container {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
 }
 
-div.statusbrowser-container table {
+div.schedulerbrowser-container table {
     height:90%;
     text-align: left;
     overflow-x: scroll;
 }
 
-div.statusbrowser-container table > tr > th {
+div.schedulerbrowser-container table > tr > th {
     padding: 5px;
 }
 
-body.dark div.statusbrowser-container table > tr > th {
+body.dark div.schedulerbrowser-container table > tr > th {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div.statusbrowser-container table > tr > th {
+body.light div.schedulerbrowser-container table > tr > th {
     border-bottom: 1px solid var(--light-border);
 }
 
-div.statusbrowser-container table > tr > td {
+div.schedulerbrowser-container table > tr > td {
     padding: 5px;
 }
 
-body.dark div.statusbrowser-container table > tr > td {
+body.dark div.schedulerbrowser-container table > tr > td {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light div.statusbrowser-container table > tr > td {
+body.light div.schedulerbrowser-container table > tr > td {
     border-bottom: 1px solid var(--light-border);
 }
 
-div.statusbrowser-container p {
+div.schedulerbrowser-container p {
     height:5%;
     margin: auto;
     margin-top: 0;
     margin-bottom: 0;
 }
 
-body.dark div.statusbrowser-container p span.page:hover {
+body.dark div.schedulerbrowser-container p span.page:hover {
     color: white;
 }
 
-body.light div.statusbrowser-container p span.page:hover {
+body.light div.schedulerbrowser-container p span.page:hover {
     color: #999;
 }
 
-div.statusbrowser-container p span.page-active {
+div.schedulerbrowser-container p span.page-active {
     color: var(--highlight-orange);
 }

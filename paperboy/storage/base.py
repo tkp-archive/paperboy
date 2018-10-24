@@ -8,6 +8,10 @@ class BaseStorage(with_metaclass(ABCMeta)):
         self.config = config
 
     @abstractmethod
+    def status(self, req, resp, *args, **kwargs):
+        pass
+
+    @abstractmethod
     def form(self, req, resp, *args, **kwargs):
         pass
 

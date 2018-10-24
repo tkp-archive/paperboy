@@ -6,6 +6,13 @@ from paperboy.storage import ReportStorage
 
 
 class ReportDummyStorage(ReportStorage):
+    def status(self, *args, **kwargs):
+        return {'total': 3250,
+                'pdf': 2074,
+                'HTML': 276,
+                'email': 2755,
+                'other': 495}
+
     def form(self):
         return Report(self.config).form()
 

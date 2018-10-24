@@ -12,15 +12,15 @@ class StatusBrowser extends TabPanel {
         super();
         this.nbs = new BoxPanel();
         this.nbs.title.label = 'Notebooks';
-        this.nbs.node.classList.add('statusbrowser-container');
+        this.nbs.node.classList.add('schedulerbrowser-container');
 
         this.jbs = new BoxPanel();
         this.jbs.title.label = 'Jobs';
-        this.jbs.node.classList.add('statusbrowser-container');
+        this.jbs.node.classList.add('schedulerbrowser-container');
 
         this.rps = new BoxPanel();
         this.rps.title.label = 'Reports';
-        this.rps.node.classList.add('statusbrowser-container');
+        this.rps.node.classList.add('schedulerbrowser-container');
 
         this.addWidget(this.nbs);
         this.addWidget(this.jbs);
@@ -28,22 +28,22 @@ class StatusBrowser extends TabPanel {
 
         this.setFlag(Widget.Flag.DisallowLayout);
         this.title.closable = false;
-        this.node.id = 'statusbrowser';
-        this.node.classList.add('statusbrowser');
+        this.node.id = 'schedulerbrowser';
+        this.node.classList.add('schedulerbrowser');
 
-        request('get', apiurl() + 'status?type=notebooks').then((res: RequestResult) => {
+        request('get', apiurl() + 'scheduler?type=notebooks').then((res: RequestResult) => {
             DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
         });
-        request('get', apiurl() + 'status?type=jobs').then((res: RequestResult) => {
+        request('get', apiurl() + 'scheduler?type=jobs').then((res: RequestResult) => {
             DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
         });
-        request('get', apiurl() + 'status?type=reports').then((res: RequestResult) => {
+        request('get', apiurl() + 'scheduler?type=reports').then((res: RequestResult) => {
             DomUtils.createStatusSection(this.rps, 'reports', res.json());
         });
 
         setInterval(() => {
-            request('get', apiurl() + 'status?type=notebooks').then((res: RequestResult) => {
-                if(!res.url.includes(apiurl() + 'status?type=notebooks')){
+            request('get', apiurl() + 'scheduler?type=notebooks').then((res: RequestResult) => {
+                if(!res.url.includes(apiurl() + 'scheduler?type=notebooks')){
                   window.location.href = (document as any).loginurl;
                 }
                 DomUtils.delete_all_children(this.nbs.node);
@@ -52,8 +52,8 @@ class StatusBrowser extends TabPanel {
         }, 10000);
 
         setInterval(() => {
-            request('get', apiurl() + 'status?type=jobs').then((res: RequestResult) => {
-                if(!res.url.includes(apiurl() + 'status?type=jobs')){
+            request('get', apiurl() + 'scheduler?type=jobs').then((res: RequestResult) => {
+                if(!res.url.includes(apiurl() + 'scheduler?type=jobs')){
                   window.location.href = (document as any).loginurl;
                 }
                 DomUtils.delete_all_children(this.jbs.node);
@@ -62,8 +62,8 @@ class StatusBrowser extends TabPanel {
         }, 10000);
 
         setInterval(() => {
-            request('get', apiurl() + 'status?type=reports').then((res: RequestResult) => {
-                if(!res.url.includes(apiurl() + 'status?type=reports')){
+            request('get', apiurl() + 'scheduler?type=reports').then((res: RequestResult) => {
+                if(!res.url.includes(apiurl() + 'scheduler?type=reports')){
                   window.location.href = (document as any).loginurl;
                 }
                 DomUtils.delete_all_children(this.rps.node);
