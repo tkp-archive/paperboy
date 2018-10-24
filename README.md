@@ -28,5 +28,31 @@ Some future options include:
 
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/ss.png)
 
-## Arch
+
+## Process Flow
+- Upload notebook
+- Configure job
+    - start time
+    - interval 
+    - papermill parameters to autoconfigure reports
+    - if autoconfiguring reports from papermill:
+        - run or publish
+        - output
+            - notebook
+            - pdf
+            - html
+            - email
+            - script
+        - strip or keep code
+- To edit or create additional reports on a job, configure reports
+        - run or publish
+        - output
+            - notebook
+            - pdf
+            - html
+            - email
+            - script
+        - strip or keep code
+
+## Storage Arch
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/arch.png)
