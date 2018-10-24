@@ -1,13 +1,16 @@
 import json
 import logging
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from paperboy.config import Report, ReportMetadata
 from paperboy.config.storage import ReportListResult
 from paperboy.storage import ReportStorage
-from .base import Base, BaseSQLStorageMixin
+from .base import Base, BaseSQLStorageMixin, justid
 from .user import UserSQL
+from .notebook import NotebookSQL
+from .job import JobSQL
 
 
 class ReportSQL(Base):
@@ -24,7 +27,7 @@ class ReportSQL(Base):
     jobId = Column(Integer, ForeignKey('jobs.id'))
     job = relationship('JobSQL', back_populates='reports')
 
-    params = Column(String)
+    parameters = Column(String)
     type = Column(String)
     output = Column(String)
     strip_code = Column(Boolean)
@@ -49,7 +52,7 @@ class ReportSQL(Base):
 
     def to_config(self, config):
         ret = Report(config)
-        ret.id = str(self.id)
+        ret.id = 'Report-' + str(self.id)
         ret.name = self.name
 
         meta = ReportMetadata()
@@ -75,34 +78,46 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
 
     def store(self, req, resp, session, *args, **kwargs):
         name = req.get_param('name')
+
         user = req.context['user']
         user_sql = session.query(UserSQL).get(int(user.id))
 
-        nb = str(strip_outputs(nbformat.reads(req.get_param('file').file.read(), 4)))
-        privacy = req.get_param('privacy') or ''
-        sla = req.get_param('sla') or ''
-        requirements = req.get_param('requirements') or ''
-        dockerfile = req.get_param('dockerfile') or ''
+        notebook = req.get_param('notebook')
+        nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
+
+        job = req.get_param('job')
+        jb_sql = session.query(JobSQL).get(int(justid(job)))
+
+        start_time = datetime.strptime(req.get_param('starttime'), '%Y-%m-%dT%H:%M')
+        type = req.get_param('type') or 'run'
+        output = req.get_param('output') or 'pdf'
+        strip_code = req.get_param('strip_code') == 'yes'
+        parameters = req.get_param('parameters') or '[]'
+
         created = datetime.now()
         modified = datetime.now()
 
-        nb = NotebookSQL(name=name,
-                         userId=user.id,
-                         user=user_sql,
-                         nb=nb,
-                         privacy=privacy,
-                         sla=sla,
-                         requirements=requirements,
-                         dockerfile=dockerfile,
-                         created=created,
-                         modified=modified)
-        session.add(nb)
+        rp = ReportSQL(name=name,
+                       userId=user.id,
+                       user=user_sql,
+                       notebookId=notebook,
+                       notebook=nb_sql,
+                       jobId=job,
+                       job=jb_sql,
+                       start_time=start_time,
+                       type=type,
+                       output=output,
+                       strip_code=strip_code,
+                       parameters=parameters,
+                       created=created,
+                       modified=modified)
+        session.add(rp)
 
         # generate id
         session.flush()
-        session.refresh(nb)
+        session.refresh(rp)
 
         resp.content_type = 'application/json'
-        store = nb.to_config(self.config).store()
-        logging.critical("Storing notebook {}".format(name))
+        store = rp.to_config(self.config).store()
+        logging.critical("Storing report {}".format(rp))
         resp.body = json.dumps(store)

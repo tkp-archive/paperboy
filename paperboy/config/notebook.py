@@ -1,4 +1,3 @@
-import json
 from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Int, Instance
@@ -22,7 +21,7 @@ class NotebookMetadata(HasTraits):
     created = Instance(datetime)
     modified = Instance(datetime)
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret['username'] = self.username
         ret['userid'] = self.userid
@@ -41,15 +40,11 @@ class NotebookMetadata(HasTraits):
         if self.modified:
             ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
 
-        if string:
-            return json.dumps(ret)
         return ret
 
     @staticmethod
-    def from_json(jsn, string=False):
+    def from_json(jsn):
         ret = NotebookMetadata()
-        if string:
-            jsn = json.loads(jsn)
         for k, v in jsn.items():
             if k in ('created', 'modified'):
                 ret.set_trait(k, datetime.strptime(v, '%m/%d/%Y %H:%M:%S'))
@@ -63,16 +58,14 @@ class Notebook(Base):
     id = Unicode()
     meta = Instance(NotebookMetadata)
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
         ret['meta'] = self.meta.to_json()
-        if string:
-            return json.dumps(ret)
         return ret
 
-    def form(self, string=False):
+    def form(self):
         f = Form()
         f.entries = [
             FormEntry(name='file', type='file', label='File', required=True),
@@ -84,16 +77,11 @@ class Notebook(Base):
             FormEntry(name='dockerfile', type='file', label='Dockerfile', required=False),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'notebooks')),
         ]
-        if string:
-            return f.to_json(string)
         return f.to_json()
 
     @staticmethod
-    def from_json(jsn, config, string=False):
+    def from_json(jsn, config):
         ret = Notebook(config)
-        if string:
-            jsn = json.loads(jsn)
-
         ret.name = jsn.pop('name')
         ret.id = jsn.pop('id')
 

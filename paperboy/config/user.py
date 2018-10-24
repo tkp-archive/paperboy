@@ -1,4 +1,3 @@
-import json
 from six.moves.urllib_parse import urljoin
 from traitlets import Unicode
 from .forms import Form, FormEntry, DOMEntry
@@ -9,29 +8,23 @@ class User(Base):
     name = Unicode()
     id = Unicode()
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
-        if string:
-            return json.dumps(ret)
         return ret
 
-    def form(self, string=False):
+    def form(self):
         f = Form()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', placeholder='Name for Notebook...', required=True),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'notebooks')),
         ]
-        if string:
-            return f.to_json(string)
         return f.to_json()
 
     @staticmethod
-    def from_json(jsn, config, string=False):
+    def from_json(jsn, config):
         ret = User(config)
-        if string:
-            jsn = json.loads(jsn)
         ret.name = jsn.pop('name')
         ret.id = jsn.pop('id')
         return ret

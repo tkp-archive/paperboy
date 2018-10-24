@@ -1,4 +1,3 @@
-import json
 from traitlets import List, Unicode, Bool, HasTraits, validate, TraitError
 
 _DOM_IMPLEMENTED = ('text', 'select', 'label', 'button', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span')
@@ -23,7 +22,7 @@ class FormEntry(HasTraits):
     readonly = Bool(default_value=False)
     url = Unicode(allow_none=True)
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret['name'] = self.name
         ret['type'] = self.type
@@ -41,8 +40,6 @@ class FormEntry(HasTraits):
             ret['readonly'] = self.readonly
         if self.url:
             ret['url'] = self.url
-        if string:
-            return json.dumps(ret)
         return ret
 
 
@@ -63,7 +60,7 @@ class DOMEntry(HasTraits):
     required = Bool(default_value=False)
     readonly = Bool(default_value=False)
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret['name'] = self.type
         ret['type'] = self.type
@@ -79,14 +76,10 @@ class DOMEntry(HasTraits):
             ret['required'] = self.required
         if self.readonly:
             ret['readonly'] = self.readonly
-        if string:
-            return json.dumps(ret)
         return ret
 
     @staticmethod
-    def from_json(jsn, string=False):
-        if string:
-            jsn = json.loads(jsn)
+    def from_json(jsn):
         ret = DOMEntry()
 
         for k, v in jsn.items():
@@ -97,22 +90,18 @@ class DOMEntry(HasTraits):
 class Form(HasTraits):
     entries = List()
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = []
         for entry in self.entries:
             ret.append(entry.to_json())
-        if string:
-            return json.dumps(ret)
         return ret
 
 
 class Response(HasTraits):
     entries = List()
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = []
         for entry in self.entries:
             ret.append(entry.to_json())
-        if string:
-            return json.dumps(ret)
         return ret

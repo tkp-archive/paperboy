@@ -49,13 +49,13 @@ class JobSQL(Base):
 
     def to_config(self, config):
         ret = Job(config)
-        ret.id = str(self.id)
+        ret.id = 'Job-' + str(self.id)
         ret.name = self.name
 
         meta = JobMetadata()
         meta.notebook = self.notebook.to_config(config)
         meta.username = self.user.name
-        meta.userid = str(self.user.id)
+        meta.userid = 'User-' + str(self.user.id)
 
         meta.start_time = self.start_time
         meta.interval = self.interval

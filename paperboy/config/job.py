@@ -1,4 +1,3 @@
-import json
 from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Int, Instance, validate, TraitError
@@ -26,7 +25,7 @@ class JobMetadata(HasTraits):
     created = Instance(datetime)
     modified = Instance(datetime)
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret['notebook'] = self.notebook.name
         ret['notebookid'] = self.notebook.id
@@ -40,15 +39,11 @@ class JobMetadata(HasTraits):
         if self.modified:
             ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
 
-        if string:
-            return json.dumps(ret)
         return ret
 
     @staticmethod
-    def from_json(jsn, string=False):
+    def from_json(jsn):
         ret = JobMetadata()
-        if string:
-            jsn = json.loads(jsn)
         for k, v in jsn.items():
             if k in ('created', 'modified'):
                 ret.set_trait(k, datetime.strptime(v, '%m/%d/%Y %H:%M:%S'))
@@ -62,16 +57,14 @@ class Job(Base):
     id = Unicode()
     meta = Instance(JobMetadata)
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
         ret['meta'] = self.meta.to_json()
-        if string:
-            return json.dumps(ret)
         return ret
 
-    def form(self, string=False):
+    def form(self):
         f = Form()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', value=self.name, placeholder='Name for Job...', required=True),
@@ -88,15 +81,11 @@ class Job(Base):
             FormEntry(name='autogen', type='checkbox', label='Autogenerate reports', value='true', required=False),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'jobs'))
         ]
-        if string:
-            return f.to_json(string)
         return f.to_json()
 
     @staticmethod
-    def from_json(jsn, config, string=False):
+    def from_json(jsn, config):
         ret = Job(config)
-        if string:
-            jsn = json.loads(jsn)
         ret.name = jsn['name']
         ret.id = jsn['id']
         ret.meta = JobMetadata.from_json(jsn['meta'])

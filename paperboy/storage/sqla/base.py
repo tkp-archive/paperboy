@@ -28,15 +28,12 @@ class BaseSQLStorageMixin(object):
         logging.critical('list : {}, result : {} - {}'.format(SqlCls, result.total, len(nbs)))
 
         setattr(result, setter, [x.to_config(self.config) for x in nbs])
-        resp.body = result.to_json(True)
+        resp.body = json.dumps(result.to_json())
 
     def _detail(self, SqlCls, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
 
-        id = req.get_param('id') or -1
-        if '-' in id:
-            id = id.split('-', 1)[-1]
-
+        id = justid(req.get_param('id') or -1)
         try:
             id = int(id)
         except ValueError:
@@ -65,5 +62,8 @@ def lookfor(s):
 
 
 def justid(id):
+    if isinstance(id, int):
+        return id
     if '-' in id:
         return id.split('-', 1)[-1]
+    return id

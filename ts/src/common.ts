@@ -22,7 +22,7 @@ class PrimaryForm extends Widget {
         this.title.closable = false;
         this.title.label = toProperCase(clz);
         request('get', apiurl() + 'config?type=' + type).then((res: RequestResult) => {
-            DomUtils.createConfig(this.node.querySelector('form'), type, res.json());
+            DomUtils.createConfigForm(this.node.querySelector('form'), type, res.json());
         });
     }
     clz: string;
@@ -84,7 +84,7 @@ class PrimaryTab extends DockPanel {
     }
 
     detailView(id: string): void {
-        this.addWidget(new PrimaryDetail(this.type, ''));
+        this.addWidget(new PrimaryDetail(this.type, id));
     }
 
     clz: string;

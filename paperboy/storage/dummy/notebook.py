@@ -36,7 +36,7 @@ class NotebookDummyStorage(NotebookStorage):
                      'modified': '10/14/2018 18:25:31'}},
                 self.config)
             for i in range(25)]
-        resp.body = result.to_json(True)
+        resp.body = json.dumps(result.to_json())
 
     def detail(self, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'

@@ -48,13 +48,13 @@ class NotebookSQL(Base):
 
     def to_config(self, config):
         ret = Notebook(config)
-        ret.id = str(self.id)
+        ret.id = 'Notebook-' + str(self.id)
         ret.name = self.name
 
         meta = NotebookMetadata()
 
         meta.username = self.user.name
-        meta.userid = str(self.user.id)
+        meta.userid = 'User-' + str(self.user.id)
 
         meta.notebook = self.notebook
         meta.privacy = self.privacy

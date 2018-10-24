@@ -10765,7 +10765,7 @@ class PrimaryForm extends widgets_1.Widget {
         this.title.closable = false;
         this.title.label = utils_1.toProperCase(clz);
         request_1.request('get', utils_1.apiurl() + 'config?type=' + type).then((res) => {
-            utils_1.DomUtils.createConfig(this.node.querySelector('form'), type, res.json());
+            utils_1.DomUtils.createConfigForm(this.node.querySelector('form'), type, res.json());
         });
     }
 }
@@ -10812,7 +10812,7 @@ class PrimaryTab extends widgets_1.DockPanel {
         return new PrimaryForm(this.clz, this.type);
     }
     detailView(id) {
-        this.addWidget(new PrimaryDetail(this.type, ''));
+        this.addWidget(new PrimaryDetail(this.type, id));
     }
 }
 exports.PrimaryTab = PrimaryTab;
@@ -13933,6 +13933,13 @@ var DomUtils;
     default_none.hidden = false;
     default_none.style.display = 'none';
     default_none.value = '';
+    /*** delete all children of element helper ***/
+    function delete_all_children(element) {
+        while (element.lastChild) {
+            element.removeChild(element.lastChild);
+        }
+    }
+    DomUtils.delete_all_children = delete_all_children;
     /*** build a label ***/
     function buildLabel(text) {
         let label = document.createElement('label');
@@ -13940,6 +13947,82 @@ var DomUtils;
         return label;
     }
     DomUtils.buildLabel = buildLabel;
+    /*** build a textarea ***/
+    function buildTextarea(name, placeholder, value, required = false, json = false) {
+        let area = document.createElement('textarea');
+        if (name) {
+            area.name = name;
+        }
+        if (placeholder) {
+            area.placeholder = placeholder;
+        }
+        if (value) {
+            if (json) {
+                area.value = JSON.stringify(JSON.parse(value), undefined, 4);
+            }
+            else {
+                area.value = value;
+            }
+        }
+        area.required = required;
+        area.style.marginBottom = '15px';
+        return area;
+    }
+    DomUtils.buildTextarea = buildTextarea;
+    /*** build a select ***/
+    function buildSelect(name, list, def, required = false, readonly = false) {
+        let select = document.createElement('select');
+        select.name = name;
+        if (required) {
+            select.required = required;
+        }
+        if (readonly) {
+            select.disabled = true;
+        }
+        select.appendChild(default_none);
+        for (let i = 0; i < list.length; i++) {
+            let x = list[i];
+            let option = document.createElement('option');
+            option.value = x;
+            option.textContent = x;
+            select.appendChild(option);
+            if (def && x === def) {
+                option.selected = true;
+            }
+        }
+        select.style.marginBottom = '15px';
+        select.style.minHeight = '25px';
+        return select;
+    }
+    DomUtils.buildSelect = buildSelect;
+    /*** build an autocomplete ***/
+    function buildAutocomplete(name, url, required = false) {
+        let search = document.createElement('input');
+        if (required) {
+            search.required = true;
+        }
+        search.setAttribute('list', name + '-datalist');
+        search.placeholder = 'Search...';
+        search.name = name;
+        search.autocomplete = 'off';
+        let datalist = document.createElement('datalist');
+        datalist.id = name + '-datalist';
+        let last = '';
+        search.addEventListener('input', () => {
+            delete_all_children(datalist);
+        });
+        search.addEventListener('keyup', () => {
+            if (last != search.value) {
+                autocomplete(url + search.value, search.value, datalist);
+            }
+            last = search.value;
+        });
+        search.addEventListener('mousedown', () => {
+            delete_all_children(datalist);
+        });
+        return [search, datalist];
+    }
+    DomUtils.buildAutocomplete = buildAutocomplete;
     /*** build an input ***/
     /***
       allowed:
@@ -13948,8 +14031,11 @@ var DomUtils;
         - checkbox
         - date picker
         - submit button
+        - select
+        - textarea
+        - autocomplete
      ***/
-    function buildInput(type, name, placeholder, value, required = false, readonly = false) {
+    function buildInput(type, name, placeholder, value, required = false, readonly = false, options = [], json = false) {
         if (!type) {
             type = 'text';
         }
@@ -14012,86 +14098,17 @@ var DomUtils;
                 }
                 break;
             }
+            case 'select': {
+                return buildSelect(name || '', options, value, required, readonly);
+            }
+            case 'textarea': { }
+            case 'json': {
+                return buildTextarea(name || '', placeholder, value, required, json);
+            }
         }
         return input;
     }
     DomUtils.buildInput = buildInput;
-    /*** build a textarea ***/
-    function buildTextarea(name, placeholder, value, required = false, json = false) {
-        let area = document.createElement('textarea');
-        if (name) {
-            area.name = name;
-        }
-        if (placeholder) {
-            area.placeholder = placeholder;
-        }
-        if (value) {
-            if (json) {
-                area.value = JSON.stringify(JSON.parse(value), undefined, 4);
-            }
-            else {
-                area.value = value;
-            }
-        }
-        area.required = required;
-        area.style.marginBottom = '15px';
-        return area;
-    }
-    DomUtils.buildTextarea = buildTextarea;
-    /*** build a select ***/
-    function buildSelect(name, list, def, required = false, readonly = false) {
-        let select = document.createElement('select');
-        select.name = name;
-        if (required) {
-            select.required = required;
-        }
-        if (readonly) {
-            select.disabled = true;
-        }
-        select.appendChild(default_none);
-        for (let i = 0; i < list.length; i++) {
-            let x = list[i];
-            let option = document.createElement('option');
-            option.value = x;
-            option.textContent = x;
-            select.appendChild(option);
-            if (def && x === def) {
-                option.selected = true;
-            }
-        }
-        select.style.marginBottom = '15px';
-        select.style.minHeight = '25px';
-        return select;
-    }
-    DomUtils.buildSelect = buildSelect;
-    /*** build an autocomplete ***/
-    function buildAutocomplete(url, name, required = false) {
-        let search = document.createElement('input');
-        if (required) {
-            search.required = true;
-        }
-        search.setAttribute('list', name + '-datalist');
-        search.placeholder = 'Search...';
-        search.name = name;
-        search.autocomplete = 'off';
-        let datalist = document.createElement('datalist');
-        datalist.id = name + '-datalist';
-        let last = '';
-        search.addEventListener('input', () => {
-            delete_all_children(datalist);
-        });
-        search.addEventListener('keyup', () => {
-            if (last != search.value) {
-                autocomplete(url + search.value, search.value, datalist);
-            }
-            last = search.value;
-        });
-        search.addEventListener('mousedown', () => {
-            delete_all_children(datalist);
-        });
-        return [search, datalist];
-    }
-    DomUtils.buildAutocomplete = buildAutocomplete;
     /*** build a generic element ***/
     /***
       allowed:
@@ -14132,8 +14149,7 @@ var DomUtils;
         }
     }
     DomUtils.buildGeneric = buildGeneric;
-    /*** create paginated table from data ***/
-    function createStatusSection(sec, clazz, data) {
+    function buildHorizontalTable(data, ondblclick = (dat) => { }) {
         let table = document.createElement('table');
         let headerrow = document.createElement('tr');
         let name = document.createElement('th');
@@ -14144,6 +14160,7 @@ var DomUtils;
         for (let i = 0; i < data.length; i++) {
             let dat = data[i];
             let row = document.createElement('tr');
+            row.ondblclick = () => { ondblclick(dat); };
             let v = document.createElement('td');
             v.textContent = dat['name'];
             row.appendChild(v);
@@ -14160,6 +14177,33 @@ var DomUtils;
             table.appendChild(row);
             first = false;
         }
+        return table;
+    }
+    DomUtils.buildHorizontalTable = buildHorizontalTable;
+    function buildVerticalTable(data, title) {
+        let table = document.createElement('table');
+        for (let i = 0; i < data.length; i++) {
+            let row = document.createElement('tr');
+            let td1 = document.createElement('td');
+            let td2 = document.createElement('td');
+            if (data[i]['name'] === 'name') {
+                if (title) {
+                    title.label = data[i]['value'];
+                }
+            }
+            td1.textContent = toProperCase(data[i]['name']);
+            let conts = DomUtils.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly'], data[i]['options'], (data[i]['type'] == 'json'));
+            td2.appendChild(conts);
+            row.appendChild(td1);
+            row.appendChild(td2);
+            table.appendChild(row);
+        }
+        return table;
+    }
+    DomUtils.buildVerticalTable = buildVerticalTable;
+    /*** create paginated table from data ***/
+    function createStatusSection(sec, clazz, data) {
+        let table = buildHorizontalTable(data);
         sec.node.appendChild(table);
     }
     DomUtils.createStatusSection = createStatusSection;
@@ -14171,35 +14215,10 @@ var DomUtils;
         let count = data['count'];
         let total = data['total'];
         let notebooks = data[clazz];
-        let table = document.createElement('table');
-        let headerrow = document.createElement('tr');
-        let name = document.createElement('th');
-        name.textContent = 'Name';
-        headerrow.appendChild(name);
-        table.appendChild(headerrow);
-        let first = true;
         if (notebooks.length > 0) {
-            for (let nb of notebooks) {
-                let row = document.createElement('tr');
-                row.ondblclick = () => {
-                    widget.detailView(nb['id']);
-                };
-                let v = document.createElement('td');
-                v.textContent = nb['name'];
-                row.appendChild(v);
-                for (let k of Object.keys(nb['meta'])) {
-                    if (first) {
-                        let name = document.createElement('th');
-                        name.textContent = toProperCase(k);
-                        headerrow.appendChild(name);
-                    }
-                    let v = document.createElement('td');
-                    v.textContent = nb['meta'][k];
-                    row.appendChild(v);
-                }
-                table.appendChild(row);
-                first = false;
-            }
+            let table = buildHorizontalTable(notebooks, (dat) => {
+                widget.detailView(dat['id']);
+            });
             // only add table if it has data
             sec.node.appendChild(table);
         }
@@ -14221,13 +14240,30 @@ var DomUtils;
         sec.node.appendChild(p2);
     }
     DomUtils.createPrimarySection = createPrimarySection;
-    /*** delete all children of element helper ***/
-    function delete_all_children(element) {
-        while (element.lastChild) {
-            element.removeChild(element.lastChild);
+    /*** create response modal from python json response to config ***/
+    function createResponseModal(resp, callback = () => { }) {
+        let modal = document.createElement('div');
+        modal.classList.add('modal');
+        for (let i = 0; i < resp.length; i++) {
+            let dat = resp[i];
+            modal.appendChild(buildGeneric(dat['type'], dat['value']));
         }
+        let button = buildGeneric('button', 'OK');
+        button.onclick = () => {
+            document.body.removeChild(modal);
+            callback();
+        };
+        modal.appendChild(button);
+        document.body.appendChild(modal);
+        button.focus();
     }
-    DomUtils.delete_all_children = delete_all_children;
+    DomUtils.createResponseModal = createResponseModal;
+    /*** create detail view from python json response to detail ***/
+    function createDetail(data, title, node) {
+        let table = buildVerticalTable(data, title);
+        node.appendChild(table);
+    }
+    DomUtils.createDetail = createDetail;
     /*** create config from python json ***/
     /***
       allowed:
@@ -14239,7 +14275,7 @@ var DomUtils;
         - date picker
         - submit button
     ***/
-    function createConfig(sec, clazz, data, callback = () => { }) {
+    function createConfigForm(sec, clazz, data, callback = () => { }) {
         if (!sec) {
             return;
         }
@@ -14285,7 +14321,7 @@ var DomUtils;
                     break;
                 }
                 case 'autocomplete': {
-                    let auto = buildAutocomplete(data[i]['url'], name, data[i]['required']);
+                    let auto = buildAutocomplete(name, data[i]['url'], data[i]['required']);
                     sec.appendChild(auto[0]);
                     sec.appendChild(auto[1]);
                     break;
@@ -14298,62 +14334,7 @@ var DomUtils;
             }
         }
     }
-    DomUtils.createConfig = createConfig;
-    /*** create response modal from python json response to config ***/
-    function createResponseModal(resp, callback = () => { }) {
-        let modal = document.createElement('div');
-        modal.classList.add('modal');
-        for (let i = 0; i < resp.length; i++) {
-            let dat = resp[i];
-            modal.appendChild(buildGeneric(dat['type'], dat['value']));
-        }
-        let button = buildGeneric('button', 'OK');
-        button.onclick = () => {
-            document.body.removeChild(modal);
-            callback();
-        };
-        modal.appendChild(button);
-        document.body.appendChild(modal);
-        button.focus();
-    }
-    DomUtils.createResponseModal = createResponseModal;
-    /*** create detail view from python json response to detail ***/
-    function createDetail(data, title, node) {
-        let table = document.createElement('table');
-        for (let i = 0; i < data.length; i++) {
-            let row = document.createElement('tr');
-            let td1 = document.createElement('td');
-            let td2 = document.createElement('td');
-            if (data[i]['name'] === 'name') {
-                title.label = data[i]['value'];
-            }
-            td1.textContent = toProperCase(data[i]['name']);
-            let conts;
-            switch (data[i]['type']) {
-                case 'select': {
-                    conts = DomUtils.buildSelect(data[i]['name'], data[i]['options'], data[i]['value'], data[i]['required'], data[i]['readonly']);
-                    break;
-                }
-                case 'textarea': {
-                    conts = DomUtils.buildTextarea(data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required']);
-                    break;
-                }
-                case 'json': {
-                    conts = DomUtils.buildTextarea(data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], true);
-                    break;
-                }
-                default: {
-                    conts = DomUtils.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly']);
-                }
-            }
-            td2.appendChild(conts);
-            row.appendChild(td1);
-            row.appendChild(td2);
-            table.appendChild(row);
-        }
-        node.appendChild(table);
-    }
-    DomUtils.createDetail = createDetail;
+    DomUtils.createConfigForm = createConfigForm;
 })(DomUtils = exports.DomUtils || (exports.DomUtils = {}));
 
 

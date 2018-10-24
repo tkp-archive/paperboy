@@ -1,9 +1,8 @@
-import json
 from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Instance, Bool
 from .forms import Form, FormEntry, DOMEntry
-from .base import Base
+from .base import Base, _REPORT_TYPES, _OUTPUT_TYPES
 from .notebook import Notebook
 from .job import Job
 
@@ -25,7 +24,7 @@ class ReportMetadata(HasTraits):
     created = Instance(datetime)
     modified = Instance(datetime)
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret = {}
         ret['notebook'] = self.notebook.name
@@ -50,15 +49,11 @@ class ReportMetadata(HasTraits):
         if self.modified:
             ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
 
-        if string:
-            return json.dumps(ret)
         return ret
 
     @staticmethod
-    def from_json(jsn, string=False):
+    def from_json(jsn):
         ret = ReportMetadata()
-        if string:
-            jsn = json.loads(jsn)
         for k, v in jsn.items():
             if k in ('created', 'modified', 'run'):
                 ret.set_trait(k, datetime.strptime(v, '%m/%d/%Y %H:%M:%S'))
@@ -72,36 +67,30 @@ class Report(Base):
     id = Unicode()
     meta = Instance(ReportMetadata)
 
-    def to_json(self, string=False):
+    def to_json(self):
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
         ret['meta'] = self.meta.to_json()
-        if string:
-            return json.dumps(ret)
         return ret
 
-    def form(self, string=False):
+    def form(self):
         f = Form()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', placeholder='Name for Report...', required=True),
             FormEntry(name='notebook', type='autocomplete', label='Notebook', url=urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='), required=True),
             FormEntry(name='job', type='autocomplete', label='Job', url=urljoin(self.config.apiurl, 'autocomplete?type=jobs&partial='), required=True),
             FormEntry(name='parameters', type='textarea', label='Parameters', placeholder='JSON Parameters...'),
-            FormEntry(name='type', type='select', label='Type', options=['Run', 'Publish'], required=True),
-            FormEntry(name='output', type='select', label='Output', options=['Email', 'PDF', 'HTML', 'Script'], required=True),
+            FormEntry(name='type', type='select', label='Type', options=_REPORT_TYPES, required=True),
+            FormEntry(name='output', type='select', label='Output', options=_OUTPUT_TYPES, required=True),
             FormEntry(name='code', type='select', label='Strip Code', options=['Yes', 'No'], required=True),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'reports'))
         ]
-        if string:
-            return f.to_json(string)
         return f.to_json()
 
     @staticmethod
-    def from_json(jsn, config, string=False):
+    def from_json(jsn, config):
         ret = Report(config)
-        if string:
-            jsn = json.loads(jsn)
         ret.name = jsn['name']
         ret.id = jsn['id']
         ret.meta = ReportMetadata.from_json(jsn['meta'])
@@ -116,8 +105,8 @@ class Report(Base):
             FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
             FormEntry(name='job', type='text', value=self.meta.job.name, label='Job', required=True, readonly=True),
             FormEntry(name='parameters', type='textarea', value=self.meta.parameters, label='Parameters', placeholder='JSON Parameters...'),
-            FormEntry(name='type', type='select', value=self.meta.type, label='Type', options=['Run', 'Publish'], required=True),
-            FormEntry(name='output', type='select', value=self.meta.output, label='Output', options=['Email', 'PDF', 'HTML', 'Script'], required=True),
+            FormEntry(name='type', type='select', value=self.meta.type, label='Type', options=_REPORT_TYPES, required=True),
+            FormEntry(name='output', type='select', value=self.meta.output, label='Output', options=_OUTPUT_TYPES, required=True),
             FormEntry(name='code', type='select', value=self.meta.strip_code, label='Strip Code', options=['Yes', 'No'], required=True),
             FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs'))
         ]

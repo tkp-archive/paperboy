@@ -126,10 +126,11 @@ class Paperboy(Application):
     ##############
     # SQL extras #
     ##############
-    sql_url = Unicode(default_value='sqlite:///:memory:', help="SQL Alchemy url").tag(config=True)
+    sql_url = Unicode(default_value='sqlite:///paperboy.db', help="SQL Alchemy url").tag(config=True)
     engine = None
     sessionmaker = None
     sql_user = Bool(default_value=True)
+    sql_dev = Bool(default_value=False)
     ##############
 
     def start(self):
@@ -140,13 +141,10 @@ class Paperboy(Application):
             'workers': self.workers
         }
         self.secret = str(uuid4())
-        # Preconfigured storage backends
-        if self.backend == 'git':
-            logging.critical('Using Git backend')
-            raise NotImplemented
 
-        elif self.backend == 'sqla':
-            logging.critical('Using SQL backend')
+        if self.sql_dev:
+            self.sql_url = 'sqlite:///:memory:'
+            logging.critical('Using SQL in memory backend')
 
             self.engine = create_engine(self.sql_url, echo=False)
             Base.metadata.create_all(self.engine)
@@ -160,30 +158,54 @@ class Paperboy(Application):
             self.sql_user = True
             self.auth = 'sqla'
 
-        elif self.backend == 'dummy':
-
-            logging.critical('Using Dummy backend')
-            self.user_storage = UserDummyStorage
-            self.notebook_storage = NotebookDummyStorage
-            self.job_storage = JobDummyStorage
-            self.report_storage = ReportDummyStorage
-            self.sql_user = False
-
-        # Preconfigured auth backends
-        if self.auth == 'none':
-            logging.critical('Using No auth')
-            self.auth_required_mw = NoAuthRequiredMiddleware
-            self.load_user_mw = NoUserMiddleware
-
-        elif self.auth == 'sqla':
             logging.critical('Using SQL auth')
             self.auth_required_mw = SQLAuthRequiredMiddleware
             self.load_user_mw = SQLUserMiddleware
+        else:
+            # Preconfigured storage backends
+            if self.backend == 'git':
+                logging.critical('Using Git backend')
+                raise NotImplemented
 
-        elif self.auth == 'dummy':
-            logging.critical('Using Dummy auth')
-            self.auth_required_mw = DummyAuthRequiredMiddleware
-            self.load_user_mw = DummyUserMiddleware
+            elif self.backend == 'sqla':
+                logging.critical('Using SQL backend')
+
+                self.engine = create_engine(self.sql_url, echo=False)
+                Base.metadata.create_all(self.engine)
+
+                self.sessionmaker = sessionmaker(bind=self.engine)
+                self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.sessionmaker)]
+                self.notebook_storage = NotebookSQLStorage
+                self.job_storage = JobSQLStorage
+                self.report_storage = ReportSQLStorage
+                self.user_storage = UserSQLStorage
+                self.sql_user = True
+                self.auth = 'sqla'
+
+            elif self.backend == 'dummy':
+
+                logging.critical('Using Dummy backend')
+                self.user_storage = UserDummyStorage
+                self.notebook_storage = NotebookDummyStorage
+                self.job_storage = JobDummyStorage
+                self.report_storage = ReportDummyStorage
+                self.sql_user = False
+
+            # Preconfigured auth backends
+            if self.auth == 'none':
+                logging.critical('Using No auth')
+                self.auth_required_mw = NoAuthRequiredMiddleware
+                self.load_user_mw = NoUserMiddleware
+
+            elif self.auth == 'sqla':
+                logging.critical('Using SQL auth')
+                self.auth_required_mw = SQLAuthRequiredMiddleware
+                self.load_user_mw = SQLUserMiddleware
+
+            elif self.auth == 'dummy':
+                logging.critical('Using Dummy auth')
+                self.auth_required_mw = DummyAuthRequiredMiddleware
+                self.load_user_mw = DummyUserMiddleware
 
         FalconGunicorn(FalconAPI(self), options).run()
 
@@ -203,5 +225,6 @@ class Paperboy(Application):
         'baseurl': 'Paperboy.baseurl',
         'backend': 'Paperboy.backend',
         'auth': 'Paperboy.auth',
-        'sql_url': 'Paperboy.sql_url'
+        'sql_url': 'Paperboy.sql_url',
+        'dev': 'Paperboy.sql_dev'
     }
