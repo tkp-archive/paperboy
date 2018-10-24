@@ -27056,7 +27056,20 @@ class Browser extends widgets_1.SplitPanel {
                 utils_1.autocomplete(utils_1.apiurl() + 'autocomplete?partial=' + search.value, search.value, datalist);
                 last = search.value;
             }
-            resultspanel.addWidget(new common_1.PrimaryDetail('notebooks', search.value));
+            let type;
+            if (search.value.toLowerCase().startsWith('notebook-')) {
+                type = 'notebooks';
+            }
+            else if (search.value.toLowerCase().startsWith('job-')) {
+                type = 'jobs';
+            }
+            else if (search.value.toLowerCase().startsWith('report-')) {
+                type = 'reports';
+            }
+            else {
+                type = '';
+            }
+            resultspanel.addWidget(new common_1.PrimaryDetail(type, search.value));
         });
         holder.appendChild(search);
         holder.appendChild(datalist);

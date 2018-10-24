@@ -54,7 +54,17 @@ class Browser extends SplitPanel {
                 autocomplete(apiurl() + 'autocomplete?partial=' + search.value, search.value, datalist);
                 last = search.value;
             }
-            resultspanel.addWidget(new PrimaryDetail('notebooks', search.value));
+            let type;
+            if(search.value.toLowerCase().startsWith('notebook-')){
+                type = 'notebooks';
+            }else if(search.value.toLowerCase().startsWith('job-')){
+                type = 'jobs';
+            }else if(search.value.toLowerCase().startsWith('report-')){
+                type = 'reports';
+            } else {
+                type = '';
+            }
+            resultspanel.addWidget(new PrimaryDetail(type, search.value));
         });
 
         holder.appendChild(search);
