@@ -243,12 +243,19 @@ body.light .primary > p span.page:hover {
     padding: 5px;
 }
 
+.primary > p {
+  margin-top:0px;
+  margin-bottom:0px;
+}
+
 body.dark .primary > table > tr > th {
     border-bottom: 1px solid var(--dark-border);
+    border-right: 1px solid var(--dark-border);
 }
 
 body.light .primary > table > tr > th {
     border-bottom: 1px solid var(--light-border);
+    border-right: 1px solid var(--light-border);
 }
 
 .primary > table > tr > td {
@@ -257,10 +264,12 @@ body.light .primary > table > tr > th {
 
 body.dark .primary > table > tr > td {
     border-bottom: 1px solid var(--dark-border);
+    border-right: 1px solid var(--dark-border);
 }
 
 body.light .primary > table > tr > td {
     border-bottom: 1px solid var(--light-border);
+    border-right: 1px solid var(--light-border);
 }
 
 /****** ******/
@@ -307,7 +316,7 @@ body.light .primary > table > tr > td {
 }
 
 .jobs .scheduler form {
-    min-height: 950px;
+    min-height: 1000px;
 }
 
 .reports .configurator form {
