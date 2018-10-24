@@ -47,8 +47,8 @@ input {
     background: var(--highlight-blue);
 }
 
-textarea {
-  min-height: 50px;
+textarea.json {
+  min-height: 500px;
 }
 
 /**********/
@@ -184,6 +184,10 @@ div.details > table > tr > td > * {
   min-width: 200px;
 }
 
+div.details > table > tr > td > textarea {
+  width:100%;
+}
+
 div.details > table > tr > td > input[type=submit] {
   min-width: 200px;
 }
@@ -198,58 +202,64 @@ div.details > table > tr > td {
 }
 
 /****** Tables ******/
-.primary .p-DockPanel-widget {
+.uploader, .scheduler, .configurator,
+.primary {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
 }
 
-.primary .p-DockPanel-widget > table {
+.primary > table {
     height:95%;
     text-align: left;
 }
 
-.primary .p-DockPanel-widget form > p {
+.primary form > p {
     height:2.5%;
     margin: auto;
     margin-top: 0;
     margin-bottom: 0;
 }
 
-body.dark .primary .p-DockPanel-widget > p span.page:hover {
+body.dark .primary > p span.page:hover {
     color: white;
 }
 
-body.light .primary .p-DockPanel-widget > p span.page:hover {
+body.light .primary > p span.page:hover {
     color: #999;
 }
 
-.primary .p-DockPanel-widget > p span.page-active {
+.primary > p span.page-active {
     color: var(--highlight-orange);
 }
 
 
-.primary .p-DockPanel-widget > table > tr > th {
+.primary > table > tr:first-child {
+    height: 20px;
+    max-height: 20px;
+}
+
+.primary > table > tr > th {
     padding: 5px;
 }
 
-body.dark .primary .p-DockPanel-widget > table > tr > th {
+body.dark .primary > table > tr > th {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light .primary .p-DockPanel-widget > table > tr > th {
+body.light .primary > table > tr > th {
     border-bottom: 1px solid var(--light-border);
 }
 
-.primary .p-DockPanel-widget > table > tr > td {
+.primary > table > tr > td {
     padding: 5px;
 }
 
-body.dark .primary .p-DockPanel-widget > table > tr > td {
+body.dark .primary > table > tr > td {
     border-bottom: 1px solid var(--dark-border);
 }
 
-body.light .primary .p-DockPanel-widget > table > tr > td {
+body.light .primary > table > tr > td {
     border-bottom: 1px solid var(--light-border);
 }
 
@@ -274,6 +284,11 @@ body.light .primary .p-DockPanel-widget > table > tr > td {
     margin-top:10px;
 }
 
+
+.p-DockPanel-widget > form > textarea {
+  min-height: 150px;
+}
+
 .p-DockPanel-widget > form > input[type=submit] {
     width: 15%;
 }
@@ -292,7 +307,7 @@ body.light .primary .p-DockPanel-widget > table > tr > td {
 }
 
 .jobs .scheduler form {
-    min-height: 800px;
+    min-height: 950px;
 }
 
 .reports .configurator form {

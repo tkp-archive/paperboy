@@ -2,7 +2,7 @@ from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Int, Instance
 from .forms import Form, FormEntry, DOMEntry
-from .base import Base
+from .base import Base, _SERVICE_LEVELS, _PRIVACY_LEVELS
 
 
 class NotebookMetadata(HasTraits):
@@ -11,7 +11,7 @@ class NotebookMetadata(HasTraits):
 
     notebook = Unicode()
     privacy = Unicode()
-    sla = Unicode()
+    level = Unicode()
     requirements = Unicode(allow_none=True)
     dockerfile = Unicode(allow_none=True)
 
@@ -24,22 +24,14 @@ class NotebookMetadata(HasTraits):
     def to_json(self):
         ret = {}
         ret['username'] = self.username
-        ret['userid'] = self.userid
-        ret['notebook'] = self.notebook
-
-        if self.privacy:
-            ret['privacy'] = self.privacy
-        if self.sla:
-            ret['sla'] = self.sla
-        if self.jobs:
-            ret['jobs'] = self.jobs
-        if self.reports:
-            ret['reports'] = self.reports
-        if self.created:
-            ret['created'] = self.created.strftime('%m/%d/%Y %H:%M:%S')
-        if self.modified:
-            ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
-
+        # ret['userid'] = self.userid
+        # ret['notebook'] = self.notebook
+        ret['privacy'] = self.privacy
+        ret['level'] = self.level
+        ret['jobs'] = self.jobs
+        ret['reports'] = self.reports
+        ret['created'] = self.created.strftime('%m/%d/%Y %H:%M:%S')
+        ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
         return ret
 
     @staticmethod
@@ -70,8 +62,8 @@ class Notebook(Base):
         f.entries = [
             FormEntry(name='file', type='file', label='File', required=True),
             FormEntry(name='name', type='text', label='Name', placeholder='Name for Notebook...', required=True),
-            FormEntry(name='privacy', type='select', label='Privacy', options=['Private', 'Public'], required=True),
-            FormEntry(name='sla', type='select', label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
+            FormEntry(name='privacy', type='select', label='Privacy', options=_PRIVACY_LEVELS, required=True),
+            FormEntry(name='level', type='select', label='level', options=_SERVICE_LEVELS, required=True),
             FormEntry(name='build', type='label', label='Build options'),
             FormEntry(name='requirements', type='file', label='requirements.txt', required=False),
             FormEntry(name='dockerfile', type='file', label='Dockerfile', required=False),
@@ -96,8 +88,8 @@ class Notebook(Base):
         f = Form()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, placeholder='Name for Job...', required=True),
-            FormEntry(name='privacy', type='select', value=self.meta.privacy, label='Visibility', options=['Private', 'Public'], required=True),
-            FormEntry(name='sla', type='select', value=self.meta.sla, label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
+            FormEntry(name='privacy', type='select', value=self.meta.privacy, label='Visibility', options=_PRIVACY_LEVELS, required=True),
+            FormEntry(name='level', type='select', value=self.meta.level, label='Level', options=_SERVICE_LEVELS, required=True),
             FormEntry(name='notebook', type='json', value=self.meta.notebook, placeholder='Notebook json...', required=True)
         ]
         if self.meta.requirements:

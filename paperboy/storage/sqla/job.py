@@ -27,7 +27,7 @@ class JobSQL(Base):
 
     start_time = Column(DateTime)
     interval = Column(String)
-    sla = Column(String, nullable=True)
+    level = Column(String, nullable=True)
 
     created = Column(DateTime)
     modified = Column(DateTime)
@@ -40,12 +40,12 @@ class JobSQL(Base):
                       # user=jb.user,
                       notebookId=int(jb.notebook.id),
                       # notebook=jb.notebook,
-                      reports=jb.reports,
-                      start_time=jb.start_time,
-                      interval=jb.interval,
-                      sla=jb.sla,
-                      created=jb.created,
-                      modified=jb.modified)
+                      reports=jb.meta.reports,
+                      start_time=jb.meta.start_time,
+                      interval=jb.meta.interval,
+                      level=jb.meta.level,
+                      created=jb.meta.created,
+                      modified=jb.meta.modified)
 
     def to_config(self, config):
         ret = Job(config)
@@ -59,7 +59,7 @@ class JobSQL(Base):
 
         meta.start_time = self.start_time
         meta.interval = self.interval
-        meta.sla = self.sla
+        meta.level = self.level
 
         meta.reports = len(self.reports)
 
@@ -97,7 +97,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
 
         start_time = datetime.strptime(req.get_param('starttime'), '%Y-%m-%dT%H:%M')
         interval = req.get_param('interval') or ''
-        sla = req.get_param('sla') or ''
+        level = req.get_param('level') or ''
         created = datetime.now()
         modified = datetime.now()
 
@@ -108,7 +108,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
                     notebook=nb_sql,
                     start_time=start_time,
                     interval=interval,
-                    sla=sla,
+                    level=level,
                     created=created,
                     modified=modified)
         session.add(jb)

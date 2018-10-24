@@ -40,15 +40,17 @@ class ReportSQL(Base):
         # FIXME
         return ReportSQL(name=rp.name,
                          userId=int(rp.user.id),
-                         # user=jb.user,
+                         # user=rp.user,
                          notebookId=int(rp.notebook.id),
-                         # notebook=jb.notebook,
-                         reports=rp.reports,
-                         start_time=rp.start_time,
-                         interval=rp.interval,
-                         sla=rp.sla,
-                         created=rp.created,
-                         modified=rp.modified)
+                         # notebook=rp.notebook,
+                         jobId=int(rp.job.id),
+                         # job=rp.job,
+                         parameters=rp.meta.parameters,
+                         type=rp.meta.type,
+                         output=rp.meta.output,
+                         strip_code=rp.meta.strip_code,
+                         created=rp.meta.created,
+                         modified=rp.meta.modified)
 
     def to_config(self, config):
         ret = Report(config)
@@ -56,6 +58,18 @@ class ReportSQL(Base):
         ret.name = self.name
 
         meta = ReportMetadata()
+        meta.notebook = self.notebook.to_config(config)
+        meta.job = self.job.to_config(config)
+        meta.username = self.user.name
+        meta.userid = 'User-' + str(self.user.id)
+
+        meta.parameters = self.parameters
+        meta.type = self.type
+        meta.output = self.output
+        meta.strip_code = self.strip_code
+
+        meta.created = self.created
+        meta.modified = self.modified
         ret.meta = meta
         return ret
 
@@ -88,7 +102,6 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         job = req.get_param('job')
         jb_sql = session.query(JobSQL).get(int(justid(job)))
 
-        start_time = datetime.strptime(req.get_param('starttime'), '%Y-%m-%dT%H:%M')
         type = req.get_param('type') or 'run'
         output = req.get_param('output') or 'pdf'
         strip_code = req.get_param('strip_code') == 'yes'
@@ -104,7 +117,6 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
                        notebook=nb_sql,
                        jobId=job,
                        job=jb_sql,
-                       start_time=start_time,
                        type=type,
                        output=output,
                        strip_code=strip_code,

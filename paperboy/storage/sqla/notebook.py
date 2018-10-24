@@ -26,7 +26,7 @@ class NotebookSQL(Base):
 
     notebook = Column(String)
     privacy = Column(String, nullable=True)
-    sla = Column(String, nullable=True)
+    level = Column(String, nullable=True)
     requirements = Column(String, nullable=True)
     dockerfile = Column(String, nullable=True)
 
@@ -39,12 +39,12 @@ class NotebookSQL(Base):
         return NotebookSQL(name=nb.name,
                            userId=int(nb.user.id),
                            notebook=nb.notebook,
-                           privacy=nb.privacy,
-                           sla=nb.sla,
-                           requirements=nb.requirements,
-                           dockerfile=nb.dockerfile,
-                           created=nb.created,
-                           modified=nb.modified)
+                           privacy=nb.meta.privacy,
+                           level=nb.meta.level,
+                           requirements=nb.meta.requirements,
+                           dockerfile=nb.meta.dockerfile,
+                           created=nb.meta.created,
+                           modified=nb.meta.modified)
 
     def to_config(self, config):
         ret = Notebook(config)
@@ -58,7 +58,7 @@ class NotebookSQL(Base):
 
         meta.notebook = self.notebook
         meta.privacy = self.privacy
-        meta.sla = self.sla
+        meta.level = self.level
 
         meta.requirements = self.requirements
         meta.dockerfile = self.dockerfile
@@ -73,7 +73,7 @@ class NotebookSQL(Base):
         return ret
 
     def __repr__(self):
-        return "<Notebook(name='{}', user='{}', privacy='{}', sla='{}'>".format(self.name, self.user, self.privacy, self.sla)
+        return "<Notebook(name='{}', user='{}', privacy='{}', level='{}'>".format(self.name, self.user, self.privacy, self.level)
 
 
 class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
@@ -96,7 +96,7 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
 
         notebook = nbformat.writes(strip_outputs(nbformat.reads(req.get_param('file').file.read(), 4)))
         privacy = req.get_param('privacy') or ''
-        sla = req.get_param('sla') or ''
+        level = req.get_param('level') or ''
         requirements = req.get_param('requirements') or ''
         dockerfile = req.get_param('dockerfile') or ''
         created = datetime.now()
@@ -107,7 +107,7 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
                          user=user_sql,
                          notebook=notebook,
                          privacy=privacy,
-                         sla=sla,
+                         level=level,
                          requirements=requirements,
                          dockerfile=dockerfile,
                          created=created,

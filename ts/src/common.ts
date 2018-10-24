@@ -63,7 +63,7 @@ class PrimaryTab extends DockPanel {
         this.setFlag(Widget.Flag.DisallowLayout);
         this.title.label = toProperCase(type);
         this.node.id = type;
-        this.node.classList.add('primary');
+        this.mine.node.classList.add('primary');
         this.node.classList.add(type);
 
         this.mine.title.closable = false;

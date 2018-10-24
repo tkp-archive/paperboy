@@ -2,7 +2,7 @@ from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Int, Instance, validate, TraitError
 from .forms import Form, FormEntry, DOMEntry
-from .base import Base, _INTERVAL_TYPES
+from .base import Base, _INTERVAL_TYPES, _OUTPUT_TYPES, _REPORT_TYPES, _SERVICE_LEVELS
 from .notebook import Notebook
 
 
@@ -13,7 +13,7 @@ class JobMetadata(HasTraits):
 
     start_time = Instance(datetime)
     interval = Unicode()
-    sla = Unicode()
+    level = Unicode()
 
     @validate('interval')
     def _validate_interval(self, proposal):
@@ -28,17 +28,12 @@ class JobMetadata(HasTraits):
     def to_json(self):
         ret = {}
         ret['notebook'] = self.notebook.name
-        ret['notebookid'] = self.notebook.id
-
-        if self.interval:
-            ret['interval'] = self.interval
-        if self.reports:
-            ret['reports'] = self.reports
-        if self.created:
-            ret['created'] = self.created.strftime('%m/%d/%Y %H:%M:%S')
-        if self.modified:
-            ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
-
+        # ret['notebookid'] = self.notebook.id
+        ret['interval'] = self.interval
+        ret['level'] = self.level
+        ret['reports'] = self.reports
+        ret['created'] = self.created.strftime('%m/%d/%Y %H:%M:%S')
+        ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
         return ret
 
     @staticmethod
@@ -71,13 +66,13 @@ class Job(Base):
             FormEntry(name='notebook', type='autocomplete', label='Notebook', url=urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='), required=True),
             FormEntry(name='starttime', type='datetime', label='Start Time/Date', required=True),
             FormEntry(name='interval', type='select', label='Interval', options=_INTERVAL_TYPES, required=True),
-            FormEntry(name='sla', type='select', label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
+            FormEntry(name='level', type='select', label='Level', options=_SERVICE_LEVELS, required=True),
             FormEntry(name='parameters_inline', type='textarea', label='Papermill params (.jsonl)', placeholder='Upload file or type here...', required=False),
             FormEntry(name='parameters', type='file', label='Papermill params (.jsonl)', required=False),
             FormEntry(name='options', type='label', label='Report options'),
-            FormEntry(name='type', type='select', label='Type', options=['Run', 'Publish'], required=True),
-            FormEntry(name='output', type='select', label='Output', options=['Email', 'PDF', 'HTML', 'Script'], required=True),
-            FormEntry(name='code', type='select', label='Strip Code', options=['Yes', 'No'], required=True),
+            FormEntry(name='type', type='select', label='Type', options=_REPORT_TYPES, required=True),
+            FormEntry(name='output', type='select', label='Output', options=_OUTPUT_TYPES, required=True),
+            FormEntry(name='code', type='select', label='Strip Code', options=['yes', 'no'], required=True),
             FormEntry(name='autogen', type='checkbox', label='Autogenerate reports', value='true', required=False),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'jobs'))
         ]
@@ -97,10 +92,10 @@ class Job(Base):
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Job...', required=True),
             FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
-            FormEntry(name='starttime', value=self.start_time.strftime('%Y-%m-%dT%H:%M'), type='datetime', label='Start Time/Date', required=True),
-            FormEntry(name='interval', type='select', value=self.interval, label='Interval', options=_INTERVAL_TYPES, required=True),
-            FormEntry(name='sla', type='select', value=self.sla, label='SLA', options=['Production', 'Research', 'Development', 'Personal'], required=True),
-            FormEntry(name='reports', type='text', value=self.reports, readonly=True),
+            FormEntry(name='starttime', value=self.meta.start_time.strftime('%Y-%m-%dT%H:%M'), type='datetime', label='Start Time/Date', required=True),
+            FormEntry(name='interval', type='select', value=self.meta.interval, label='Interval', options=_INTERVAL_TYPES, required=True),
+            FormEntry(name='level', type='select', value=self.meta.level, label='Level', options=_SERVICE_LEVELS, required=True),
+            FormEntry(name='reports', type='text', value=str(self.meta.reports), readonly=True),
             FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs'))
         ]
         return f.to_json()

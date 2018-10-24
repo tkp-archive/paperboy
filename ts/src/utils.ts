@@ -86,6 +86,7 @@ namespace DomUtils {
     if(value){
       if(json){
         area.value = JSON.stringify(JSON.parse(value), undefined, 4);
+        area.classList.add('json');
       } else {
         area.value = value;
       }

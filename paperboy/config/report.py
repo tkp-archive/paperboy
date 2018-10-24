@@ -20,7 +20,7 @@ class ReportMetadata(HasTraits):
     output = Unicode()
     strip_code = Bool()
 
-    run = Instance(datetime)
+    run = Instance(datetime, allow_none=True)
     created = Instance(datetime)
     modified = Instance(datetime)
 
@@ -28,26 +28,21 @@ class ReportMetadata(HasTraits):
         ret = {}
         ret = {}
         ret['notebook'] = self.notebook.name
-        ret['notebookid'] = self.notebook.id
+        # ret['notebookid'] = self.notebook.id
         ret['job'] = self.job.name
-        ret['jobid'] = self.job.id
+        # ret['jobid'] = self.job.id
+
+        ret['parameters'] = self.parameters
+        ret['type'] = self.type
+        ret['output'] = self.output
+        ret['strip_code'] = self.strip_code
 
         if self.run:
             ret['run'] = self.run.strftime('%m/%d/%Y %H:%M:%S')
-        if self.parameters:
-            ret['parameters'] = self.parameters
-        if self.type:
-            ret['type'] = self.type
-        if self.output:
-            ret['output'] = self.output
-        if self.strip_code:
-            ret['strip_code'] = self.strip_code
-        if self.run:
-            ret['run'] = self.run.strftime('%m/%d/%Y %H:%M:%S')
-        if self.created:
-            ret['created'] = self.created.strftime('%m/%d/%Y %H:%M:%S')
-        if self.modified:
-            ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
+        else:
+            ret['run'] = 'not run'
+        ret['created'] = self.created.strftime('%m/%d/%Y %H:%M:%S')
+        ret['modified'] = self.modified.strftime('%m/%d/%Y %H:%M:%S')
 
         return ret
 
@@ -83,7 +78,7 @@ class Report(Base):
             FormEntry(name='parameters', type='textarea', label='Parameters', placeholder='JSON Parameters...'),
             FormEntry(name='type', type='select', label='Type', options=_REPORT_TYPES, required=True),
             FormEntry(name='output', type='select', label='Output', options=_OUTPUT_TYPES, required=True),
-            FormEntry(name='code', type='select', label='Strip Code', options=['Yes', 'No'], required=True),
+            FormEntry(name='code', type='select', label='Strip Code', options=['yes', 'no'], required=True),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'reports'))
         ]
         return f.to_json()
@@ -107,7 +102,7 @@ class Report(Base):
             FormEntry(name='parameters', type='textarea', value=self.meta.parameters, label='Parameters', placeholder='JSON Parameters...'),
             FormEntry(name='type', type='select', value=self.meta.type, label='Type', options=_REPORT_TYPES, required=True),
             FormEntry(name='output', type='select', value=self.meta.output, label='Output', options=_OUTPUT_TYPES, required=True),
-            FormEntry(name='code', type='select', value=self.meta.strip_code, label='Strip Code', options=['Yes', 'No'], required=True),
+            FormEntry(name='code', type='select', value='yes' if self.meta.strip_code else 'no', label='Strip Code', options=['yes', 'no'], required=True),
             FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs'))
         ]
         return f.to_json()
