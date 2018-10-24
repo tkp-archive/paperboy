@@ -77,6 +77,11 @@ class NotebookSQL(Base):
 
 
 class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
+    def status(self, session, *args, **kwargs):
+        return {'total': session.query(NotebookSQL).count(),
+                'public': session.query(NotebookSQL).filter(NotebookSQL.level == 'public').count(),
+                'private': session.query(NotebookSQL).filter(NotebookSQL.privacy == 'private').count()}
+
     def form(self):
         return self._form(Notebook)
 

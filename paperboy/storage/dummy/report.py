@@ -9,7 +9,7 @@ class ReportDummyStorage(ReportStorage):
     def status(self, *args, **kwargs):
         return {'total': 3250,
                 'pdf': 2074,
-                'HTML': 276,
+                'html': 276,
                 'email': 2755,
                 'other': 495}
 

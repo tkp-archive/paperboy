@@ -25,6 +25,9 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
     def __init__(self, *args, **kwargs):
         super(UserSQLStorage, self).__init__(*args, **kwargs)
 
+    def status(self, *args, **kwargs):
+        return {}
+
     def form(self):
         return self._form(User)
 

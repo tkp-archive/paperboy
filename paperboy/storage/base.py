@@ -8,7 +8,7 @@ class BaseStorage(with_metaclass(ABCMeta)):
         self.config = config
 
     @abstractmethod
-    def status(self, req, resp, *args, **kwargs):
+    def status(self, *args, **kwargs):
         pass
 
     @abstractmethod

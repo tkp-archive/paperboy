@@ -74,6 +74,13 @@ class JobSQL(Base):
 
 
 class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
+    def status(self, session, *args, **kwargs):
+        return {'total': session.query(JobSQL).count(),
+                'production': session.query(JobSQL).filter(JobSQL.level == 'production').count(),
+                'research': session.query(JobSQL).filter(JobSQL.level == 'research').count(),
+                'development': session.query(JobSQL).filter(JobSQL.level == 'development').count(),
+                'personal': session.query(JobSQL).filter(JobSQL.level == 'personal').count()}
+
     def form(self):
         return self._form(Job)
 

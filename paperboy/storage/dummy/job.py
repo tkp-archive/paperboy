@@ -8,12 +8,11 @@ from paperboy.storage import JobStorage
 
 class JobDummyStorage(JobStorage):
     def status(self, *args, **kwargs):
-        return {
-                    'total': 150,
-                    'done': 25,
-                    'running': 10,
-                    'queued': 60,
-                    'disabled': 55}
+        return {'total': 150,
+                'done': 25,
+                'running': 10,
+                'queued': 60,
+                'disabled': 55}
 
     def form(self):
         return Job(self.config).form()
