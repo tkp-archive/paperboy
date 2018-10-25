@@ -80,3 +80,6 @@ class ReportDummyStorage(ReportStorage):
             self.config).store()
         logging.critical("Storing job {}".format(name))
         resp.body = json.dumps(store)
+
+    def autogenerate(self, req, resp, session, *args, **kwargs):
+        pass

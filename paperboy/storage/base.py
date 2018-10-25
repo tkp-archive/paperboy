@@ -60,4 +60,6 @@ class JobStorage(BaseStorage):
 
 
 class ReportStorage(BaseStorage):
-    pass
+    @abstractmethod
+    def autogenerate(self, req, resp, session, *args, **kwargs):
+        pass

@@ -119,12 +119,21 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
                     created=created,
                     modified=modified)
         session.add(jb)
-
         # generate id
         session.flush()
         session.refresh(jb)
 
-        resp.content_type = 'application/json'
-        store = jb.to_config(self.config).store()
         logging.critical("Storing job {}".format(jb))
+        jobconfig = jb.to_config(self.config)
+        store = jobconfig.store()
+
+        # autogenerate reports
+        reports_created = self.db.reports.autogenerate(req, resp, session, jobid=jb.id, *args, **kwargs)
+        if reports_created:
+            # reload to get accurate report count
+            session.flush()
+            session.refresh(jb)
+            store = jb.to_config(self.config).store()
+
+        resp.content_type = 'application/json'
         resp.body = json.dumps(store)

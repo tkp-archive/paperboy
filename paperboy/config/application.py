@@ -143,6 +143,7 @@ class Paperboy(Application):
         self.secret = str(uuid4())
 
         if self.sql_dev:
+
             self.sql_url = 'sqlite:///:memory:'
             logging.critical('Using SQL in memory backend')
 
@@ -150,17 +151,19 @@ class Paperboy(Application):
             Base.metadata.create_all(self.engine)
 
             self.sessionmaker = sessionmaker(bind=self.engine)
+            self.backend = 'sqla'
+            self.auth = 'sqla'
             self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.sessionmaker)]
             self.notebook_storage = NotebookSQLStorage
             self.job_storage = JobSQLStorage
             self.report_storage = ReportSQLStorage
             self.user_storage = UserSQLStorage
             self.sql_user = True
-            self.auth = 'sqla'
 
             logging.critical('Using SQL auth')
             self.auth_required_mw = SQLAuthRequiredMiddleware
             self.load_user_mw = SQLUserMiddleware
+
         else:
             # Preconfigured storage backends
             if self.backend == 'git':
@@ -226,5 +229,4 @@ class Paperboy(Application):
         'backend': 'Paperboy.backend',
         'auth': 'Paperboy.auth',
         'sql_url': 'Paperboy.sql_url',
-        'dev': 'Paperboy.sql_dev'
     }

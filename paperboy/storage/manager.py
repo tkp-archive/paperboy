@@ -9,10 +9,17 @@ class StorageEngine(object):
     reports = property(lambda self: self._report_storage)
 
     def __init__(self, user_storage, notebook_storage, job_storage, report_storage):
+        # resources get with self.db
         self._user_storage = user_storage
         self._notebook_storage = notebook_storage
         self._job_storage = job_storage
         self._report_storage = report_storage
+
+        # storage classes get with self.db
+        self._user_storage.db = self
+        self._notebook_storage.db = self
+        self._job_storage.db = self
+        self._report_storage.db = self
 
     def get_things(self, marker, limit):
         return [{'id': str(uuid.uuid4()), 'color': 'green'}]

@@ -67,13 +67,13 @@ class Job(Base):
             FormEntry(name='starttime', type='datetime', label='Start Time/Date', required=True),
             FormEntry(name='interval', type='select', label='Interval', options=_INTERVAL_TYPES, required=True),
             FormEntry(name='level', type='select', label='Level', options=_SERVICE_LEVELS, required=True),
+            FormEntry(name='autogen', type='checkbox', label='Autogenerate reports', value='true', required=False),
             FormEntry(name='parameters_inline', type='textarea', label='Papermill params (.jsonl)', placeholder='Upload file or type here...', required=False),
             FormEntry(name='parameters', type='file', label='Papermill params (.jsonl)', required=False),
             FormEntry(name='options', type='label', label='Report options'),
             FormEntry(name='type', type='select', label='Type', options=_REPORT_TYPES, required=True),
             FormEntry(name='output', type='select', label='Output', options=_OUTPUT_TYPES, required=True),
             FormEntry(name='code', type='select', label='Strip Code', options=['yes', 'no'], required=True),
-            FormEntry(name='autogen', type='checkbox', label='Autogenerate reports', value='true', required=False),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'jobs'))
         ]
         return f.to_json()
@@ -105,4 +105,6 @@ class Job(Base):
         ret.append(DOMEntry(type='h2', value='Success!').to_json())
         ret.append(DOMEntry(type='p', value='Successfully configured job: {}'.format(self.name)).to_json())
         ret.append(DOMEntry(type='p', value='Notebook: {}'.format(self.meta.notebook.name)).to_json())
+        if self.meta.reports:
+            ret.append(DOMEntry(type='p', value='Reports: {}'.format(self.meta.reports)).to_json())
         return ret

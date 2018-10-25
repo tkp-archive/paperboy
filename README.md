@@ -56,3 +56,7 @@ Some future options include:
 
 ## Storage Arch
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/arch.png)
+
+
+## Parameters demo
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/demo.gif)
