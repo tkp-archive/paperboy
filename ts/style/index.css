@@ -35,10 +35,6 @@ body {
   font-family: Arial;
 }
 
-input {
-  min-height:15px;
-}
-
 ::-webkit-scrollbar {
     width: 5px;
     background: transparent;
@@ -181,15 +177,19 @@ div.details > table > tr > td:nth-child(2) {
 }
 
 div.details > table > tr > td > * {
-  min-width: 200px;
+  min-width: 200px !important;
+  width: 200px;
+  margin-bottom:0px !important;
 }
 
 div.details > table > tr > td > textarea {
+  min-width: 200px !important;
+  min-height: 300px !important;
   width:100%;
 }
 
 div.details > table > tr > td > input[type=submit] {
-  min-width: 200px;
+  min-width: 200px !important;
 }
 
 div.details > table > tr > td > input[type=submit]:hover {
@@ -296,6 +296,7 @@ body.light .primary > table > tr > td {
 
 .p-DockPanel-widget > form > textarea {
   min-height: 150px;
+  height: 150px;
 }
 
 .p-DockPanel-widget > form > input[type=submit] {
