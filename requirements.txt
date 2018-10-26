@@ -1,3 +1,4 @@
+-e git://github.com/apache/incubator-airflow.git#egg=airflow
 falcon
 falcon-cors
 falcon_helpers

@@ -12,7 +12,7 @@ class BaseSQLStorageMixin(object):
     def _search(self, SqlCls, ClsName, count, id=None, name=None, session=None, *args, **kwargs):
         if name is None or name == '':
             return []
-        nbs = session.query(SqlCls).filter(SqlCls.name.like(lookfor(name)))
+        nbs = session.query(SqlCls).filter(SqlCls.name.like(lookfor(name))).limit(count)
         return [{'id': ClsName + '-' + str(nb.id), 'name': nb.name} for nb in nbs]
 
     def _list(self, SqlCls, ListResultCls, setter, req, resp, session, *args, **kwargs):
