@@ -11,8 +11,8 @@ from uuid import uuid4
 # falcon api
 from ..server.api import FalconAPI
 
-# gunicorn deployer
-from ..server.deploy import FalconGunicorn
+# deployer
+from ..server.deploy import FalconDeploy
 
 # base classes
 from ..storage import UserStorage, NotebookStorage, JobStorage, ReportStorage
@@ -210,7 +210,7 @@ class Paperboy(Application):
                 self.auth_required_mw = DummyAuthRequiredMiddleware
                 self.load_user_mw = DummyUserMiddleware
 
-        FalconGunicorn(FalconAPI(self), options).run()
+        FalconDeploy(FalconAPI(self), options).run()
 
     @classmethod
     def launch_instance(cls, argv=None, **kwargs):
