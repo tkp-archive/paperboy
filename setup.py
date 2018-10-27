@@ -13,8 +13,6 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
     requires = [r for r in f.read().split(os.linesep) if '-e' not in r]
-    print(requires)
-
     if os.name == 'nt':
         # no gunicorn on windows
         requires.remove('gunicorn')
