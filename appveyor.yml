@@ -9,8 +9,7 @@ max_jobs: 1
 image: 
   - Visual Studio 2017
 
-# scripts that are called at very beginning, before repo cloning
-init:
+install:
   - C:\Python37-x64\python -m pip install -r requirements.txt
 
 environment:
