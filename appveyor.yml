@@ -13,7 +13,7 @@ init:
   - python3 -m pip install -r requirements.txt
 
 environment:
-  - AIRFLOW_GPL_UNIDECODE=1
+    - AIRFLOW_GPL_UNIDECODE: 1
 
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
