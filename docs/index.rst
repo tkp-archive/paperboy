@@ -57,16 +57,24 @@ Arch
 
 |image6|
 
+
+
 .. |Build Status| image:: https://travis-ci.org/timkpaine/paperboy.svg?branch=master
    :target: https://travis-ci.org/timkpaine/paperboy
+
 .. |Waffle.io| image:: https://badge.waffle.io/timkpaine/paperboy.png?label=ready&title=Ready
    :target: https://waffle.io/timkpaine/paperboy?utm_source=badge
+
 .. |Coverage| image:: https://codecov.io/gh/timkpaine/paperboy/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/timkpaine/paperboy
+
 .. |Docs| image:: https://img.shields.io/readthedocs/paperboy.svg
    :target: https://paperboy.readthedocs.io
+
 .. |Site| image:: https://img.shields.io/badge/Site--grey.svg?colorB=FFFFFF
    :target: https://paperboy-jp.herokuapp.com/
+
 .. |image5| image:: https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/ss.png
+
 .. |image6| image:: https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/arch.png
 
