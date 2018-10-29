@@ -13,6 +13,9 @@ tests: clean ## Clean and Make unit tests
 test: clean ## run the tests for travis CI
 	@ python3 -m nose -v tests --with-coverage --cover-erase --cover-package=`find paperboy -name "*.py" | sed "s=\./==g" | sed "s=/=.=g" | sed "s/\.py//g" | tr '\n' ',' | rev | cut -c2- | rev`
 
+test_av: clean ## run the tests for appveyor
+	C:\Python37-x64\python -m nose -v tests 
+
 annotate: ## MyPy type annotation check
 	mypy -s paperboy
 

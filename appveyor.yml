@@ -6,11 +6,12 @@ skip_tags: true
 max_jobs: 1
 
 # Build worker image (VM template)
-image: Python 3.7.0 x64 
+image: 
+  - Visual Studio 2017
 
 # scripts that are called at very beginning, before repo cloning
 init:
-  - python3 -m pip install -r requirements.txt
+  - C:\Python37-x64\python -m pip install -r requirements.txt
 
 environment:
   matrix:
@@ -20,4 +21,4 @@ cache:
   - '%LOCALAPPDATA%\pip\Cache'
 
 test_script:
-  - make test
+  - make test_av
