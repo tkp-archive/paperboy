@@ -19,5 +19,8 @@ environment:
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
 
+build_script:
+  - C:\Python37-x64\python setup.py build
+
 test_script:
   - make test_av
