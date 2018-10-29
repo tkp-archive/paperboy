@@ -10,6 +10,7 @@ image:
 
 install:
   - C:\Python37-x64\python -m pip install -r requirements.txt
+  - C:\Python37-x64\python -m pip install nose
 
 environment:
   matrix:
