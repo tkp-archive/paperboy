@@ -13,6 +13,7 @@ init:
   - python3 -m pip install -r requirements.txt
 
 environment:
+  matrix:
     - AIRFLOW_GPL_UNIDECODE: 1
 
 cache:
