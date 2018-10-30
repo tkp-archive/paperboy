@@ -24,9 +24,7 @@ from .report import Report
 from ..storage import UserStorage, NotebookStorage, JobStorage, ReportStorage
 
 # dummy
-from ..storage.dummy import UserDummyStorage, NotebookDummyStorage, JobDummyStorage, ReportDummyStorage
 from ..scheduler import DummyScheduler
-from ..middleware import DummyUserMiddleware, DummyAuthRequiredMiddleware
 
 # no auth
 from ..middleware import NoUserMiddleware, NoAuthRequiredMiddleware
@@ -116,8 +114,8 @@ class Paperboy(Application):
     #        Predefined Configurations       #
     #
     ##########################################
-    backend = Unicode(default_value='dummy', help="Backend set to use, options are {dummy, git, sqla, custom}").tag(config=True)
-    auth = Unicode(default_value='dummy', help="Authentication backend set to use, options are {dummy, none, sqla, custom}").tag(config=True)
+    backend = Unicode(default_value='dummy', help="Backend set to use, options are {sqla, custom}").tag(config=True)
+    auth = Unicode(default_value='dummy', help="Authentication backend set to use, options are {none, sqla, custom}").tag(config=True)
     secret = Unicode()
 
     @validate('backend')
@@ -128,7 +126,7 @@ class Paperboy(Application):
 
     @validate('auth')
     def _validate_auth(self, proposed):
-        if proposed['value'] not in ('custom', 'dummy', 'none', 'sqla',):
+        if proposed['value'] not in ('custom', 'none', 'sqla',):
             raise TraitError('backend not recognized: %s'.format(proposed['value']))
         return proposed['value']
     ##########################################
@@ -195,15 +193,6 @@ class Paperboy(Application):
                 self.sql_user = True
                 self.auth = 'sqla'
 
-            elif self.backend == 'dummy':
-
-                logging.critical('Using Dummy backend')
-                self.user_storage = UserDummyStorage
-                self.notebook_storage = NotebookDummyStorage
-                self.job_storage = JobDummyStorage
-                self.report_storage = ReportDummyStorage
-                self.sql_user = False
-
             # Preconfigured auth backends
             if self.auth == 'none':
                 logging.critical('Using No auth')
@@ -214,11 +203,6 @@ class Paperboy(Application):
                 logging.critical('Using SQL auth')
                 self.auth_required_mw = SQLAuthRequiredMiddleware
                 self.load_user_mw = SQLUserMiddleware
-
-            elif self.auth == 'dummy':
-                logging.critical('Using Dummy auth')
-                self.auth_required_mw = DummyAuthRequiredMiddleware
-                self.load_user_mw = DummyUserMiddleware
 
         FalconDeploy(FalconAPI(self), options).run()
 

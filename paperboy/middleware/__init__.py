@@ -8,9 +8,6 @@ from falcon_helpers.middlewares.load_user import LoadUserMiddleware
 # Form handling middleware
 from falcon_multipart.middleware import MultipartMiddleware
 
-# Dummy auth
-from .dummy import DummyUserMiddleware, DummyAuthRequiredMiddleware
-
 # No auth
 from .none import NoUserMiddleware, NoAuthRequiredMiddleware
 
