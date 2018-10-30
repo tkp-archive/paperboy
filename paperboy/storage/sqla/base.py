@@ -5,13 +5,15 @@ class BaseSQLStorageMixin(object):
     def _form(self, ConfigCls):
         return ConfigCls(self.config).form()
 
-    def _search(self, SqlCls, ClsName, count, id=None, name=None, session=None, *args, **kwargs):
+    def _search(self, SqlCls, ClsName, user, params, session, *args, **kwargs):
+        name = params.get('name', '')
+        count = int(params.get('count', 10))
         if name is None or name == '':
             return []
         nbs = session.query(SqlCls).filter(SqlCls.name.like(lookfor(name))).limit(count)
         return [{'id': ClsName + '-' + str(nb.id), 'name': nb.name} for nb in nbs]
 
-    def _list(self, SqlCls, ListResultCls, setter, context, session, *args, **kwargs):
+    def _list(self, SqlCls, ListResultCls, setter, user, params, session, *args, **kwargs):
         result = ListResultCls()
         result.total = session.query(SqlCls).count()
         result.count = min(result.total, 25)
@@ -25,8 +27,8 @@ class BaseSQLStorageMixin(object):
         setattr(result, setter, [x.to_config(self.config) for x in nbs])
         return result.to_json()
 
-    def _detail(self, SqlCls, context, session, *args, **kwargs):
-        id = justid(context['params'].get('id') or -1)
+    def _detail(self, SqlCls, user, params, session, *args, **kwargs):
+        id = justid(params.get('id') or -1)
         try:
             id = int(id)
         except ValueError:

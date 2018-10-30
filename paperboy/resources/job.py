@@ -8,13 +8,11 @@ class JobResource(BaseResource):
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
-        req.context['params'] = req.params
-        resp.body = json.dumps(self.db.jobs.list(req.context, self.session))
+        resp.body = json.dumps(self.db.jobs.list(req.context['user'], req.params, self.session))
 
     def on_post(self, req, resp):
         resp.content_type = 'application/json'
-        req.context['params'] = req.params
-        resp.body = json.dumps(self.db.jobs.store(req.context, self.session))
+        resp.body = json.dumps(self.db.jobs.store(req.context['user'], req.params, self.session))
         # self.scheduler.store()
 
 
@@ -24,5 +22,4 @@ class JobDetailResource(BaseResource):
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
-        req.context['params'] = req.params
-        resp.body = json.dumps(self.db.jobs.detail(req.context, self.session))
+        resp.body = json.dumps(self.db.jobs.detail(req.context['user'], req.params, self.session))

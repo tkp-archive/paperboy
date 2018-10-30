@@ -20,22 +20,18 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
     def form(self):
         return self._form(Job)
 
-    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
-        return self._search(JobSQL, 'Job', count, id, name, session, *args, **kwargs)
+    def search(self, user, params, session, *args, **kwargs):
+        return self._search(JobSQL, 'Job', user, params, session, *args, **kwargs)
 
-    def list(self, context, session, *args, **kwargs):
-        return self._list(JobSQL, JobListResult, 'jobs', context, session, *args, **kwargs)
+    def list(self, user, params, session, *args, **kwargs):
+        return self._list(JobSQL, JobListResult, 'jobs', user, params, session, *args, **kwargs)
 
-    def detail(self, context, session, *args, **kwargs):
-        return self._detail(JobSQL, context, session, *args, **kwargs)
+    def detail(self, user, params, session, *args, **kwargs):
+        return self._detail(JobSQL, user, params, session, *args, **kwargs)
 
-    def store(self, context, session, *args, **kwargs):
-        params = context['params']
+    def store(self, user, params, session, *args, **kwargs):
         name = params.get('name')
-
-        user = context['user']
         user_sql = session.query(UserSQL).get(int(user.id))
-
         notebook = params.get('notebook')
         nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
 
@@ -66,7 +62,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         store = jobconfig.store()
 
         # autogenerate reports
-        reports_created = self.db.reports.generate(context, session, jobid=jb.id, *args, **kwargs)
+        reports_created = self.db.reports.generate(user, params, session, jobid=jb.id, *args, **kwargs)
         if reports_created:
             # reload to get accurate report count
             session.flush()

@@ -24,20 +24,17 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
     def form(self):
         return self._form(Report)
 
-    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
-        return self._search(ReportSQL, 'Report', count, id, name, session, *args, **kwargs)
+    def search(self, user, params, session, *args, **kwargs):
+        return self._search(ReportSQL, 'Report', user, params, session, *args, **kwargs)
 
-    def list(self, context, session, *args, **kwargs):
-        return self._list(ReportSQL, ReportListResult, 'reports', context, session, *args, **kwargs)
+    def list(self, user, params, session, *args, **kwargs):
+        return self._list(ReportSQL, ReportListResult, 'reports', user, params, session, *args, **kwargs)
 
-    def detail(self, context, session, *args, **kwargs):
-        return self._detail(ReportSQL, context, session, *args, **kwargs)
+    def detail(self, user, params, session, *args, **kwargs):
+        return self._detail(ReportSQL, user, params, session, *args, **kwargs)
 
-    def store(self, context, session, *args, **kwargs):
-        params = context['params']
+    def store(self, user, params, session, *args, **kwargs):
         name = params.get('name')
-
-        user = context['user']
         user_sql = session.query(UserSQL).get(int(user.id))
 
         notebook = params.get('notebook')
@@ -77,20 +74,18 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         logging.critical("Storing report {}".format(rp))
         return store
 
-    def generate(self, context, session, *args, **kwargs):
-        params = context['params']
+    def generate(self, user, params, session, *args, **kwargs):
         autogen = params.get('autogen') or False
         if autogen:
             parameters_inline = params.get('parameters_inline') or ''
             parameters = params.get('parameters')
             if not parameters_inline and parameters:
-                params = parameters.file.read()
+                report_params = parameters.file.read()
             else:
-                params = parameters_inline
-            params = params.split(os.linesep)
-            params = [json.loads(p) for p in params]
+                report_params = parameters_inline
+            report_params = report_params.split(os.linesep)
+            report_params = [json.loads(p) for p in report_params]
 
-            user = context['user']
             user_sql = session.query(UserSQL).get(int(user.id))
 
             notebook = params.get('notebook')
@@ -107,7 +102,7 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
             created = datetime.now()
             modified = datetime.now()
 
-            for i, param in enumerate(params):
+            for i, param in enumerate(report_params):
                 name = job_name + '-Report-' + str(i)
                 param = json.dumps(param)
                 rp = ReportSQL(name=name,
@@ -126,5 +121,5 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
                 session.add(rp)
             session.flush()
 
-            return len(params)
+            return len(report_params)
         return False

@@ -22,12 +22,11 @@ class LoginResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        req.context['params'] = req.params
-        token = self.db.users.login(req.context, self.session)
-        req.context['auth_token'] = token
-        user = self.db.users.detail(req.context, self.session)
+        token = self.db.users.login(None, req.params, self.session)
+        user = self.db.users.detail(token, req.params, self.session)
 
         if token and user:
+            req.context['auth_token'] = token
             req.context['user'] = user
             resp.set_cookie('auth_token', token, max_age=self.config.token_timeout, path='/', secure=not self.config.http)
             resp.status = falcon.HTTP_302

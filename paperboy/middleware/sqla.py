@@ -40,7 +40,7 @@ class SQLUserMiddleware(object):
         else:
             # try to get user
             session = self.config.sessionmaker()
-            user = self.db.users.detail(req.context, session)
+            user = self.db.users.detail(req.context['auth_token'], req.params, session)
             if user is not None:
                 req.context['user'] = user
                 if req.path in (urljoin(self.config.baseurl, self.config.loginurl), urljoin(self.config.baseurl, self.config.registerurl)):

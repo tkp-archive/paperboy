@@ -8,13 +8,11 @@ class ReportResource(BaseResource):
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
-        req.context['params'] = req.params
-        resp.body = json.dumps(self.db.reports.list(req.context, self.session))
+        resp.body = json.dumps(self.db.reports.list(req.context['user'], req.params, self.session))
 
     def on_post(self, req, resp):
         resp.content_type = 'application/json'
-        req.context['params'] = req.params
-        resp.body = json.dumps(self.db.reports.store(req.context, self.session))
+        resp.body = json.dumps(self.db.reports.store(req.context['user'], req.params, self.session))
 
 
 class ReportDetailResource(BaseResource):
@@ -23,5 +21,4 @@ class ReportDetailResource(BaseResource):
 
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
-        req.context['params'] = req.params
-        resp.body = json.dumps(self.db.reports.detail(req.context, self.session))
+        resp.body = json.dumps(self.db.reports.detail(req.context['user'], req.params, self.session))

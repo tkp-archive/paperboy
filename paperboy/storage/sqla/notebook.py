@@ -19,19 +19,17 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
     def form(self):
         return self._form(Notebook)
 
-    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
-        return self._search(NotebookSQL, 'Notebook', count, id, name, session, *args, **kwargs)
+    def search(self, user, params, session, *args, **kwargs):
+        return self._search(NotebookSQL, 'Notebook', user, params, session, *args, **kwargs)
 
-    def list(self, context, session, *args, **kwargs):
-        return self._list(NotebookSQL, NotebookListResult, 'notebooks', context, session, *args, **kwargs)
+    def list(self, user, params, session, *args, **kwargs):
+        return self._list(NotebookSQL, NotebookListResult, 'notebooks', user, params, session, *args, **kwargs)
 
-    def detail(self, context, session, *args, **kwargs):
-        return self._detail(NotebookSQL, context, session, *args, **kwargs)
+    def detail(self, user, params, session, *args, **kwargs):
+        return self._detail(NotebookSQL, user, params, session, *args, **kwargs)
 
-    def store(self, context, session, *args, **kwargs):
-        params = context['params']
+    def store(self, user, params, session, *args, **kwargs):
         name = params.get('name')
-        user = context['user']
         user_sql = session.query(UserSQL).get(int(user.id))
 
         notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('file').file.read(), 4)))

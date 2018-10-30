@@ -12,11 +12,11 @@ class BaseStorage(with_metaclass(ABCMeta)):
         pass
 
     @abstractmethod
-    def form(self, req, resp, *args, **kwargs):
+    def form(self, *args, **kwargs):
         pass
 
     @abstractmethod
-    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
+    def search(self, *args, **kwargs):
         pass
 
     @abstractmethod
@@ -37,10 +37,10 @@ class UserStorage(BaseStorage):
         self.config = config
 
     @abstractmethod
-    def login(self, context, *args, **kwargs):
+    def login(self, *args, **kwargs):
         pass
 
-    def logout(self, context, *args, **kwargs):
+    def logout(self, *args, **kwargs):
         return True
 
 
@@ -54,5 +54,5 @@ class JobStorage(BaseStorage):
 
 class ReportStorage(BaseStorage):
     @abstractmethod
-    def generate(self, context, session, *args, **kwargs):
+    def generate(self, *args, **kwargs):
         pass

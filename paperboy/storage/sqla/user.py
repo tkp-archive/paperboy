@@ -16,12 +16,11 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
     def form(self):
         return self._form(User)
 
-    def search(self, count, id=None, name=None, session=None, *args, **kwargs):
-        return self._search(UserSQL, 'User', count, id, name, session, *args, **kwargs)
+    def search(self, user, params, session, *args, **kwargs):
+        return self._search(UserSQL, 'User', user, params, session, *args, **kwargs)
 
-    def login(self, context, session, *args, **kwargs):
+    def login(self, user, params, session, *args, **kwargs):
         '''username/password -> user/token'''
-        params = context['params']
         username = params.get('username')
         password = params.get('password') or ''
         user = session.query(UserSQL).filter_by(name=username, password=password).first()
@@ -30,20 +29,18 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
             token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
             return token
 
-    def list(self, *args, **kwargs):
+    def list(self, user, params, session, *args, **kwargs):
         return {}
 
-    def detail(self, context, session, *args, **kwargs):
+    def detail(self, user, params, session, *args, **kwargs):
         '''token -> user'''
-        encoded = context.get('auth_token')
         try:
-            user = jwt.decode(encoded, self.config.secret, algorithms=['HS256'])
+            user = jwt.decode(user, self.config.secret, algorithms=['HS256'])
         except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
             return None
         return User(self.config, name=user['name'], id=user['id'])
 
-    def store(self, context, session, *args, **kwargs):
-        params = context['params']
+    def store(self, user, params, session, *args, **kwargs):
         username = params.get('username')
         password = params.get('password') or ''
         user = UserSQL(name=username, password=password)

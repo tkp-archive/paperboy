@@ -20,7 +20,8 @@ class LogoutResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        ret = self.db.users.logout(req, resp, self.session)
+        ret = self.db.users.logout(req.context['user'], req.params, self.session)
+
         req.context['user'] = None
         req.context['auth_token'] = None
         if ret:
