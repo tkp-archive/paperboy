@@ -38,3 +38,12 @@ class ReportOperator(BaseOperator):
 
     def execute(self, context):
         logging.info("report")
+
+
+class ReportPostOperator(BaseOperator):
+    @apply_defaults
+    def __init__(self, *args, **kwargs):
+        super(ReportPostOperator, self).__init__(*args, **kwargs)
+
+    def execute(self, context):
+        logging.info("report-post")

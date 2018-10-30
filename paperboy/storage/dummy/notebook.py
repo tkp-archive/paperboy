@@ -46,7 +46,7 @@ class NotebookDummyStorage(NotebookStorage):
 
     def detail(self, req, resp, session, *args, **kwargs):
         resp.content_type = 'application/json'
-        details =Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', username='Joe Python', userid='1', notebook='{}', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).edit()
+        details = Notebook.from_json(dict(name='MyNotebook', id='Notebook-1', username='Joe Python', userid='1', notebook='{}', jobs=25, reports=353, created='10/14/2018 04:50:33', modified='10/14/2018 18:25:31'), self.config).edit()
         resp.body = json.dumps(details)
 
     def store(self, req, resp, session, *args, **kwargs):
