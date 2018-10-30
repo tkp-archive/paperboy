@@ -73,7 +73,7 @@ class Job(Base):
             FormEntry(name='options', type='label', label='Report options'),
             FormEntry(name='type', type='select', label='Type', options=_REPORT_TYPES, required=True),
             FormEntry(name='output', type='select', label='Output', options=_OUTPUT_TYPES, required=True),
-            FormEntry(name='code', type='select', label='Strip Code', options=['yes', 'no'], required=True),
+            FormEntry(name='strip_code', type='select', label='Strip Code', options=['yes', 'no'], required=True),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'jobs'))
         ]
         return f.to_json()

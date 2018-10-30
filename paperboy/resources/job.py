@@ -12,8 +12,7 @@ class JobResource(BaseResource):
 
     def on_post(self, req, resp):
         resp.content_type = 'application/json'
-        resp.body = json.dumps(self.db.jobs.store(req.context['user'], req.params, self.session))
-        # self.scheduler.store()
+        resp.body = json.dumps(self.db.jobs.store(req.context['user'], req.params, self.session, self.scheduler))
 
 
 class JobDetailResource(BaseResource):

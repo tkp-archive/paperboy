@@ -20,7 +20,7 @@ class RegisterResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        token = self.db.users.login(None, req.params, self.session)
+        token = self.db.users.store(None, req.params, self.session)
         user = self.db.users.detail(token, req.params, self.session)
 
         if token and user:

@@ -76,13 +76,18 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
 
     def generate(self, user, params, session, *args, **kwargs):
         autogen = params.get('autogen') or False
+        ret = []
+
         if autogen:
             parameters_inline = params.get('parameters_inline') or ''
             parameters = params.get('parameters')
-            if not parameters_inline and parameters:
-                report_params = parameters.file.read()
+
+            if not parameters_inline:
+                if parameters is not None:
+                    report_params = parameters.file.read().decode('utf-8')
             else:
                 report_params = parameters_inline
+
             report_params = report_params.split(os.linesep)
             report_params = [json.loads(p) for p in report_params]
 
@@ -92,12 +97,13 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
             nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
 
             job_name = params.get('name')
-            job_id = kwargs.get('jobid')
+            job = kwargs.get('job')
+            job_id = int(justid(job.id))
             jb_sql = session.query(JobSQL).get(int(justid(job_id)))
 
             type = params.get('type') or 'run'
             output = params.get('output') or 'notebook'
-            strip_code = params.get('code') or 'no'
+            strip_code = params.get('strip_code') == 'yes'
 
             created = datetime.now()
             modified = datetime.now()
@@ -119,7 +125,8 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
                                created=created,
                                modified=modified)
                 session.add(rp)
+                ret.append(rp.to_config(self.config))
+
             session.flush()
 
-            return len(report_params)
-        return False
+        return ret

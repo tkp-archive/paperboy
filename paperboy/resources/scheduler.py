@@ -1,3 +1,4 @@
+import json
 from .base import BaseResource
 
 
@@ -6,4 +7,5 @@ class SchedulerResource(BaseResource):
         super(SchedulerResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
-        self.scheduler.status(req, resp, self.session)
+        resp.content_type = 'application/json'
+        resp.body = json.dumps(self.scheduler.status(req.context['user'], req.params, self.session))

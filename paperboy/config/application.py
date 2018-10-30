@@ -141,6 +141,12 @@ class Paperboy(Application):
     sql_dev = Bool(default_value=False)
     ##############
 
+    ##################
+    # Airflow extras #
+    ##################
+    airflow_path = Unicode(default_value=os.path.expanduser('~/airflow'))
+    ##################
+
     def start(self):
         """Start the whole thing"""
         self.port = os.environ.get('PORT', self.port)

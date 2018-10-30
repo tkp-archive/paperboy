@@ -6,7 +6,8 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from .base import BaseScheduler
 
-TEMPLATE = os.path.abspath(os.path.join(os.curdir, 'paperboy.airflow.py'))
+with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
+    TEMPLATE = fp.read()
 
 
 class AirflowScheduler(BaseScheduler):
@@ -15,8 +16,9 @@ class AirflowScheduler(BaseScheduler):
 
 class JobOperator(BaseOperator):
     @apply_defaults
-    def __init__(self, *args, **kwargs):
+    def __init__(self, job, *args, **kwargs):
         super(JobOperator, self).__init__(*args, **kwargs)
+        self.job = job
 
     def execute(self, context):
         logging.info("job")
@@ -24,8 +26,9 @@ class JobOperator(BaseOperator):
 
 class JobCleanupOperator(BaseOperator):
     @apply_defaults
-    def __init__(self, *args, **kwargs):
+    def __init__(self, job, *args, **kwargs):
         super(JobCleanupOperator, self).__init__(*args, **kwargs)
+        self.job = job
 
     def execute(self, context):
         logging.info("job-cleanup")
@@ -33,8 +36,9 @@ class JobCleanupOperator(BaseOperator):
 
 class ReportOperator(BaseOperator):
     @apply_defaults
-    def __init__(self, *args, **kwargs):
+    def __init__(self, report, *args, **kwargs):
         super(ReportOperator, self).__init__(*args, **kwargs)
+        self.report = report
 
     def execute(self, context):
         logging.info("report")
@@ -42,8 +46,9 @@ class ReportOperator(BaseOperator):
 
 class ReportPostOperator(BaseOperator):
     @apply_defaults
-    def __init__(self, *args, **kwargs):
+    def __init__(self, report, *args, **kwargs):
         super(ReportPostOperator, self).__init__(*args, **kwargs)
+        self.report = report
 
     def execute(self, context):
         logging.info("report-post")

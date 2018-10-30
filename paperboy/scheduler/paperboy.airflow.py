@@ -2,7 +2,7 @@ import json
 from base64 import b64decode
 from paperboy.scheduler._airflow import JobOperator, JobCleanupOperator, ReportOperator, ReportPostOperator
 from airflow import DAG
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 ###################################
@@ -10,7 +10,7 @@ from datetime import timedelta
 ###################################
 default_args = {
     'owner': '{{owner}}',
-    'start_date': '{{start_date}}'.strftime('%m/%d/%Y %H:%M:%S'),
+    'start_date': datetime.strptime('{{start_date}}', '%m/%d/%Y %H:%M:%S'),
     'email': ['{{email}}'],
     'email_on_failure': True,
     'email_on_retry': True,
@@ -21,8 +21,8 @@ default_args = {
 ###################################
 # Inline job and reports as b64 json  #
 ###################################
-job = json.loads(b64decode(b'{{job_json}}'))
-reports = json.loads(b64decode(b'{{report_json}}'))
+job_json = json.loads(b64decode({{job_json}}))
+reports_json = json.loads(b64decode({{report_json}}))
 
 
 ###################################
@@ -30,25 +30,25 @@ reports = json.loads(b64decode(b'{{report_json}}'))
 ###################################
 
 # The top level dag, representing a Job run on a Notebook
-dag = DAG('DAG_' + str(job['id']), default_args=default_args)
+dag = DAG('DAG_' + str(job_json['id']), default_args=default_args)
 
 # The Job operator, used for bundling groups of reports,
 # setting up env/image
-job = JobOperator(task_id=job['id'], dag=dag)
+job = JobOperator(job=job_json, task_id=job_json['id'], dag=dag)
 
 # The cleanup operator, run after all reports are finished
-cleanup = JobCleanupOperator(task_id='job_cleanup', dag=dag)
+cleanup = JobCleanupOperator(job=job_json, task_id='job_cleanup', dag=dag)
 
-for rep in reports:
+for rep in reports_json:
     # Report operator, performs the report creation
     # using papermill and the report's individual
     # parameters and configuration
-    r = ReportOperator(task_id=rep['id'], dag=dag)
+    r = ReportOperator(report=rep, task_id=rep['id'], dag=dag)
 
     # The post-report operator, used for post-report
     # tasks such as sending the report in an email,
     # deploying the report to a webserver, etc
-    rp = ReportPostOperator(task_id=rep['id'], dag=dag)
+    rp = ReportPostOperator(report=rep, task_id=rep['id'], dag=dag)
 
     # Job -> Report -> ReportPost -\
     #   \--> Report -> ReportPost --\

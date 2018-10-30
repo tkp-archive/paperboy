@@ -20,10 +20,14 @@ class LogoutResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        ret = self.db.users.logout(req.context['user'], req.params, self.session)
+        ret = self.db.users.logout(req.context.get('user'), req.params, self.session)
 
-        req.context['user'] = None
-        req.context['auth_token'] = None
+        if req.context.get('user'):
+            req.context['user'] = None
+
+        if req.context.get('auth_token'):
+            req.context['auth_token'] = None
+
         if ret:
             resp.unset_cookie('auth_token')
             resp.status = falcon.HTTP_302

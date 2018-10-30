@@ -29,7 +29,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
     def detail(self, user, params, session, *args, **kwargs):
         return self._detail(JobSQL, user, params, session, *args, **kwargs)
 
-    def store(self, user, params, session, *args, **kwargs):
+    def store(self, user, params, session, scheduler, *args, **kwargs):
         name = params.get('name')
         user_sql = session.query(UserSQL).get(int(user.id))
         notebook = params.get('notebook')
@@ -58,15 +58,17 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         session.refresh(jb)
 
         logging.critical("Storing job {}".format(jb))
-        jobconfig = jb.to_config(self.config)
-        store = jobconfig.store()
+        job_config = jb.to_config(self.config)
+        store = job_config.store()
 
         # autogenerate reports
-        reports_created = self.db.reports.generate(user, params, session, jobid=jb.id, *args, **kwargs)
-        if reports_created:
+        report_configs = self.db.reports.generate(user, params, session, job=job_config, *args, **kwargs)
+        if report_configs:
             # reload to get accurate report count
             session.flush()
             session.refresh(jb)
-            store = jb.to_config(self.config).store()
+            job_config = jb.to_config(self.config)
+            store = job_config.store()
 
+        scheduler.schedule(user, job_config, report_configs)
         return store
