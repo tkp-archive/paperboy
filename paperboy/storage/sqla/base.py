@@ -1,8 +1,5 @@
 import json
 import logging
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
 
 
 class BaseSQLStorageMixin(object):

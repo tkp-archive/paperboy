@@ -1,9 +1,12 @@
+import os
+import os.path
 import logging
 from airflow.models import BaseOperator
 # from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.decorators import apply_defaults
-
 from .base import BaseScheduler
+
+TEMPLATE = os.path.abspath(os.path.join(os.curdir, 'paperboy.airflow.py'))
 
 
 class AirflowScheduler(BaseScheduler):

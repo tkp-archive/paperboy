@@ -81,5 +81,5 @@ class ReportDummyStorage(ReportStorage):
         logging.critical("Storing job {}".format(name))
         resp.body = json.dumps(store)
 
-    def autogenerate(self, req, resp, session, *args, **kwargs):
+    def generate(self, req, resp, session, *args, **kwargs):
         pass
