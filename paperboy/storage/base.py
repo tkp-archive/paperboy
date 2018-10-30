@@ -20,11 +20,11 @@ class BaseStorage(with_metaclass(ABCMeta)):
         pass
 
     @abstractmethod
-    def list(self, req, resp, *args, **kwargs):
+    def list(self, *args, **kwargs):
         pass
 
     @abstractmethod
-    def detail(self, req, resp, *args, **kwargs):
+    def detail(self, *args, **kwargs):
         pass
 
     @abstractmethod
@@ -61,5 +61,5 @@ class JobStorage(BaseStorage):
 
 class ReportStorage(BaseStorage):
     @abstractmethod
-    def generate(self, req, resp, session, *args, **kwargs):
+    def generate(self, context, session, *args, **kwargs):
         pass

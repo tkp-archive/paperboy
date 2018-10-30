@@ -1,4 +1,3 @@
-import json
 import logging
 from datetime import datetime
 from paperboy.config import Job
@@ -24,24 +23,25 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
     def search(self, count, id=None, name=None, session=None, *args, **kwargs):
         return self._search(JobSQL, 'Job', count, id, name, session, *args, **kwargs)
 
-    def list(self, req, resp, session, *args, **kwargs):
-        return self._list(JobSQL, JobListResult, 'jobs', req, resp, session, *args, **kwargs)
+    def list(self, context, session, *args, **kwargs):
+        return self._list(JobSQL, JobListResult, 'jobs', context, session, *args, **kwargs)
 
-    def detail(self, req, resp, session, *args, **kwargs):
-        return self._detail(JobSQL, req, resp, session, *args, **kwargs)
+    def detail(self, context, session, *args, **kwargs):
+        return self._detail(JobSQL, context, session, *args, **kwargs)
 
-    def store(self, req, resp, session, *args, **kwargs):
-        name = req.get_param('name')
+    def store(self, context, session, *args, **kwargs):
+        params = context['params']
+        name = params.get('name')
 
-        user = req.context['user']
+        user = context['user']
         user_sql = session.query(UserSQL).get(int(user.id))
 
-        notebook = req.get_param('notebook')
+        notebook = params.get('notebook')
         nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
 
-        start_time = datetime.strptime(req.get_param('starttime'), '%Y-%m-%dT%H:%M')
-        interval = req.get_param('interval') or ''
-        level = req.get_param('level') or ''
+        start_time = datetime.strptime(params.get('starttime'), '%Y-%m-%dT%H:%M')
+        interval = params.get('interval') or ''
+        level = params.get('level') or ''
         created = datetime.now()
         modified = datetime.now()
 
@@ -66,12 +66,11 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         store = jobconfig.store()
 
         # autogenerate reports
-        reports_created = self.db.reports.generate(req, resp, session, jobid=jb.id, *args, **kwargs)
+        reports_created = self.db.reports.generate(context, session, jobid=jb.id, *args, **kwargs)
         if reports_created:
             # reload to get accurate report count
             session.flush()
             session.refresh(jb)
             store = jb.to_config(self.config).store()
 
-        resp.content_type = 'application/json'
-        resp.body = json.dumps(store)
+        return store

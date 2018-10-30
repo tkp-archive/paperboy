@@ -1,4 +1,3 @@
-import json
 import logging
 
 
@@ -12,8 +11,7 @@ class BaseSQLStorageMixin(object):
         nbs = session.query(SqlCls).filter(SqlCls.name.like(lookfor(name))).limit(count)
         return [{'id': ClsName + '-' + str(nb.id), 'name': nb.name} for nb in nbs]
 
-    def _list(self, SqlCls, ListResultCls, setter, req, resp, session, *args, **kwargs):
-        resp.content_type = 'application/json'
+    def _list(self, SqlCls, ListResultCls, setter, context, session, *args, **kwargs):
         result = ListResultCls()
         result.total = session.query(SqlCls).count()
         result.count = min(result.total, 25)
@@ -25,29 +23,24 @@ class BaseSQLStorageMixin(object):
         logging.critical('list : {}, result : {} - {}'.format(SqlCls, result.total, len(nbs)))
 
         setattr(result, setter, [x.to_config(self.config) for x in nbs])
-        resp.body = json.dumps(result.to_json())
+        return result.to_json()
 
-    def _detail(self, SqlCls, req, resp, session, *args, **kwargs):
-        resp.content_type = 'application/json'
-
-        id = justid(req.get_param('id') or -1)
+    def _detail(self, SqlCls, context, session, *args, **kwargs):
+        id = justid(context['params'].get('id') or -1)
         try:
             id = int(id)
         except ValueError:
-            resp.body = '{}'
-            return
+            return {}
 
         if id < 0:
-            resp.body = '{}'
-            return
+            return {}
 
         nb_sql = session.query(SqlCls).get(id)
         logging.critical('detail : {}, result : {}'.format(id, nb_sql))
 
         if nb_sql:
-            resp.body = json.dumps(nb_sql.to_config(self.config).edit())
-            return
-        resp.body = '{}'
+            return nb_sql.to_config(self.config).edit()
+        return {}
 
 
 def lookfor(s):

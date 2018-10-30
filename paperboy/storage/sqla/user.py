@@ -29,18 +29,17 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
             token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
             self._do_login(token=token, req=req, resp=resp)
 
-    def list(self, req, resp):
-        resp.content_type = 'application/json'
-        resp.body = '{}'
+    def list(self, *args, **kwargs):
+        return {}
 
-    def detail(self, req, resp, session, *args, **kwargs):
+    def detail(self, context, session, *args, **kwargs):
         '''token -> user'''
-        encoded = req.context.get('auth_token')
+        encoded = context.get('auth_token')
         try:
             user = jwt.decode(encoded, self.config.secret, algorithms=['HS256'])
         except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
             return
-        req.context['user'] = User(self.config, name=user['name'], id=user['id'])
+        context['user'] = User(self.config, name=user['name'], id=user['id'])
 
     def store(self, req, resp, session, *args, **kwargs):
         username = req.get_param('username')

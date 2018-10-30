@@ -27,28 +27,29 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
     def search(self, count, id=None, name=None, session=None, *args, **kwargs):
         return self._search(ReportSQL, 'Report', count, id, name, session, *args, **kwargs)
 
-    def list(self, req, resp, session, *args, **kwargs):
-        return self._list(ReportSQL, ReportListResult, 'reports', req, resp, session, *args, **kwargs)
+    def list(self, context, session, *args, **kwargs):
+        return self._list(ReportSQL, ReportListResult, 'reports', context, session, *args, **kwargs)
 
-    def detail(self, req, resp, session, *args, **kwargs):
-        return self._detail(ReportSQL, req, resp, session, *args, **kwargs)
+    def detail(self, context, session, *args, **kwargs):
+        return self._detail(ReportSQL, context, session, *args, **kwargs)
 
-    def store(self, req, resp, session, *args, **kwargs):
-        name = req.get_param('name')
+    def store(self, context, session, *args, **kwargs):
+        params = context['params']
+        name = params.get('name')
 
-        user = req.context['user']
+        user = context['user']
         user_sql = session.query(UserSQL).get(int(user.id))
 
-        notebook = req.get_param('notebook')
+        notebook = params.get('notebook')
         nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
 
-        job = req.get_param('job')
+        job = params.get('job')
         jb_sql = session.query(JobSQL).get(int(justid(job)))
 
-        type = req.get_param('type') or 'run'
-        output = req.get_param('output') or 'pdf'
-        strip_code = req.get_param('strip_code') == 'yes'
-        parameters = req.get_param('parameters') or '[]'
+        type = params.get('type') or 'run'
+        output = params.get('output') or 'pdf'
+        strip_code = params.get('strip_code') == 'yes'
+        parameters = params.get('parameters') or '[]'
 
         created = datetime.now()
         modified = datetime.now()
@@ -72,16 +73,16 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         session.flush()
         session.refresh(rp)
 
-        resp.content_type = 'application/json'
         store = rp.to_config(self.config).store()
         logging.critical("Storing report {}".format(rp))
-        resp.body = json.dumps(store)
+        return store
 
-    def generate(self, req, resp, session, *args, **kwargs):
-        autogen = req.get_param('autogen') or False
+    def generate(self, context, session, *args, **kwargs):
+        params = context['params']
+        autogen = params.get('autogen') or False
         if autogen:
-            parameters_inline = req.get_param('parameters_inline') or ''
-            parameters = req.get_param('parameters')
+            parameters_inline = params.get('parameters_inline') or ''
+            parameters = params.get('parameters')
             if not parameters_inline and parameters:
                 params = parameters.file.read()
             else:
@@ -89,19 +90,19 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
             params = params.split(os.linesep)
             params = [json.loads(p) for p in params]
 
-            user = req.context['user']
+            user = context['user']
             user_sql = session.query(UserSQL).get(int(user.id))
 
-            notebook = req.get_param('notebook')
+            notebook = params.get('notebook')
             nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
 
-            job_name = req.get_param('name')
+            job_name = params.get('name')
             job_id = kwargs.get('jobid')
             jb_sql = session.query(JobSQL).get(int(justid(job_id)))
 
-            type = req.get_param('type') or 'run'
-            output = req.get_param('output') or 'notebook'
-            strip_code = req.get_param('code') or 'no'
+            type = params.get('type') or 'run'
+            output = params.get('output') or 'notebook'
+            strip_code = params.get('code') or 'no'
 
             created = datetime.now()
             modified = datetime.now()

@@ -11,3 +11,16 @@ class Base(HasTraits):
     def __init__(self, config, *args, **kwargs):
         super(Base, self).__init__(*args, **kwargs)
         self.config = config
+
+    def form(self):
+        raise NotImplemented
+
+    @staticmethod
+    def from_json(jsn, config):
+        raise NotImplemented
+
+    def edit(self):
+        raise NotImplemented
+
+    def store(self):
+        raise NotImplemented

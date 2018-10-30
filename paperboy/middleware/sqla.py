@@ -40,7 +40,7 @@ class SQLUserMiddleware(object):
         else:
             # try to get user
             session = self.config.sessionmaker()
-            self.db.users.detail(req, resp, session)
+            self.db.users.detail(req.context, session)
             if req.context.get('user') is not None:
                 if req.path in (urljoin(self.config.baseurl, self.config.loginurl), urljoin(self.config.baseurl, self.config.registerurl)):
                     raise falcon.HTTPFound(self.config.baseurl)

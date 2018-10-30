@@ -1,3 +1,4 @@
+import json
 from .base import BaseResource
 
 
@@ -6,10 +7,14 @@ class ReportResource(BaseResource):
         super(ReportResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
-        self.db.reports.list(req, resp, self.session)
+        resp.content_type = 'application/json'
+        req.context['params'] = req.params
+        resp.body = json.dumps(self.db.reports.list(req.context, self.session))
 
     def on_post(self, req, resp):
-        self.db.reports.store(req, resp, self.session)
+        resp.content_type = 'application/json'
+        req.context['params'] = req.params
+        resp.body = json.dumps(self.db.reports.store(req.context, self.session))
 
 
 class ReportDetailResource(BaseResource):
@@ -17,4 +22,6 @@ class ReportDetailResource(BaseResource):
         super(ReportDetailResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
-        self.db.reports.detail(req, resp, self.session)
+        resp.content_type = 'application/json'
+        req.context['params'] = req.params
+        resp.body = json.dumps(self.db.reports.detail(req.context, self.session))

@@ -14,6 +14,12 @@ from ..server.api import FalconAPI
 # deployer
 from ..server.deploy import FalconDeploy
 
+# base configs
+from .user import User
+from .notebook import Notebook
+from .job import Job
+from .report import Report
+
 # base classes
 from ..storage import UserStorage, NotebookStorage, JobStorage, ReportStorage
 
@@ -76,10 +82,14 @@ class Paperboy(Application):
 
     ################################################
     # FIXME doesnt allow default_value yet         #
-    user_storage = UserDummyStorage
-    notebook_storage = NotebookDummyStorage
-    job_storage = JobDummyStorage
-    report_storage = ReportDummyStorage
+    user_storage = UserSQLStorage
+    user_config = User
+    notebook_storage = NotebookSQLStorage
+    notebook_config = Notebook
+    job_storage = JobSQLStorage
+    job_config = Job
+    report_storage = ReportSQLStorage
+    report_config = Report
     #                                              #
     scheduler = DummyScheduler
     #                                              #

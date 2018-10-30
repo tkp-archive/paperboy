@@ -1,4 +1,3 @@
-import json
 import nbformat
 import logging
 from datetime import datetime
@@ -23,22 +22,23 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
     def search(self, count, id=None, name=None, session=None, *args, **kwargs):
         return self._search(NotebookSQL, 'Notebook', count, id, name, session, *args, **kwargs)
 
-    def list(self, req, resp, session, *args, **kwargs):
-        return self._list(NotebookSQL, NotebookListResult, 'notebooks', req, resp, session, *args, **kwargs)
+    def list(self, context, session, *args, **kwargs):
+        return self._list(NotebookSQL, NotebookListResult, 'notebooks', context, session, *args, **kwargs)
 
-    def detail(self, req, resp, session, *args, **kwargs):
-        return self._detail(NotebookSQL, req, resp, session, *args, **kwargs)
+    def detail(self, context, session, *args, **kwargs):
+        return self._detail(NotebookSQL, context, session, *args, **kwargs)
 
-    def store(self, req, resp, session, *args, **kwargs):
-        name = req.get_param('name')
-        user = req.context['user']
+    def store(self, context, session, *args, **kwargs):
+        params = context['params']
+        name = params.get('name')
+        user = context['user']
         user_sql = session.query(UserSQL).get(int(user.id))
 
-        notebook = nbformat.writes(strip_outputs(nbformat.reads(req.get_param('file').file.read(), 4)))
-        privacy = req.get_param('privacy') or ''
-        level = req.get_param('level') or ''
-        requirements = req.get_param('requirements') or ''
-        dockerfile = req.get_param('dockerfile') or ''
+        notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('file').file.read(), 4)))
+        privacy = params.get('privacy') or ''
+        level = params.get('level') or ''
+        requirements = params.get('requirements') or ''
+        dockerfile = params.get('dockerfile') or ''
         created = datetime.now()
         modified = datetime.now()
 
@@ -58,7 +58,6 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         session.flush()
         session.refresh(nb)
 
-        resp.content_type = 'application/json'
         store = nb.to_config(self.config).store()
         logging.critical("Storing notebook {}".format(nb))
-        resp.body = json.dumps(store)
+        return store
