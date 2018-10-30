@@ -13,7 +13,7 @@ class TestConfig:
     #     from paperboy.client import
 
     def test_import4(self):
-        from paperboy.middleware import CORSMiddleware, AuthRequiredMiddleware, LoadUserMiddleware, MultipartMiddleware, DummyUserMiddleware, DummyAuthRequiredMiddleware, NoUserMiddleware, NoAuthRequiredMiddleware, SQLUserMiddleware, SQLAuthRequiredMiddleware, SQLAlchemySessionMiddleware
+        from paperboy.middleware import CORSMiddleware, AuthRequiredMiddleware, LoadUserMiddleware, MultipartMiddleware, NoUserMiddleware, NoAuthRequiredMiddleware, SQLUserMiddleware, SQLAuthRequiredMiddleware, SQLAlchemySessionMiddleware
 
     def test_import5(self):
         from paperboy.resources import AutocompleteResource, ConfigResource, HTMLResource, JobResource, JobDetailResource, LoginResource, LogoutResource, NotebookResource, NotebookDetailResource, RegisterResource, ReportResource, ReportDetailResource, StaticResource, StatusResource
@@ -27,7 +27,6 @@ class TestConfig:
     def test_import8(self):
         sys.modules['nbstripout'] = MagicMock()  # Doesnt work under nose
         from paperboy.storage import StorageEngine
-        from paperboy.storage.dummy import NotebookDummyStorage, JobDummyStorage, ReportDummyStorage, UserDummyStorage
         from paperboy.storage.sqla import Base, JobSQLStorage, NotebookSQLStorage, ReportSQLStorage, UserSQLStorage
 
     # def test_import9(self):
