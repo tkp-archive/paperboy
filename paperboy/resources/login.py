@@ -1,3 +1,4 @@
+import falcon
 import jinja2
 from .base import BaseResource
 from .html import read
@@ -21,8 +22,18 @@ class LoginResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        self.db.users.login(req, resp, self.session)
-        if req.context.get('auth_token') is None or req.context.get('user') is None:
+        req.context['params'] = req.params
+        token = self.db.users.login(req.context, self.session)
+        req.context['auth_token'] = token
+        user = self.db.users.detail(req.context, self.session)
+
+        if token and user:
+            req.context['user'] = user
+            resp.set_cookie('auth_token', token, max_age=self.config.token_timeout, path='/', secure=not self.config.http)
+            resp.status = falcon.HTTP_302
+            resp.set_header('Location', self.config.baseurl)
+
+        else:
             resp.content_type = 'text/html'
             file = read('login.html')
             tpl = jinja2.Template(file).render(baseurl=self.config.baseurl,

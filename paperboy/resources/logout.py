@@ -1,3 +1,4 @@
+import falcon
 import jinja2
 from .base import BaseResource
 from .html import read
@@ -19,4 +20,10 @@ class LogoutResource(BaseResource):
         resp.body = tpl
 
     def on_post(self, req, resp):
-        self.db.users.logout(req, resp, self.session)
+        ret = self.db.users.logout(req, resp, self.session)
+        req.context['user'] = None
+        req.context['auth_token'] = None
+        if ret:
+            resp.unset_cookie('auth_token')
+            resp.status = falcon.HTTP_302
+            resp.set_header('Location', self.config.baseurl)
