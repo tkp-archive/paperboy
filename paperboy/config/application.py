@@ -144,7 +144,14 @@ class Paperboy(Application):
     ##################
     # Airflow extras #
     ##################
-    airflow_path = Unicode(default_value=os.path.expanduser('~/airflow'))
+    airflow_dagbag = Unicode(default_value=os.path.expanduser('~/airflow/dags'))
+    ##################
+
+    ##################
+    # Output #
+    ##################
+    output_type = Unicode(default_value='directory')
+    output_dir = Unicode(default_value=os.path.expanduser('~/Downloads'))
     ##################
 
     def start(self):

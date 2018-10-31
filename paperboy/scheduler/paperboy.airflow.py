@@ -1,6 +1,8 @@
 import json
 from base64 import b64decode
-from paperboy.scheduler._airflow import JobOperator, JobCleanupOperator, ReportOperator, ReportPostOperator
+from paperboy.scheduler._airflow import JobOperator, JobCleanupOperator
+from paperboy.scheduler._airflow import ReportOperator, ReportPostOperator
+from paperboy.scheduler._airflow import PapermillOperator, NBConvertOperator
 from airflow import DAG
 from datetime import timedelta, datetime
 
@@ -37,7 +39,7 @@ default_operator_args = {
     'email': ['{{email}}'],
     'email_on_retry': False,
     'email_on_failure': True,
-    'retries': 1,
+    'retries': 0,
     'retry_delay': timedelta(minutes=1),
     'retry_exponential_backoff': False,
     'max_retry_delay': None,
@@ -90,21 +92,34 @@ cleanup = JobCleanupOperator(job=job_json, task_id='JobCleanup-{}'.format(job_js
 
 for rep in reports_json:
     # copy over notebook text (only store 1 copy in the job json)
-    rep['meta']['notebook'] = job_json['meta']['notebook_text']
+    rep['meta']['notebook_text'] = job_json['meta']['notebook_text']
 
-    # Report operator, performs the report creation
+    # Report operator, performs the required
+    # steps prior to running the report
+    r = ReportOperator(report=rep, task_id='Report-{}'.format(rep['id']), dag=dag)
+
+    # Papermill operator, performs the report creation
     # using papermill and the report's individual
     # parameters and configuration
-    r = ReportOperator(report=rep, task_id='Report-{}'.format(rep['id']), dag=dag)
+    pp = PapermillOperator(report=rep, task_id='ReportPapermill-{}'.format(rep['id']), dag=dag)
+
+    # NBConvert operator, performs the NBConversion if
+    # required
+    nb = NBConvertOperator(report=rep, task_id='ReportNBConvert-{}'.format(rep['id']), dag=dag)
 
     # The post-report operator, used for post-report
     # tasks such as sending the report in an email,
     # deploying the report to a webserver, etc
-    rp = ReportPostOperator(report=rep, task_id='ReportPost-{}'.format(rep['id']), dag=dag)
+    rp = ReportPostOperator(report=rep,
+                            output_type='{{output_type}}',
+                            output_dir='{{output_dir}}',
+                            task_id='ReportPost-{}'.format(rep['id']), dag=dag)
 
     # Job -> Report -> ReportPost -\
     #   \--> Report -> ReportPost --\
     #    \-> Report -> ReportPost ----> Job Cleanup
     job.set_downstream(r)
-    r.set_downstream(rp)
+    r.set_downstream(pp)
+    pp.set_downstream(nb)
+    nb.set_downstream(rp)
     rp.set_downstream(cleanup)
