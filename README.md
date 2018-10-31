@@ -67,3 +67,4 @@ Some future options include:
 
 ## Airflow Integreation
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/airflow.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/reports.png)
