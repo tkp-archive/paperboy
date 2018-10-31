@@ -19,7 +19,7 @@ def run(nb_name, nb_text, to='html', template=''):
         if to != 'pdf':
             out_file += '.' + to
 
-        with open(in_file, 'wb') as fp:
+        with open(in_file, 'w') as fp:
             fp.write(nb_text)
 
         # assemble nbconvert command

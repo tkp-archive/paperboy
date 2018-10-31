@@ -16,7 +16,7 @@ def run(nb_name, nb_text, parameters, hide_input):
         in_file = os.path.join(tempdir, '{}.ipynb'.format(nb_name))
         out_file = os.path.join(tempdir, '{}_out.ipynb'.format(nb_name))
 
-        with open(in_file, 'wb') as fp:
+        with open(in_file, 'w') as fp:
             fp.write(nb_text)
 
         if isinstance(parameters, string_types):
@@ -24,7 +24,7 @@ def run(nb_name, nb_text, parameters, hide_input):
 
         notebook_object = execute_notebook(in_file, out_file, parameters=parameters, report_mode=hide_input, start_timeout=600)
 
-        with open(out_file, 'rb') as fp:
+        with open(out_file, 'r') as fp:
             output_text = fp.read()
 
     return output_text
