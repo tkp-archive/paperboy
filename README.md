@@ -1,5 +1,10 @@
 # paperboy
+![Status](https://img.shields.io/badge/Status-BETA-yellow.svg?&longCache=true&style=for-the-badge)
+
 A web frontend for scheduling Jupyter Notebooks as reports
+
+
+# Overview
 
 [![Build Status](https://travis-ci.org/timkpaine/paperboy.svg?branch=master)](https://travis-ci.org/timkpaine/paperboy)
 ![https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)
@@ -8,12 +13,6 @@ A web frontend for scheduling Jupyter Notebooks as reports
 [![Docs](https://img.shields.io/readthedocs/paperboy.svg)](https://paperboy.readthedocs.io)
 [![Site](https://img.shields.io/badge/Site--grey.svg?colorB=FFFFFF)](https://paperboy-jp.herokuapp.com/)
 
-
-
-![Status](https://img.shields.io/badge/Status-BETA-yellow.svg?&longCache=true&style=for-the-badge)
-
-
-# Overview
 Paperboy is a production-grade application for scheduling reports. It has a flexible architecture and extensible APIs, and can integrate into a wide variety of deployments. It is composed of various industrial-strength technologies from the open source world.
 
 - [Jupyter Notebooks](https://jupyter.org/documentation) for the reports themselves
