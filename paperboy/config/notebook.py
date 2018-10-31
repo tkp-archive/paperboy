@@ -21,11 +21,12 @@ class NotebookMetadata(HasTraits):
     created = Instance(datetime)
     modified = Instance(datetime)
 
-    def to_json(self):
+    def to_json(self, include_notebook=False):
         ret = {}
         ret['username'] = self.username
         # ret['userid'] = self.userid
-        # ret['notebook'] = self.notebook
+        if include_notebook:
+            ret['notebook'] = self.notebook
         ret['privacy'] = self.privacy
         ret['level'] = self.level
         ret['jobs'] = self.jobs
@@ -50,11 +51,11 @@ class Notebook(Base):
     id = Unicode()
     meta = Instance(NotebookMetadata)
 
-    def to_json(self):
+    def to_json(self, include_notebook=False):
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
-        ret['meta'] = self.meta.to_json()
+        ret['meta'] = self.meta.to_json(include_notebook)
         return ret
 
     def form(self):

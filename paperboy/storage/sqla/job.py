@@ -34,6 +34,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         user_sql = session.query(UserSQL).get(int(user.id))
         notebook = params.get('notebook')
         nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
+        notebook_config = nb_sql.to_config(self.config)
 
         start_time = datetime.strptime(params.get('starttime'), '%Y-%m-%dT%H:%M')
         interval = params.get('interval') or ''
@@ -70,5 +71,5 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
             job_config = jb.to_config(self.config)
             store = job_config.store()
 
-        scheduler.schedule(user, job_config, report_configs)
+        scheduler.schedule(user, notebook_config, job_config, report_configs)
         return store

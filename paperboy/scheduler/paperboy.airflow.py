@@ -23,12 +23,12 @@ dag_args = {
     'max_active_runs': 16,
     'dagrun_timeout': None,
     'sla_miss_callback': None,
-    'default_view': u'tree',
+    'default_view': u'graph',
     'orientation': 'LR',
     'catchup': False,
     'on_success_callback': None,
     'on_failure_callback': None,
-    'params': None,
+    # 'params': None,
 }
 
 # Operator args: https://airflow.incubator.apache.org/code.html#baseoperator
@@ -46,7 +46,7 @@ default_operator_args = {
     'schedule_interval': None,
     'depends_on_past': False,
     'wait_for_downstream': False,
-    'params': None,
+    # 'params': None,
     'default_args': None,
     'adhoc': False,
     'priority_weight': 1,
@@ -79,7 +79,7 @@ reports_json = json.loads(b64decode({{report_json}}))
 ###################################
 
 # The top level dag, representing a Job run on a Notebook
-dag = DAG('DAG_' + str(job_json['id']), default_args=default_operator_args, **dag_args)
+dag = DAG('DAG-' + str(job_json['id']), default_args=default_operator_args, **dag_args)
 
 # The Job operator, used for bundling groups of reports,
 # setting up env/image
@@ -89,6 +89,9 @@ job = JobOperator(job=job_json, task_id='Job-{}'.format(job_json['id']), dag=dag
 cleanup = JobCleanupOperator(job=job_json, task_id='JobCleanup-{}'.format(job_json['id']), dag=dag)
 
 for rep in reports_json:
+    # copy over notebook text (only store 1 copy in the job json)
+    rep['meta']['notebook'] = job_json['meta']['notebook_text']
+
     # Report operator, performs the report creation
     # using papermill and the report's individual
     # parameters and configuration

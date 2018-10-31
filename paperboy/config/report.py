@@ -24,11 +24,14 @@ class ReportMetadata(HasTraits):
     created = Instance(datetime)
     modified = Instance(datetime)
 
-    def to_json(self):
+    def to_json(self, include_notebook=False):
         ret = {}
         ret = {}
         ret['notebook'] = self.notebook.name
+        if include_notebook:
+            ret['notebook_text'] = self.notebook.meta.notebook
         # ret['notebookid'] = self.notebook.id
+
         ret['job'] = self.job.name
         # ret['jobid'] = self.job.id
 
@@ -62,11 +65,11 @@ class Report(Base):
     id = Unicode()
     meta = Instance(ReportMetadata)
 
-    def to_json(self):
+    def to_json(self, include_notebook=False):
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
-        ret['meta'] = self.meta.to_json()
+        ret['meta'] = self.meta.to_json(include_notebook)
         return ret
 
     def form(self):

@@ -25,9 +25,11 @@ class JobMetadata(HasTraits):
     created = Instance(datetime)
     modified = Instance(datetime)
 
-    def to_json(self):
+    def to_json(self, include_notebook=False):
         ret = {}
         ret['notebook'] = self.notebook.name
+        if include_notebook:
+            ret['notebook_text'] = self.notebook.meta.notebook
         # ret['notebookid'] = self.notebook.id
         ret['interval'] = self.interval
         ret['level'] = self.level
@@ -52,11 +54,11 @@ class Job(Base):
     id = Unicode()
     meta = Instance(JobMetadata)
 
-    def to_json(self):
+    def to_json(self, include_notebook=False):
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
-        ret['meta'] = self.meta.to_json()
+        ret['meta'] = self.meta.to_json(include_notebook)
         return ret
 
     def form(self):

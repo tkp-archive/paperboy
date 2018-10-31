@@ -71,11 +71,11 @@ class DummyScheduler(BaseScheduler):
                              } for i in range(10)]
                 }
 
-    def schedule(self, user, job, reports, *args, **kwargs):
+    def schedule(self, user, notebook, job, reports, *args, **kwargs):
         owner = user.name
         start_date = job.meta.start_time.strftime('%m/%d/%Y %H:%M:%S')
         email = 'test@test.com'
-        job_json = b64encode(json.dumps(job.to_json()).encode('utf-8'))
+        job_json = b64encode(json.dumps(job.to_json(True)).encode('utf-8'))
         report_json = b64encode(json.dumps([r.to_json() for r in reports]).encode('utf-8'))
         interval = TIMING_MAP.get(job.meta.interval)
 
