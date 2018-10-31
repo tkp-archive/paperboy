@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import os
 import os.path
@@ -8,6 +9,21 @@ from .base import BaseScheduler
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
     TEMPLATE = fp.read()
+
+TIMING_MAP = {
+  'minutely': '*/1 * * * *',
+  '5 minutes': '*/5 * * * *',
+  '10 minutes': '*/10 * * * *',
+  '30 minutes': '*/30 * * * *',
+  'hourly': '@hourly',
+  '2 hours': '0 */2 * * *',
+  '3 hours': '0 */3 * * *',
+  '6 hours': '0 */6 * * *',
+  '12 hours': '0 */12 * * *',
+  'daily': '@daily',
+  'weekly': '@weekly',
+  'monthly': '@monthly'
+}
 
 
 class DummyScheduler(BaseScheduler):
@@ -61,13 +77,15 @@ class DummyScheduler(BaseScheduler):
         email = 'test@test.com'
         job_json = b64encode(json.dumps(job.to_json()).encode('utf-8'))
         report_json = b64encode(json.dumps([r.to_json() for r in reports]).encode('utf-8'))
+        interval = TIMING_MAP.get(job.meta.interval)
 
         tpl = jinja2.Template(TEMPLATE).render(
             owner=owner,
             start_date=start_date,
+            interval=interval,
             email=email,
             job_json=job_json,
-            report_json=report_json
+            report_json=report_json,
             )
         print(tpl)
         return {}

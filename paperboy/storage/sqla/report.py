@@ -125,6 +125,10 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
                                created=created,
                                modified=modified)
                 session.add(rp)
+
+                # FIXME
+                session.flush()
+                session.refresh(rp)
                 ret.append(rp.to_config(self.config))
 
             session.flush()
