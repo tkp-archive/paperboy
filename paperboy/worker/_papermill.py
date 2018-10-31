@@ -7,19 +7,6 @@ except ImportError:
     from backports.tempfile import TemporaryDirectory
 
 
-# def execute_notebook(
-#     input_path,
-#     output_path,
-#     parameters=None,
-#     engine_name=None,
-#     prepare_only=False,
-#     kernel_name=None,
-#     progress_bar=True,
-#     log_output=False,
-#     start_timeout=60,
-#     report_mode=False,
-# ):
-
 def run(nb_name, nb_text, parameters, hide_input):
     '''Run the notebook and return the text'''
     with TemporaryDirectory() as tempdir:

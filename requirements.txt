@@ -4,7 +4,9 @@ falcon_helpers
 falcon-multipart
 gunicorn
 jinja2
+nbconvert
 nbformat
 nbstripout
+papermill
 PyJWT
 traitlets
