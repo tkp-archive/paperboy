@@ -10,7 +10,8 @@ A web frontend for scheduling Jupyter Notebooks as reports
 
 
 
-[![Status](https://img.shields.io/badge/Status-BETA-yellow.svg?&longCache=true&style=for-the-badge)]
+![Status](https://img.shields.io/badge/Status-BETA-yellow.svg?&longCache=true&style=for-the-badge)
+
 
 # Overview
 Paperboy is a production-grade application for scheduling reports. It has a flexible architecture and extensible APIs, and can integrate into a wide variety of deployments. It is composed of various industrial-strength technologies from the open source world.
