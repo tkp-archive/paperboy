@@ -1,6 +1,6 @@
 from six.moves.urllib_parse import urljoin
 from traitlets import Unicode
-from .forms import Form, FormEntry, DOMEntry
+from .forms import Response, FormEntry, DOMEntry
 from .base import Base
 
 
@@ -15,7 +15,7 @@ class User(Base):
         return ret
 
     def form(self):
-        f = Form()
+        f = Response()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', placeholder='Name for Notebook...', required=True),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'notebooks')),
@@ -30,7 +30,7 @@ class User(Base):
         return ret
 
     def edit(self):
-        f = Form()
+        f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, placeholder='Name for Job...', required=True),
             FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'notebooks'))
@@ -38,7 +38,9 @@ class User(Base):
         return f.to_json()
 
     def store(self):
-        ret = []
-        ret.append(DOMEntry(type='p', value='Success!').to_json())
-        ret.append(DOMEntry(type='p', value='Successfully stored user {}'.format(self.name)).to_json())
+        ret = Response()
+        ret.entries = [
+            DOMEntry(type='p', value='Success!'),
+            DOMEntry(type='p', value='Successfully stored user {}'.format(self.name)),
+        ]
         return ret

@@ -60,6 +60,7 @@ class ReportSQL(Base):
         meta.output = self.output
         meta.strip_code = self.strip_code
 
+        meta.template_dir = config.template_dir
         meta.created = self.created
         meta.modified = self.modified
         ret.meta = meta

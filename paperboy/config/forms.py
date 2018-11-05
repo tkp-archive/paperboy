@@ -87,16 +87,6 @@ class DOMEntry(HasTraits):
         return ret
 
 
-class Form(HasTraits):
-    entries = List()
-
-    def to_json(self):
-        ret = []
-        for entry in self.entries:
-            ret.append(entry.to_json())
-        return ret
-
-
 class Response(HasTraits):
     entries = List()
 

@@ -130,9 +130,17 @@ class NBConvertOperator(BaseOperator):
         if self.report['meta']['output'] != 'notebook':
             from paperboy.worker import run_nbconvert
 
+            template = self.report['meta'].get('template', '')
+            template_dir = self.report['meta'].get('template_dir', '')
+            if template:
+                template = os.path.join(template_dir, template)
+
             ret = run_nbconvert(self.report['meta']['notebook'],
-                                self.report['meta']['notebook_text'],
-                                self.report['meta']['output'])
+                                papermilled,
+                                self.report['meta']['output'],
+                                template,
+                                self.report['meta']['strip_code'],
+                                )
         else:
             ret = papermilled
 
@@ -157,5 +165,15 @@ class ReportPostOperator(BaseOperator):
         self.log.critical(output_nb)
 
         path = os.path.join(self.output_dir, self.task_id) + '_' + datetime.now().strftime('%m-%d-%Y_%H-%M-%S')
+
+        if self.report['meta']['output'] == 'notebook':
+            path += '.ipynb'
+        elif self.report['meta']['output'] == 'script':
+            path += '.py'
+        elif self.report['meta']['output'] == 'email':
+            path += '.eml'
+        elif self.report['meta']['output'] in ('pdf', 'html'):
+            path += '.{}'.format(self.report['meta']['output'])
+
         with open(path, 'wb') as fp:
             fp.write(output_nb)

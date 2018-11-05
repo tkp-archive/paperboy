@@ -1,0 +1,166 @@
+((= IPython input/output style =))
+((*- extends 'base.tplx' -*))
+
+((* block docclass *))
+\documentclass[11pt]{article}
+((*- endblock docclass -*))
+
+((*- block packages -*))
+    \usepackage{parskip}
+    \setcounter{secnumdepth}{0} %Suppress section numbers
+    \usepackage[breakable]{tcolorbox}
+    \tcbset{nobeforeafter}
+    \usepackage{needspace}
+    ((( super() )))
+((*- endblock packages -*))
+
+((*- block definitions -*))
+    \let\Oldtex\TeX     % provide compatibility with nbconvert <= 5.3.1
+    \let\Oldlatex\LaTeX % pre-included in nbconvert > 5.3.1 so redundant
+
+    ((( super() )))
+% Pygments definitions
+    (((- resources.latex.pygments_definitions -)))
+
+    ((* block repygments *))
+    %Reconfigured pygments
+    \makeatletter
+    \expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[HTML]{008800}{##1}}} %numbers
+    \expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[HTML]{008800}{##1}}} %numbers
+    \expandafter\def\csname PY@tok@nn\endcsname{\def\PY@tc##1{\textcolor[HTML]{000000}{##1}}} %imports
+    \expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[HTML]{008000}{##1}}} %operator.word
+    \expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[HTML]{AA22FF}{\codetrue##1\codefalse}}} %operator
+    \makeatother
+
+    \newif\ifcode
+    \codefalse
+    \definecolor{Grey}{rgb}{0.40,0.40,0.40}
+    %If using XeLaTeX, use magic to not highlight . operators with purple.
+    \ifdefined\XeTeXcharclass
+    \XeTeXinterchartokenstate = 1
+    \newXeTeXintercharclass \mycharclassGrey
+    \XeTeXcharclass `. \mycharclassGrey
+    \XeTeXinterchartoks 0 \mycharclassGrey   = {\bgroup\ifcode\color{Grey}\else\fi}
+
+    \XeTeXinterchartoks 4095 \mycharclassGrey = {\bgroup\ifcode\color{Grey}\else\fi}
+
+    \XeTeXinterchartoks \mycharclassGrey 0   = {\egroup}
+    \XeTeXinterchartoks \mycharclassGrey 4095 = {\egroup}
+    \fi %end magical operator highlighting
+    %End Reconfigured Pygments
+    ((* endblock repygments *))
+   
+    % Exact colors from NB
+    ((*- block style_colors *))
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    ((*- endblock style_colors *))
+
+    % needed definitions
+    \newif\ifleftmargins
+    \newlength{\promptlength}
+
+    % cell style settings
+    ((*- block style_settings -*))
+        \leftmarginstrue
+    ((* endblock style_settings *))
+
+
+    % prompt
+    ((*- block style_prompt *))
+    \newcommand{\prompt}[3]{
+        \needspace{1.1cm}
+        \settowidth{\promptlength}{ #1 [#3] }
+        \ifleftmargins\hspace{-\promptlength}\hspace{-5pt}\fi
+        {\color{#2}#1 [#3]:}
+        \ifleftmargins\vspace{-2.7ex}\fi
+    }
+    ((* endblock style_prompt *))
+    
+    % environments
+    ((*- block style_environments *))
+    \newenvironment{InVerbatim}{\VerbatimEnvironment%
+        \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,
+            colback=cellbackground, colframe=cellborder]
+            \begin{Verbatim}
+            }{
+            \end{Verbatim}
+        \end{tcolorbox}
+    }
+    \newenvironment{OutVerbatim}{\VerbatimEnvironment%
+        \begin{tcolorbox}[breakable, boxrule=.5pt, size=fbox, pad at break*=1mm, opacityfill=0]
+            \begin{Verbatim}
+            }{
+            \end{Verbatim}
+        \end{tcolorbox}
+    }
+
+    %Updated MathJax Compatibility (if future behaviour of the notebook changes this may be removed)
+    \renewcommand{\TeX}{\ifmmode \textrm{\Oldtex} \else \textbackslash TeX \fi}
+    \renewcommand{\LaTeX}{\ifmmode \Oldlatex \else \textbackslash LaTeX \fi}
+   
+    % Header Adjustments
+    \renewcommand{\paragraph}{\textbf}
+    \renewcommand{\subparagraph}[1]{\textit{\textbf{#1}}}
+
+    ((* endblock style_environments *))
+    
+((*- endblock definitions -*))
+
+
+    
+((*- block margins -*))
+    \geometry{verbose,tmargin=.5in,bmargin=.7in,lmargin=1.1in,rmargin=.5in}
+((*- endblock margins -*))
+
+((* block maketitle *))
+((* endblock maketitle *))
+
+
+%===============================================================================
+% Input
+%===============================================================================
+
+((* block input scoped *))
+((* endblock input *))
+
+
+%===============================================================================
+% Output
+%===============================================================================
+
+((*- if charlim is not defined -*))
+    ((* set charlim = 86 *))
+((*- endif -*))
+
+((* block execute_result scoped *))
+((* endblock execute_result *))
+
+
+%==============================================================================
+% Support Macros
+%==============================================================================
+
+% Name: draw_cell
+% Purpose: Renders an output/input prompt
+((* macro draw_cell(text, cell, prompt, prompt_color) -*))
+((( draw_prompt(cell, prompt, prompt_color) )))
+\begin{((( prompt ~ 'Verbatim')))}[commandchars=\\\{\}]
+((( text )))
+\end{((( prompt ~ 'Verbatim')))}
+((*- endmacro *))
+
+% Name: draw_prompt
+% Purpose: Renders an output/input prompt
+((* macro draw_prompt(cell, prompt, prompt_color) -*))
+    ((*- if cell.execution_count is defined -*))
+    ((*- set execution_count = "" ~ (cell.execution_count | replace(None, " ")) -*))
+    ((*- else -*))((*- set execution_count = " " -*))((*- endif *))
+    
+    ((*- if (resources.global_content_filter.include_output_prompt and prompt == 'Out')
+         or (resources.global_content_filter.include_input_prompt  and prompt == 'In' ) *))
+\prompt{(((prompt)))}{(((prompt_color)))}{(((execution_count)))}
+    ((*- endif -*))
+((*- endmacro *))

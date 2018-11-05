@@ -1,7 +1,7 @@
 from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Int, Instance, validate, TraitError
-from .forms import Form, FormEntry, DOMEntry
+from .forms import Response, FormEntry, DOMEntry
 from .base import Base, _INTERVAL_TYPES, _OUTPUT_TYPES, _REPORT_TYPES, _SERVICE_LEVELS
 from .notebook import Notebook
 
@@ -62,7 +62,7 @@ class Job(Base):
         return ret
 
     def form(self):
-        f = Form()
+        f = Response()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', value=self.name, placeholder='Name for Job...', required=True),
             FormEntry(name='notebook', type='autocomplete', label='Notebook', url=urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='), required=True),
@@ -90,7 +90,7 @@ class Job(Base):
         return ret
 
     def edit(self):
-        f = Form()
+        f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Job...', required=True),
             FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
@@ -103,10 +103,12 @@ class Job(Base):
         return f.to_json()
 
     def store(self):
-        ret = []
-        ret.append(DOMEntry(type='h2', value='Success!').to_json())
-        ret.append(DOMEntry(type='p', value='Successfully configured job: {}'.format(self.name)).to_json())
-        ret.append(DOMEntry(type='p', value='Notebook: {}'.format(self.meta.notebook.name)).to_json())
+        ret = Response()
+        ret.entries = [
+            DOMEntry(type='h2', value='Success!'),
+            DOMEntry(type='p', value='Successfully configured job: {}'.format(self.name)),
+            DOMEntry(type='p', value='Notebook: {}'.format(self.meta.notebook.name)),
+        ]
         if self.meta.reports:
-            ret.append(DOMEntry(type='p', value='Reports: {}'.format(self.meta.reports)).to_json())
-        return ret
+            ret.entries.append(DOMEntry(type='p', value='Reports: {}'.format(self.meta.reports)))
+        return ret.to_json()

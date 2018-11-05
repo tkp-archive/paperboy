@@ -1,10 +1,26 @@
 from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Instance, Bool
-from .forms import Form, FormEntry, DOMEntry
+from .forms import Response, FormEntry, DOMEntry
 from .base import Base, _REPORT_TYPES, _OUTPUT_TYPES
 from .notebook import Notebook
 from .job import Job
+
+
+def _type_to_template(output, strip_code):
+    if output in ('pdf', 'html'):
+        ret = output
+        if output == 'pdf':
+            ret += '.tplx'
+        else:
+            ret += '.tpl'
+        return ret
+    elif output == 'email':
+        ret = 'html_email'
+        ret += '.tpl'
+        return ret
+    else:
+        return ''
 
 
 class ReportMetadata(HasTraits):
@@ -19,6 +35,8 @@ class ReportMetadata(HasTraits):
     type = Unicode()
     output = Unicode()
     strip_code = Bool()
+
+    template_dir = Unicode()
 
     run = Instance(datetime, allow_none=True)
     created = Instance(datetime)
@@ -39,6 +57,9 @@ class ReportMetadata(HasTraits):
         ret['type'] = self.type
         ret['output'] = self.output
         ret['strip_code'] = self.strip_code
+
+        ret['template_dir'] = self.template_dir
+        ret['template'] = _type_to_template(self.output, self.strip_code)
 
         if self.run:
             ret['run'] = self.run.strftime('%m/%d/%Y %H:%M:%S')
@@ -73,7 +94,7 @@ class Report(Base):
         return ret
 
     def form(self):
-        f = Form()
+        f = Response()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', placeholder='Name for Report...', required=True),
             FormEntry(name='notebook', type='autocomplete', label='Notebook', url=urljoin(self.config.apiurl, 'autocomplete?type=notebooks&partial='), required=True),
@@ -92,12 +113,13 @@ class Report(Base):
         ret.name = jsn['name']
         ret.id = jsn['id']
         ret.meta = ReportMetadata.from_json(jsn['meta'])
-        ret.meta.notebook = Notebook(config)  # FIXME
-        ret.meta.job = Job(config)  # FIXME
+        ret.meta.notebook = Notebook(config)
+        ret.meta.job = Job(config)
+        ret.meta.template_dir = config.template_dir  # FIXME is there a better way to manage this?
         return ret
 
     def edit(self):
-        f = Form()
+        f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Report...', required=True),
             FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
@@ -111,9 +133,24 @@ class Report(Base):
         return f.to_json()
 
     def store(self):
-        ret = []
-        ret.append(DOMEntry(type='h2', value='Success!').to_json())
-        ret.append(DOMEntry(type='p', value='Successfully configured report: {}!'.format(self.name)).to_json())
-        ret.append(DOMEntry(type='p', value='Notebook: {}'.format(self.meta.notebook.name)).to_json())
-        ret.append(DOMEntry(type='p', value='Job: {}'.format(self.meta.job.name)).to_json())
-        return ret
+        ret = Response()
+        ret.entries = [
+            DOMEntry(type='h2', value='Success!'),
+            DOMEntry(type='p', value='Successfully configured report: {}!'.format(self.name)),
+            DOMEntry(type='p', value='Notebook: {}'.format(self.meta.notebook.name)),
+            DOMEntry(type='p', value='Job: {}'.format(self.meta.job.name)),
+        ]
+        return ret.to_json()
+
+    def row(self):
+        f = Response()
+        f.entries = [
+            DOMEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Report...', required=True),
+            DOMEntry(name='notebook', type='jsondl', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
+            DOMEntry(name='job', type='text', value=self.meta.job.name, label='Job', required=True, readonly=True),
+            DOMEntry(name='parameters', type='textarea', value=self.meta.parameters, label='Parameters', placeholder='JSON Parameters...'),
+            DOMEntry(name='type', type='select', value=self.meta.type, label='Type', options=_REPORT_TYPES, required=True),
+            DOMEntry(name='output', type='select', value=self.meta.output, label='Output', options=_OUTPUT_TYPES, required=True),
+            DOMEntry(name='code', type='select', value='yes' if self.meta.strip_code else 'no', label='Strip Code', options=['yes', 'no'], required=True),
+        ]
+        return f.to_json()

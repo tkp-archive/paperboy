@@ -31,7 +31,7 @@ Some future options include:
 - MongoDB storage
 - Luigi scheduler
 
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/ss.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/ss.png)
 
 
 ## Process Flow
@@ -60,11 +60,19 @@ Some future options include:
     - strip or keep code
 
 ## Storage Arch
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/arch.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/arch.png)
 
 ## Parameters demo
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/demo.gif)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/demo.gif)
 
-## Airflow Integreation
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/airflow.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/reports.png)
+## Airflow Integration
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/notebook.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/job.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/reports.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_init.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_papermill.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_nbconvert.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_cleanup.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_out.png)
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/reports_demo.png)

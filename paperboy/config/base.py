@@ -24,3 +24,6 @@ class Base(HasTraits):
 
     def store(self):
         raise NotImplemented
+
+    def row(self):
+        raise NotImplemented
