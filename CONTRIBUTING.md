@@ -13,6 +13,7 @@ Navigate to the `Notebooks` tab, then the uploader, and upload a notebook of you
 
 From there, you can start to setup jobs, which will dump `Airflow` compatible DAGs into `~/airflow/dags` by default.
 
+![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/contributing2.png)
 
 
 
