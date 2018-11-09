@@ -3,7 +3,6 @@ import json
 import logging
 from datetime import datetime
 from paperboy.config import Report
-from paperboy.config.storage import ReportListResult
 from paperboy.storage import ReportStorage
 from .base import BaseSQLStorageMixin, justid
 from .models.user import UserSQL
@@ -28,7 +27,7 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         return self._search(ReportSQL, 'Report', user, params, session, *args, **kwargs)
 
     def list(self, user, params, session, *args, **kwargs):
-        return self._list(ReportSQL, ReportListResult, 'reports', user, params, session, *args, **kwargs)
+        return self._list(ReportSQL, 'reports', user, params, session, *args, **kwargs)
 
     def detail(self, user, params, session, *args, **kwargs):
         return self._detail(ReportSQL, user, params, session, *args, **kwargs)

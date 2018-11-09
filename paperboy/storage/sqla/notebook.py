@@ -2,7 +2,6 @@ import nbformat
 import logging
 from datetime import datetime
 from paperboy.config import Notebook
-from paperboy.config.storage import NotebookListResult
 from paperboy.storage import NotebookStorage
 from .base import BaseSQLStorageMixin
 from .models.user import UserSQL
@@ -23,7 +22,7 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         return self._search(NotebookSQL, 'Notebook', user, params, session, *args, **kwargs)
 
     def list(self, user, params, session, *args, **kwargs):
-        return self._list(NotebookSQL, NotebookListResult, 'notebooks', user, params, session, *args, **kwargs)
+        return self._list(NotebookSQL, 'notebooks', user, params, session, *args, **kwargs)
 
     def detail(self, user, params, session, *args, **kwargs):
         return self._detail(NotebookSQL, user, params, session, *args, **kwargs)

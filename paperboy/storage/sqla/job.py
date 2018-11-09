@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from paperboy.config import Job
-from paperboy.config.storage import JobListResult
 from paperboy.storage import JobStorage
 from .base import BaseSQLStorageMixin, justid
 from .models.user import UserSQL
@@ -24,7 +23,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         return self._search(JobSQL, 'Job', user, params, session, *args, **kwargs)
 
     def list(self, user, params, session, *args, **kwargs):
-        return self._list(JobSQL, JobListResult, 'jobs', user, params, session, *args, **kwargs)
+        return self._list(JobSQL, 'jobs', user, params, session, *args, **kwargs)
 
     def detail(self, user, params, session, *args, **kwargs):
         return self._detail(JobSQL, user, params, session, *args, **kwargs)

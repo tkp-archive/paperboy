@@ -1,4 +1,5 @@
 import logging
+from paperboy.config.storage import ListResult
 
 
 class BaseSQLStorageMixin(object):
@@ -13,8 +14,8 @@ class BaseSQLStorageMixin(object):
         nbs = session.query(SqlCls).filter(SqlCls.name.like(lookfor(name))).limit(count)
         return [{'id': ClsName + '-' + str(nb.id), 'name': nb.name} for nb in nbs]
 
-    def _list(self, SqlCls, ListResultCls, setter, user, params, session, *args, **kwargs):
-        result = ListResultCls()
+    def _list(self, SqlCls, setter, user, params, session, *args, **kwargs):
+        result = ListResult()
         result.total = session.query(SqlCls).count()
         result.count = min(result.total, 25)
         result.page = 1
@@ -24,7 +25,7 @@ class BaseSQLStorageMixin(object):
 
         logging.critical('list : {}, result : {} - {}'.format(SqlCls, result.total, len(nbs)))
 
-        setattr(result, setter, [x.to_config(self.config) for x in nbs])
+        result.results = [x.to_config(self.config) for x in nbs]
         return result.to_json()
 
     def _detail(self, SqlCls, user, params, session, *args, **kwargs):

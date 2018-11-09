@@ -386,9 +386,9 @@ namespace DomUtils {
     let count = data['count'];
     let total = data['total'];
     
-    let notebooks = data[clazz];
-    if(notebooks.length > 0) {
-      let table = buildHorizontalTable(notebooks, (dat:any)=>{
+    let results = data['results'];
+    if(results.length > 0) {
+      let table = buildHorizontalTable(results, (dat:any)=>{
         widget.detailView(dat['id']);
       })
       // only add table if it has data
