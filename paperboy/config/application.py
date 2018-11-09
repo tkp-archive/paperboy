@@ -150,7 +150,7 @@ class Paperboy(Application):
     ##################
     # NBConvert      #
     ##################
-    template_dir = Unicode(default_value=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'worker', 'nbconvert_templates')))
+
     ##################
 
     ##################

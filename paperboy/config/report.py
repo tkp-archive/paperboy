@@ -1,3 +1,5 @@
+import os
+import os.path
 from six.moves.urllib_parse import urljoin
 from datetime import datetime
 from traitlets import HasTraits, Unicode, Instance, Bool
@@ -5,6 +7,9 @@ from .forms import Response, FormEntry, DOMEntry
 from .base import Base, _REPORT_TYPES, _OUTPUT_TYPES
 from .notebook import Notebook
 from .job import Job
+
+
+TEMPLATE_BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'worker', 'nbconvert_templates'))
 
 
 def _type_to_template(output, strip_code):
@@ -36,7 +41,7 @@ class ReportMetadata(HasTraits):
     output = Unicode()
     strip_code = Bool()
 
-    template_dir = Unicode()
+    template = Unicode()
 
     run = Instance(datetime, allow_none=True)
     created = Instance(datetime)
@@ -58,8 +63,7 @@ class ReportMetadata(HasTraits):
         ret['output'] = self.output
         ret['strip_code'] = self.strip_code
 
-        ret['template_dir'] = self.template_dir
-        ret['template'] = _type_to_template(self.output, self.strip_code)
+        ret['template'] = self.template or os.path.join(TEMPLATE_BASEPATH, _type_to_template(self.output, self.strip_code))
 
         if self.run:
             ret['run'] = self.run.strftime('%m/%d/%Y %H:%M:%S')
@@ -103,6 +107,7 @@ class Report(Base):
             FormEntry(name='type', type='select', label='Type', options=_REPORT_TYPES, required=True),
             FormEntry(name='output', type='select', label='Output', options=_OUTPUT_TYPES, required=True),
             FormEntry(name='code', type='select', label='Strip Code', options=['yes', 'no'], required=True),
+            FormEntry(name='template', type='text', label='Template', required=False),
             FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'reports'))
         ]
         return f.to_json()
@@ -115,7 +120,6 @@ class Report(Base):
         ret.meta = ReportMetadata.from_json(jsn['meta'])
         ret.meta.notebook = Notebook(config)
         ret.meta.job = Job(config)
-        ret.meta.template_dir = config.template_dir  # FIXME is there a better way to manage this?
         return ret
 
     def edit(self):
