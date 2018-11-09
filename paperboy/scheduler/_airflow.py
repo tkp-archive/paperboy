@@ -146,4 +146,4 @@ class ReportPostOperator(BaseOperator):
         self.log.critical(output_nb)
 
         outputter = self.config.clazz(self.config)
-        outputter.write(self.report, output_nb)
+        outputter.write(self.report, output_nb, task_id=self.task_id)
