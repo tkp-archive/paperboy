@@ -5,25 +5,10 @@ import os.path
 import jinja2
 from base64 import b64encode
 from random import randint, choice
-from .base import BaseScheduler
+from .base import BaseScheduler, TIMING_MAP
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
     TEMPLATE = fp.read()
-
-TIMING_MAP = {
-  'minutely': '*/1 * * * *',
-  '5 minutes': '*/5 * * * *',
-  '10 minutes': '*/10 * * * *',
-  '30 minutes': '*/30 * * * *',
-  'hourly': '@hourly',
-  '2 hours': '0 */2 * * *',
-  '3 hours': '0 */3 * * *',
-  '6 hours': '0 */6 * * *',
-  '12 hours': '0 */12 * * *',
-  'daily': '@daily',
-  'weekly': '@weekly',
-  'monthly': '@monthly'
-}
 
 
 class DummyScheduler(BaseScheduler):

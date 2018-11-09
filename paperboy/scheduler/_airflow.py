@@ -6,26 +6,11 @@ from datetime import datetime
 from base64 import b64encode
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
-from .base import BaseScheduler
+from .base import BaseScheduler, TIMING_MAP
 
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
     TEMPLATE = fp.read()
-
-TIMING_MAP = {
-  'minutely': '*/1 * * * *',
-  '5 minutes': '*/5 * * * *',
-  '10 minutes': '*/10 * * * *',
-  '30 minutes': '*/30 * * * *',
-  'hourly': '@hourly',
-  '2 hours': '0 */2 * * *',
-  '3 hours': '0 */3 * * *',
-  '6 hours': '0 */6 * * *',
-  '12 hours': '0 */12 * * *',
-  'daily': '@daily',
-  'weekly': '@weekly',
-  'monthly': '@monthly'
-}
 
 
 class AirflowScheduler(BaseScheduler):
@@ -131,9 +116,6 @@ class NBConvertOperator(BaseOperator):
             from paperboy.worker import run_nbconvert
 
             template = self.report['meta'].get('template', '')
-            template_dir = self.report['meta'].get('template_dir', '')
-            if template:
-                template = os.path.join(template_dir, template)
 
             ret = run_nbconvert(self.report['meta']['notebook'],
                                 papermilled,
