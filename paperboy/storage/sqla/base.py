@@ -1,5 +1,5 @@
 import logging
-from paperboy.config.storage import ListResult
+from paperboy.config import ListResult
 
 
 class BaseSQLStorageMixin(object):

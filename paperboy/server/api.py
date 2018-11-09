@@ -17,9 +17,9 @@ def FalconAPI(config):
     ###########
     # Storage #
     ###########
-    db = StorageEngine(config.user_storage(config), config.notebook_storage(config), config.job_storage(config), config.report_storage(config))
-    api = falcon.API(middleware=[config.auth_required_mw(config, db),
-                                 config.load_user_mw(config, db)] +
+    db = StorageEngine(config.storage.user_storage(config), config.storage.notebook_storage(config), config.storage.job_storage(config), config.storage.report_storage(config))
+    api = falcon.API(middleware=[config.auth_required_middleware(config, db),
+                                 config.load_user_middleware(config, db)] +
                      config.essential_middleware +
                      config.extra_middleware)
     api.add_error_handler(StorageError, StorageError.handle)
@@ -27,7 +27,7 @@ def FalconAPI(config):
     #############
     # Scheduler #
     #############
-    scheduler = config.scheduler(config, db)
+    scheduler = config.scheduler.clazz(config, db)
 
     ####################
     # Static resources #

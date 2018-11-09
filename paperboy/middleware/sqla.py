@@ -39,7 +39,7 @@ class SQLUserMiddleware(object):
                 raise falcon.HTTPFound(urljoin(self.config.baseurl, self.config.loginurl))
         else:
             # try to get user
-            session = self.config.sessionmaker()
+            session = self.config.storage.sessionmaker()
             user = self.db.users.detail(req.context['auth_token'], req.params, session)
             if user is not None:
                 req.context['user'] = user

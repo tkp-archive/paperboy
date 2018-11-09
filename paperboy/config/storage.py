@@ -1,20 +1,23 @@
-import json
-from traitlets import List, Int, HasTraits, Instance
-from .base import Base
+from traitlets import HasTraits, Unicode, Bool
+from ..storage.sqla import UserSQLStorage, NotebookSQLStorage, JobSQLStorage, ReportSQLStorage
 
 
-class ListResult(HasTraits):
-    page = Int(default_value=1)
-    pages = Int(default_value=1)
-    count = Int(default_value=1)
-    total = Int(default_value=1)
-    results = List(trait=Instance(Base))
+class Storage(HasTraits):
+    type = Unicode()
+    user_storage = None
+    notebook_storage = None
+    job_storage = None
+    report_storage = None
 
-    def to_json(self):
-        ret = {}
-        ret['page'] = self.page
-        ret['pages'] = self.pages
-        ret['count'] = self.count
-        ret['total'] = self.total
-        ret['results'] = [r.to_json() for r in self.results]
-        return ret
+
+class SQLAStorage(Storage):
+    type = 'SQLA'
+    sql_url = Unicode(default_value='sqlite:///paperboy.db', help="SQL Alchemy url").tag(config=True)
+    engine = None
+    sessionmaker = None
+    sql_user = Bool(default_value=True)
+
+    user_storage = UserSQLStorage
+    notebook_storage = NotebookSQLStorage
+    job_storage = JobSQLStorage
+    report_storage = ReportSQLStorage

@@ -19,9 +19,9 @@ from .user import User
 from .notebook import Notebook
 from .job import Job
 from .report import Report
-
-# base classes
-from ..storage import UserStorage, NotebookStorage, JobStorage, ReportStorage
+from .scheduler import AirflowScheduler
+from .storage import SQLAStorage
+from .output import LocalOutput
 
 # dummy
 from ..scheduler import DummyScheduler
@@ -66,35 +66,24 @@ class Paperboy(Application):
     registerurl = Unicode(default_value='register', help="register url").tag(config=True)
     ########
 
-    #############
-    # Misc Auth #
-    #############
+    ########
+    # Auth #
+    ########
     http = Bool(default_value=True, help="Running on HTTP (as opposed to https, so token is insecure)").tag(config=True)
     include_password = Bool(default_value=False).tag(config=True)
     include_register = Bool(default_value=True).tag(config=True)
     token_timeout = Int(default_value=600).tag(config=True)
     #############
 
-    def _login_redirect(config, *args, **kwargs):
-        raise falcon.HTTPFound(urljoin(config.baseurl, config.loginurl))
-
-    ################################################
-    # FIXME doesnt allow default_value yet         #
-    user_storage = UserSQLStorage
+    ##########
+    # Config #
+    ##########
+    # FIXME doesnt allow default_value yet
     user_config = User
-    notebook_storage = NotebookSQLStorage
     notebook_config = Notebook
-    job_storage = JobSQLStorage
     job_config = Job
-    report_storage = ReportSQLStorage
     report_config = Report
-    #                                              #
-    scheduler = DummyScheduler
-    #                                              #
-    auth_required_mw = Instance(object)
-    load_user_mw = Instance(object)
-    # END                                          #
-    ################################################
+    ##########
 
     ##############
     # Middleware #
@@ -102,6 +91,8 @@ class Paperboy(Application):
     essential_middleware = [CORSMiddleware(allow_all_origins=True).middleware,
                             MultipartMiddleware()]
     extra_middleware = List(default_value=[])  # List of extra middlewares to install
+    auth_required_middleware = Instance(object)
+    load_user_middleware = Instance(object)
     ##############
 
     ##################
@@ -131,33 +122,25 @@ class Paperboy(Application):
         return proposed['value']
     ##########################################
 
-    ##############
-    # SQL extras #
-    ##############
-    sql_url = Unicode(default_value='sqlite:///paperboy.db', help="SQL Alchemy url").tag(config=True)
-    engine = None
-    sessionmaker = None
-    sql_user = Bool(default_value=True)
+    ###########
+    # Storage #
+    ###########
+    # FIXME doesnt allow default_value yet
+    storage = SQLAStorage()
     sql_dev = Bool(default_value=False)
-    ##############
+    ###########
 
-    ##################
-    # Airflow extras #
-    ##################
-    airflow_dagbag = Unicode(default_value=os.path.expanduser('~/airflow/dags'))
-    ##################
-
-    ##################
-    # NBConvert      #
-    ##################
-
-    ##################
+    #############
+    # Scheduler #
+    #############
+    # FIXME doesnt allow default_value yet
+    scheduler = AirflowScheduler()
+    #############
 
     ##################
     # Output         #
     ##################
-    output_type = Unicode(default_value='directory')
-    output_dir = Unicode(default_value=os.path.expanduser('~/Downloads'))
+    output = LocalOutput()
     ##################
 
     def start(self):
@@ -174,22 +157,22 @@ class Paperboy(Application):
             self.sql_url = 'sqlite:///:memory:'
             logging.critical('Using SQL in memory backend')
 
-            self.engine = create_engine(self.sql_url, echo=False)
-            Base.metadata.create_all(self.engine)
+            self.storage.engine = create_engine(self.storage.sql_url, echo=False)
+            Base.metadata.create_all(self.storage.engine)
 
-            self.sessionmaker = sessionmaker(bind=self.engine)
+            self.sessionmaker = sessionmaker(bind=self.storage.engine)
             self.backend = 'sqla'
             self.auth = 'sqla'
-            self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.sessionmaker)]
-            self.notebook_storage = NotebookSQLStorage
-            self.job_storage = JobSQLStorage
-            self.report_storage = ReportSQLStorage
-            self.user_storage = UserSQLStorage
-            self.sql_user = True
+            self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.storage.sessionmaker)]
+            self.storage.notebook_storage = NotebookSQLStorage
+            self.storage.job_storage = JobSQLStorage
+            self.storage.report_storage = ReportSQLStorage
+            self.storage.user_storage = UserSQLStorage
+            self.storage.sql_user = True
 
             logging.critical('Using SQL auth')
-            self.auth_required_mw = SQLAuthRequiredMiddleware
-            self.load_user_mw = SQLUserMiddleware
+            self.auth_required_middleware = SQLAuthRequiredMiddleware
+            self.load_user_middleware = SQLUserMiddleware
 
         else:
             # Preconfigured storage backends
@@ -200,28 +183,28 @@ class Paperboy(Application):
             elif self.backend == 'sqla':
                 logging.critical('Using SQL backend')
 
-                self.engine = create_engine(self.sql_url, echo=False)
-                Base.metadata.create_all(self.engine)
+                self.storage.engine = create_engine(self.storage.sql_url, echo=False)
+                Base.metadata.create_all(self.storage.engine)
 
-                self.sessionmaker = sessionmaker(bind=self.engine)
-                self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.sessionmaker)]
-                self.notebook_storage = NotebookSQLStorage
-                self.job_storage = JobSQLStorage
-                self.report_storage = ReportSQLStorage
-                self.user_storage = UserSQLStorage
-                self.sql_user = True
+                self.storage.sessionmaker = sessionmaker(bind=self.storage.engine)
+                self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.storage.sessionmaker)]
+                self.storage.notebook_storage = NotebookSQLStorage
+                self.storage.job_storage = JobSQLStorage
+                self.storage.report_storage = ReportSQLStorage
+                self.storage.user_storage = UserSQLStorage
+                self.storage.sql_user = True
                 self.auth = 'sqla'
 
             # Preconfigured auth backends
             if self.auth == 'none':
                 logging.critical('Using No auth')
-                self.auth_required_mw = NoAuthRequiredMiddleware
-                self.load_user_mw = NoUserMiddleware
+                self.auth_required_middleware = NoAuthRequiredMiddleware
+                self.load_user_middleware = NoUserMiddleware
 
             elif self.auth == 'sqla':
                 logging.critical('Using SQL auth')
-                self.auth_required_mw = SQLAuthRequiredMiddleware
-                self.load_user_mw = SQLUserMiddleware
+                self.auth_required_middleware = SQLAuthRequiredMiddleware
+                self.load_user_middleware = SQLUserMiddleware
 
         FalconDeploy(FalconAPI(self), options).run()
 
@@ -241,5 +224,8 @@ class Paperboy(Application):
         'baseurl': 'Paperboy.baseurl',
         'backend': 'Paperboy.backend',
         'auth': 'Paperboy.auth',
-        'sql_url': 'Paperboy.sql_url',
+        'sql_url': 'Paperboy.storage.sql_url',
     }
+
+    def _login_redirect(config, *args, **kwargs):
+        raise falcon.HTTPFound(urljoin(config.baseurl, config.loginurl))

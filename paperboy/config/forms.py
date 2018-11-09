@@ -1,4 +1,5 @@
-from traitlets import List, Unicode, Bool, HasTraits, validate, TraitError
+from traitlets import List, Int, Unicode, Bool, Instance, HasTraits, validate, TraitError
+from .base import Base
 
 _DOM_IMPLEMENTED = ('text', 'select', 'label', 'button', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span')
 _FORM_IMPLEMENTED = ('file', 'text', 'select', 'label', 'submit', 'datetime', 'autocomplete', 'checkbox', 'textarea', 'json')
@@ -94,4 +95,21 @@ class Response(HasTraits):
         ret = []
         for entry in self.entries:
             ret.append(entry.to_json())
+        return ret
+
+
+class ListResult(HasTraits):
+    page = Int(default_value=1)
+    pages = Int(default_value=1)
+    count = Int(default_value=1)
+    total = Int(default_value=1)
+    results = List(trait=Instance(Base))
+
+    def to_json(self):
+        ret = {}
+        ret['page'] = self.page
+        ret['pages'] = self.pages
+        ret['count'] = self.count
+        ret['total'] = self.total
+        ret['results'] = [r.to_json() for r in self.results]
         return ret
