@@ -374,6 +374,7 @@ namespace DomUtils {
   export
   function createStatusSection(sec: Widget, clazz: string, data: any) : void {
     let table = buildHorizontalTable(data);
+    delete_all_children(sec.node);
     sec.node.appendChild(table);
   }
 
@@ -381,6 +382,7 @@ namespace DomUtils {
   export
   function createPrimarySection(widget: PrimaryTab, clazz: string, data: any) : void {
     let sec = widget.mine;
+    delete_all_children(sec.node);
     let page = data['page'];
     let pages = data['pages'];
     let count = data['count'];
@@ -392,6 +394,7 @@ namespace DomUtils {
         widget.detailView(dat['id']);
       })
       // only add table if it has data
+      
       sec.node.appendChild(table);
     }
     
@@ -439,6 +442,7 @@ namespace DomUtils {
   /*** create detail view from python json response to detail ***/
   export
   function createDetail(data: any, title: any, node: HTMLElement){
+    delete_all_children(node);
     let table = buildVerticalTable(data, title);
     node.appendChild(table);
   }

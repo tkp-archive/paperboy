@@ -17,12 +17,13 @@ class PrimaryForm extends Widget {
         return div;
     }
 
-    constructor(clz: string, type: string){
+    constructor(clz: string, type: string, detail: PrimaryTab){
         super({node: PrimaryForm.createNode(clz)});
         this.title.closable = false;
         this.title.label = toProperCase(clz);
         request('get', apiurl() + 'config?type=' + type).then((res: RequestResult) => {
-            DomUtils.createConfigForm(this.node.querySelector('form'), type, res.json());
+            DomUtils.createConfigForm(this.node.querySelector('form'), type, res.json(),
+                () => {detail.update();});
         });
     }
     clz: string;
@@ -43,14 +44,19 @@ class PrimaryDetail extends Widget {
         super({node: PrimaryDetail.createNode(type)});
         this.type = type;
         this.title.closable = true;
+        this.request = apiurl() + this.type + '/details?id=' + id;
+        this.update();
+    }
 
-        request('get', apiurl() + this.type + '/details?id=' + id).then((res: RequestResult) => {
+    update(): void {
+        request('get', this.request).then((res: RequestResult) => {
             let dat = res.json() as any;
             DomUtils.createDetail(dat, this.title, this.node);
         });
     }
 
     type: string;
+    request: string;
 }
 
 export
@@ -68,19 +74,23 @@ class PrimaryTab extends DockPanel {
 
         this.mine.title.closable = false;
         this.mine.title.label = this.title.label;
+        this.request = apiurl() + type;
 
-        request('get', apiurl() + type).then((res: RequestResult) => {
-            DomUtils.createPrimarySection(this, type, res.json());
-        });
-
+        this.update();
         this.control = this.controlView();
 
         this.addWidget(this.mine);
         this.addWidget(this.control, {mode: 'tab-after', ref: this.mine});
     }
 
+    update(): void {
+        request('get', this.request).then((res: RequestResult) => {
+            DomUtils.createPrimarySection(this, this.type, res.json());
+        });
+    }
+
     controlView(): PrimaryForm {
-        return new PrimaryForm(this.clz, this.type);
+        return new PrimaryForm(this.clz, this.type, this);
     }
 
     detailView(id: string): void {
@@ -89,6 +99,7 @@ class PrimaryTab extends DockPanel {
 
     clz: string;
     type: string;
+    request: string;
     mine = new BoxPanel();
     control: PrimaryForm;
 }

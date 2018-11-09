@@ -10760,12 +10760,12 @@ class PrimaryForm extends widgets_1.Widget {
         div.appendChild(form);
         return div;
     }
-    constructor(clz, type) {
+    constructor(clz, type, detail) {
         super({ node: PrimaryForm.createNode(clz) });
         this.title.closable = false;
         this.title.label = utils_1.toProperCase(clz);
         request_1.request('get', utils_1.apiurl() + 'config?type=' + type).then((res) => {
-            utils_1.DomUtils.createConfigForm(this.node.querySelector('form'), type, res.json());
+            utils_1.DomUtils.createConfigForm(this.node.querySelector('form'), type, res.json(), () => { detail.update(); });
         });
     }
 }
@@ -10781,7 +10781,11 @@ class PrimaryDetail extends widgets_1.Widget {
         super({ node: PrimaryDetail.createNode(type) });
         this.type = type;
         this.title.closable = true;
-        request_1.request('get', utils_1.apiurl() + this.type + '/details?id=' + id).then((res) => {
+        this.request = utils_1.apiurl() + this.type + '/details?id=' + id;
+        this.update();
+    }
+    update() {
+        request_1.request('get', this.request).then((res) => {
             let dat = res.json();
             utils_1.DomUtils.createDetail(dat, this.title, this.node);
         });
@@ -10801,15 +10805,19 @@ class PrimaryTab extends widgets_1.DockPanel {
         this.node.classList.add(type);
         this.mine.title.closable = false;
         this.mine.title.label = this.title.label;
-        request_1.request('get', utils_1.apiurl() + type).then((res) => {
-            utils_1.DomUtils.createPrimarySection(this, type, res.json());
-        });
+        this.request = utils_1.apiurl() + type;
+        this.update();
         this.control = this.controlView();
         this.addWidget(this.mine);
         this.addWidget(this.control, { mode: 'tab-after', ref: this.mine });
     }
+    update() {
+        request_1.request('get', this.request).then((res) => {
+            utils_1.DomUtils.createPrimarySection(this, this.type, res.json());
+        });
+    }
     controlView() {
-        return new PrimaryForm(this.clz, this.type);
+        return new PrimaryForm(this.clz, this.type, this);
     }
     detailView(id) {
         this.addWidget(new PrimaryDetail(this.type, id));
@@ -14205,12 +14213,14 @@ var DomUtils;
     /*** create paginated table from data ***/
     function createStatusSection(sec, clazz, data) {
         let table = buildHorizontalTable(data);
+        delete_all_children(sec.node);
         sec.node.appendChild(table);
     }
     DomUtils.createStatusSection = createStatusSection;
     /*** create paginated table from data ***/
     function createPrimarySection(widget, clazz, data) {
         let sec = widget.mine;
+        delete_all_children(sec.node);
         let page = data['page'];
         let pages = data['pages'];
         let count = data['count'];
@@ -14261,6 +14271,7 @@ var DomUtils;
     DomUtils.createResponseModal = createResponseModal;
     /*** create detail view from python json response to detail ***/
     function createDetail(data, title, node) {
+        delete_all_children(node);
         let table = buildVerticalTable(data, title);
         node.appendChild(table);
     }
