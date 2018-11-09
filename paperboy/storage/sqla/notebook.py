@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 from paperboy.config import NotebookConfig
 from paperboy.storage import NotebookStorage
+from sqlalchemy import or_
 from .base import BaseSQLStorageMixin
 from .models.user import UserSQL
 from .models.notebook import NotebookSQL
@@ -10,10 +11,14 @@ from ..utils import strip_outputs
 
 
 class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
-    def status(self, session, *args, **kwargs):
-        return {'total': session.query(NotebookSQL).count(),
-                'public': session.query(NotebookSQL).filter(NotebookSQL.level == 'public').count(),
-                'private': session.query(NotebookSQL).filter(NotebookSQL.privacy == 'private').count()}
+    def status(self, user, params, session, *args, **kwargs):
+        base = session.query(NotebookSQL) \
+            .filter(or_(NotebookSQL.userId.like((user.id)),
+                        (hasattr(NotebookSQL, 'privacy') and NotebookSQL.privacy == 'public')))
+
+        return {'total': base.count(),
+                'public': base.filter(NotebookSQL.level == 'public').count(),
+                'private': base.filter(NotebookSQL.privacy == 'private').count()}
 
     def form(self):
         return self._form(NotebookConfig)

@@ -9,14 +9,14 @@ class StatusResource(BaseResource):
     def on_get(self, req, resp):
         type = req.params.get('type', '')
         if type == 'notebooks':
-            resp.body = json.dumps(self.db.notebooks.status(self.session))
+            resp.body = json.dumps(self.db.notebooks.status(req.context['user'], req.params, self.session))
         elif type == 'jobs':
-            resp.body = json.dumps(self.db.jobs.status(self.session))
+            resp.body = json.dumps(self.db.jobs.status(req.context['user'], req.params, self.session))
         elif type == 'reports':
-            resp.body = json.dumps(self.db.reports.status(self.session))
+            resp.body = json.dumps(self.db.reports.status(req.context['user'], req.params, self.session))
         else:
             ret = {}
-            ret['notebooks'] = self.db.notebooks.status(self.session)
-            ret['jobs'] = self.db.jobs.status(self.session)
-            ret['reports'] = self.db.reports.status(self.session)
+            ret['notebooks'] = self.db.notebooks.status(req.context['user'], req.params, self.session)
+            ret['jobs'] = self.db.jobs.status(req.context['user'], req.params, self.session)
+            ret['reports'] = self.db.reports.status(req.context['user'], req.params, self.session)
             resp.body = json.dumps(ret)

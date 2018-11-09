@@ -9,12 +9,15 @@ from .models.job import JobSQL
 
 
 class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
-    def status(self, session, *args, **kwargs):
-        return {'total': session.query(JobSQL).count(),
-                'production': session.query(JobSQL).filter(JobSQL.level == 'production').count(),
-                'research': session.query(JobSQL).filter(JobSQL.level == 'research').count(),
-                'development': session.query(JobSQL).filter(JobSQL.level == 'development').count(),
-                'personal': session.query(JobSQL).filter(JobSQL.level == 'personal').count()}
+    def status(self, user, params, session, *args, **kwargs):
+        base = session.query(JobSQL) \
+            .filter(JobSQL.userId == int(user.id))
+
+        return {'total': base.count(),
+                'production': base.filter(JobSQL.level == 'production').count(),
+                'research': base.filter(JobSQL.level == 'research').count(),
+                'development': base.filter(JobSQL.level == 'development').count(),
+                'personal': base.filter(JobSQL.level == 'personal').count()}
 
     def form(self):
         return self._form(JobConfig)

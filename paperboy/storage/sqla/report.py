@@ -12,13 +12,16 @@ from .models.report import ReportSQL
 
 
 class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
-    def status(self, session, *args, **kwargs):
-        return {'total': session.query(ReportSQL).count(),
-                'notebook': session.query(ReportSQL).filter(ReportSQL.output == 'notebook').count(),
-                'pdf': session.query(ReportSQL).filter(ReportSQL.output == 'pdf').count(),
-                'html': session.query(ReportSQL).filter(ReportSQL.output == 'html').count(),
-                'email': session.query(ReportSQL).filter(ReportSQL.output == 'email').count(),
-                'script': session.query(ReportSQL).filter(ReportSQL.output == 'script').count()}
+    def status(self, user, params, session, *args, **kwargs):
+        base = session.query(ReportSQL) \
+            .filter(ReportSQL.userId == int(user.id))
+
+        return {'total': base.count(),
+                'notebook': base.filter(ReportSQL.output == 'notebook').count(),
+                'pdf':  base.filter(ReportSQL.output == 'pdf').count(),
+                'html': base.filter(ReportSQL.output == 'html').count(),
+                'email': base.filter(ReportSQL.output == 'email').count(),
+                'script': base.filter(ReportSQL.output == 'script').count()}
 
     def form(self):
         return self._form(ReportConfig)
