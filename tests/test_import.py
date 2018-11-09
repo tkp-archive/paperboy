@@ -7,7 +7,7 @@ class TestConfig:
         from paperboy import __version__
 
     def test_import2(self):
-        from paperboy.config import User, Notebook, Job, Report
+        from paperboy.config import UserConfig, NotebookConfig, JobConfig, ReportConfig
 
     # def test_import3(self):
     #     from paperboy.client import
