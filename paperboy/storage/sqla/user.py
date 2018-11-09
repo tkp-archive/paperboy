@@ -1,6 +1,6 @@
 import jwt
 import logging
-from paperboy.config import User
+from paperboy.config import UserConfig
 from paperboy.storage import UserStorage
 from .base import BaseSQLStorageMixin
 from .models.user import UserSQL
@@ -14,7 +14,7 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
         return {}
 
     def form(self):
-        return self._form(User)
+        return self._form(UserConfig)
 
     def search(self, user, params, session, *args, **kwargs):
         return self._search(UserSQL, 'User', user, params, session, *args, **kwargs)
@@ -38,7 +38,7 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
             user = jwt.decode(user, self.config.secret, algorithms=['HS256'])
         except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
             return None
-        return User(self.config, name=user['name'], id=user['id'])
+        return UserConfig(self.config, name=user['name'], id=user['id'])
 
     def store(self, user, params, session, *args, **kwargs):
         username = params.get('username')

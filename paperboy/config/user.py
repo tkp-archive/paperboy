@@ -4,7 +4,7 @@ from .forms import Response, FormEntry, DOMEntry
 from .base import Base
 
 
-class User(Base):
+class UserConfig(Base):
     name = Unicode()
     id = Unicode()
 
@@ -24,7 +24,7 @@ class User(Base):
 
     @staticmethod
     def from_json(jsn, config):
-        ret = User(config)
+        ret = UserConfig(config)
         ret.name = jsn.pop('name')
         ret.id = jsn.pop('id')
         return ret

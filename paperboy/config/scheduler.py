@@ -4,11 +4,11 @@ from traitlets import HasTraits, Unicode
 from ..scheduler import DummyScheduler
 
 
-class Scheduler(HasTraits):
+class SchedulerConfig(HasTraits):
     type = Unicode()
 
 
-class AirflowScheduler(Scheduler):
+class AirflowSchedulerConfig(SchedulerConfig):
     type = 'airflow'
     dagbag = Unicode(default_value=os.path.expanduser('~/airflow/dags'))
     clazz = DummyScheduler

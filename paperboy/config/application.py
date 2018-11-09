@@ -15,13 +15,13 @@ from ..server.api import FalconAPI
 from ..server.deploy import FalconDeploy
 
 # base configs
-from .user import User
-from .notebook import Notebook
-from .job import Job
-from .report import Report
-from .scheduler import AirflowScheduler
-from .storage import SQLAStorage
-from .output import LocalOutput
+from .user import UserConfig
+from .notebook import NotebookConfig
+from .job import JobConfig
+from .report import ReportConfig
+from .scheduler import AirflowSchedulerConfig
+from .storage import SQLAStorageConfig
+from .output import LocalOutputConfig
 
 # dummy
 from ..scheduler import DummyScheduler
@@ -79,10 +79,10 @@ class Paperboy(Application):
     # Config #
     ##########
     # FIXME doesnt allow default_value yet
-    user_config = User
-    notebook_config = Notebook
-    job_config = Job
-    report_config = Report
+    user_config = UserConfig
+    notebook_config = NotebookConfig
+    job_config = JobConfig
+    report_config = ReportConfig
     ##########
 
     ##############
@@ -126,7 +126,7 @@ class Paperboy(Application):
     # Storage #
     ###########
     # FIXME doesnt allow default_value yet
-    storage = SQLAStorage()
+    storage = SQLAStorageConfig()
     sql_dev = Bool(default_value=False)
     ###########
 
@@ -134,13 +134,13 @@ class Paperboy(Application):
     # Scheduler #
     #############
     # FIXME doesnt allow default_value yet
-    scheduler = AirflowScheduler()
+    scheduler = AirflowSchedulerConfig()
     #############
 
     ##################
     # Output         #
     ##################
-    output = LocalOutput()
+    output = LocalOutputConfig()
     ##################
 
     def start(self):

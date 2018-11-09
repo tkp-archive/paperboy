@@ -3,11 +3,11 @@ from datetime import datetime
 from traitlets import HasTraits, Unicode, Int, Instance, validate, TraitError
 from .forms import Response, FormEntry, DOMEntry
 from .base import Base, _INTERVAL_TYPES, _OUTPUT_TYPES, _REPORT_TYPES, _SERVICE_LEVELS
-from .notebook import Notebook
+from .notebook import NotebookConfig
 
 
-class JobMetadata(HasTraits):
-    notebook = Instance(Notebook)
+class JobMetadataConfig(HasTraits):
+    notebook = Instance(NotebookConfig)
     username = Unicode()
     userid = Unicode()
 
@@ -40,7 +40,7 @@ class JobMetadata(HasTraits):
 
     @staticmethod
     def from_json(jsn):
-        ret = JobMetadata()
+        ret = JobMetadataConfig()
         for k, v in jsn.items():
             if k in ('created', 'modified'):
                 ret.set_trait(k, datetime.strptime(v, '%m/%d/%Y %H:%M:%S'))
@@ -49,10 +49,10 @@ class JobMetadata(HasTraits):
         return ret
 
 
-class Job(Base):
+class JobConfig(Base):
     name = Unicode()
     id = Unicode()
-    meta = Instance(JobMetadata)
+    meta = Instance(JobMetadataConfig)
 
     def to_json(self, include_notebook=False):
         ret = {}
@@ -82,11 +82,11 @@ class Job(Base):
 
     @staticmethod
     def from_json(jsn, config):
-        ret = Job(config)
+        ret = JobConfig(config)
         ret.name = jsn['name']
         ret.id = jsn['id']
-        ret.meta = JobMetadata.from_json(jsn['meta'])
-        ret.meta.notebook = Notebook(config)  # FIXME
+        ret.meta = JobMetadataConfig.from_json(jsn['meta'])
+        ret.meta.notebook = NotebookConfig(config)  # FIXME
         return ret
 
     def edit(self):

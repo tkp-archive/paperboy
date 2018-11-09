@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from paperboy.config import Notebook, NotebookMetadata
+from paperboy.config import NotebookConfig, NotebookMetadataConfig
 from .base import Base
 
 
@@ -39,11 +39,11 @@ class NotebookSQL(Base):
                            modified=nb.meta.modified)
 
     def to_config(self, config):
-        ret = Notebook(config)
+        ret = NotebookConfig(config)
         ret.id = 'Notebook-' + str(self.id)
         ret.name = self.name
 
-        meta = NotebookMetadata()
+        meta = NotebookMetadataConfig()
 
         meta.username = self.user.name
         meta.userid = 'User-' + str(self.user.id)

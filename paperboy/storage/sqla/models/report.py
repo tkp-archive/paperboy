@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from paperboy.config import Report, ReportMetadata
+from paperboy.config import ReportConfig, ReportMetadataConfig
 from .base import Base
 
 
@@ -45,11 +45,11 @@ class ReportSQL(Base):
                          modified=rp.meta.modified)
 
     def to_config(self, config):
-        ret = Report(config)
+        ret = ReportConfig(config)
         ret.id = 'Report-' + str(self.id)
         ret.name = self.name
 
-        meta = ReportMetadata()
+        meta = ReportMetadataConfig()
         meta.notebook = self.notebook.to_config(config)
         meta.job = self.job.to_config(config)
         meta.username = self.user.name

@@ -6,8 +6,8 @@ from datetime import datetime
 from base64 import b64encode
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
+from paperboy.utils import name_to_class
 from .base import BaseScheduler, TIMING_MAP
-
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
     TEMPLATE = fp.read()
@@ -131,13 +131,12 @@ class NBConvertOperator(BaseOperator):
 
 class ReportPostOperator(BaseOperator):
     @apply_defaults
-    def __init__(self, report, output_type, *args, **kwargs):
+    def __init__(self, report, config, *args, **kwargs):
         super(ReportPostOperator, self).__init__(*args, **kwargs)
         self.report = report
-        self.output_type = output_type
-
-        self.output_dir = kwargs.get('output_dir')
         self.nbconvert_task_id = self.task_id.replace('ReportPost', 'ReportNBConvert')
+
+        self.config = name_to_class(config.get('config')).from_json(config)
 
     def execute(self, context):
         self.log.critical('report-post')
@@ -146,16 +145,5 @@ class ReportPostOperator(BaseOperator):
         output_nb = task_instance.xcom_pull(task_ids=self.nbconvert_task_id, key=self.task_id)
         self.log.critical(output_nb)
 
-        path = os.path.join(self.output_dir, self.task_id) + '_' + datetime.now().strftime('%m-%d-%Y_%H-%M-%S')
-
-        if self.report['meta']['output'] == 'notebook':
-            path += '.ipynb'
-        elif self.report['meta']['output'] == 'script':
-            path += '.py'
-        elif self.report['meta']['output'] == 'email':
-            path += '.eml'
-        elif self.report['meta']['output'] in ('pdf', 'html'):
-            path += '.{}'.format(self.report['meta']['output'])
-
-        with open(path, 'wb') as fp:
-            fp.write(output_nb)
+        outputter = self.config.clazz(self.config)
+        outputter.write(self.report, output_nb)

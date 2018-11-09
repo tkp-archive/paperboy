@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from paperboy.config import Job
+from paperboy.config import JobConfig
 from paperboy.storage import JobStorage
 from .base import BaseSQLStorageMixin, justid
 from .models.user import UserSQL
@@ -17,7 +17,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
                 'personal': session.query(JobSQL).filter(JobSQL.level == 'personal').count()}
 
     def form(self):
-        return self._form(Job)
+        return self._form(JobConfig)
 
     def search(self, user, params, session, *args, **kwargs):
         return self._search(JobSQL, 'Job', user, params, session, *args, **kwargs)

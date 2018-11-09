@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from paperboy.config import Job, JobMetadata
+from paperboy.config import JobConfig, JobMetadataConfig
 from .base import Base
 
 
@@ -41,11 +41,11 @@ class JobSQL(Base):
                       modified=jb.meta.modified)
 
     def to_config(self, config):
-        ret = Job(config)
+        ret = JobConfig(config)
         ret.id = 'Job-' + str(self.id)
         ret.name = self.name
 
-        meta = JobMetadata()
+        meta = JobMetadataConfig()
         meta.notebook = self.notebook.to_config(config)
         meta.username = self.user.name
         meta.userid = 'User-' + str(self.user.id)

@@ -1,7 +1,7 @@
 import nbformat
 import logging
 from datetime import datetime
-from paperboy.config import Notebook
+from paperboy.config import NotebookConfig
 from paperboy.storage import NotebookStorage
 from .base import BaseSQLStorageMixin
 from .models.user import UserSQL
@@ -16,7 +16,7 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
                 'private': session.query(NotebookSQL).filter(NotebookSQL.privacy == 'private').count()}
 
     def form(self):
-        return self._form(Notebook)
+        return self._form(NotebookConfig)
 
     def search(self, user, params, session, *args, **kwargs):
         return self._search(NotebookSQL, 'Notebook', user, params, session, *args, **kwargs)

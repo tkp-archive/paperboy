@@ -111,8 +111,7 @@ for rep in reports_json:
     # tasks such as sending the report in an email,
     # deploying the report to a webserver, etc
     rp = ReportPostOperator(report=rep,
-                            output_type='{{output_type}}',
-                            output_dir='{{output_dir}}',
+                            config=json.loads('{{output_config}}'),
                             task_id='ReportPost-{}'.format(rep['id']), dag=dag)
 
     # Job -> Report -> ReportPost -\

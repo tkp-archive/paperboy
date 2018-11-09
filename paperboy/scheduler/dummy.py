@@ -71,9 +71,8 @@ class DummyScheduler(BaseScheduler):
             email=email,
             job_json=job_json,
             report_json=report_json,
-            output_type=self.config.output_type,
-            output_dir=self.config.output_dir,
+            output_config=json.dumps(self.config.output.to_json())
             )
-        with open(os.path.join(self.config.airflow_dagbag, job.id + '.py'), 'w') as fp:
+        with open(os.path.join(self.config.scheduler.dagbag, job.id + '.py'), 'w') as fp:
             fp.write(tpl)
         return tpl

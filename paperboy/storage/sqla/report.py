@@ -2,7 +2,7 @@ import os
 import json
 import logging
 from datetime import datetime
-from paperboy.config import Report
+from paperboy.config import ReportConfig
 from paperboy.storage import ReportStorage
 from .base import BaseSQLStorageMixin, justid
 from .models.user import UserSQL
@@ -21,7 +21,7 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
                 'script': session.query(ReportSQL).filter(ReportSQL.output == 'script').count()}
 
     def form(self):
-        return self._form(Report)
+        return self._form(ReportConfig)
 
     def search(self, user, params, session, *args, **kwargs):
         return self._search(ReportSQL, 'Report', user, params, session, *args, **kwargs)

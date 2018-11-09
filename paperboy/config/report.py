@@ -5,8 +5,8 @@ from datetime import datetime
 from traitlets import HasTraits, Unicode, Instance, Bool
 from .forms import Response, FormEntry, DOMEntry
 from .base import Base, _REPORT_TYPES, _OUTPUT_TYPES
-from .notebook import Notebook
-from .job import Job
+from .notebook import NotebookConfig
+from .job import JobConfig
 
 
 TEMPLATE_BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'worker', 'nbconvert_templates'))
@@ -28,9 +28,9 @@ def _type_to_template(output, strip_code):
         return ''
 
 
-class ReportMetadata(HasTraits):
-    notebook = Instance(Notebook)
-    job = Instance(Job)
+class ReportMetadataConfig(HasTraits):
+    notebook = Instance(NotebookConfig)
+    job = Instance(JobConfig)
 
     username = Unicode()
     userid = Unicode()
@@ -76,7 +76,7 @@ class ReportMetadata(HasTraits):
 
     @staticmethod
     def from_json(jsn):
-        ret = ReportMetadata()
+        ret = ReportMetadataConfig()
         for k, v in jsn.items():
             if k in ('created', 'modified', 'run'):
                 ret.set_trait(k, datetime.strptime(v, '%m/%d/%Y %H:%M:%S'))
@@ -85,10 +85,10 @@ class ReportMetadata(HasTraits):
         return ret
 
 
-class Report(Base):
+class ReportConfig(Base):
     name = Unicode()
     id = Unicode()
-    meta = Instance(ReportMetadata)
+    meta = Instance(ReportMetadataConfig)
 
     def to_json(self, include_notebook=False):
         ret = {}
@@ -114,12 +114,12 @@ class Report(Base):
 
     @staticmethod
     def from_json(jsn, config):
-        ret = Report(config)
+        ret = ReportConfig(config)
         ret.name = jsn['name']
         ret.id = jsn['id']
-        ret.meta = ReportMetadata.from_json(jsn['meta'])
-        ret.meta.notebook = Notebook(config)
-        ret.meta.job = Job(config)
+        ret.meta = ReportMetadataConfig.from_json(jsn['meta'])
+        ret.meta.notebook = NotebookConfig(config)
+        ret.meta.job = JobConfig(config)
         return ret
 
     def edit(self):

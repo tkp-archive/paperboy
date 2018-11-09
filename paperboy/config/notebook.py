@@ -5,7 +5,7 @@ from .forms import Response, FormEntry, DOMEntry
 from .base import Base, _SERVICE_LEVELS, _PRIVACY_LEVELS
 
 
-class NotebookMetadata(HasTraits):
+class NotebookMetadataConfig(HasTraits):
     username = Unicode()
     userid = Unicode()
 
@@ -37,7 +37,7 @@ class NotebookMetadata(HasTraits):
 
     @staticmethod
     def from_json(jsn):
-        ret = NotebookMetadata()
+        ret = NotebookMetadataConfig()
         for k, v in jsn.items():
             if k in ('created', 'modified'):
                 ret.set_trait(k, datetime.strptime(v, '%m/%d/%Y %H:%M:%S'))
@@ -46,10 +46,10 @@ class NotebookMetadata(HasTraits):
         return ret
 
 
-class Notebook(Base):
+class NotebookConfig(Base):
     name = Unicode()
     id = Unicode()
-    meta = Instance(NotebookMetadata)
+    meta = Instance(NotebookMetadataConfig)
 
     def to_json(self, include_notebook=False):
         ret = {}
@@ -74,14 +74,14 @@ class Notebook(Base):
 
     @staticmethod
     def from_json(jsn, config):
-        ret = Notebook(config)
+        ret = NotebookConfig(config)
         ret.name = jsn.pop('name')
         ret.id = jsn.pop('id')
 
         if 'meta' in jsn:
-            ret.meta = NotebookMetadata.from_json(jsn['meta'])
+            ret.meta = NotebookMetadataConfig.from_json(jsn['meta'])
         else:
-            ret.meta = NotebookMetadata.from_json(jsn)
+            ret.meta = NotebookMetadataConfig.from_json(jsn)
 
         return ret
 
