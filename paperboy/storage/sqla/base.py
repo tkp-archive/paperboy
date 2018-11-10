@@ -27,14 +27,13 @@ class BaseSQLStorageMixin(object):
                         (hasattr(SqlCls, 'privacy') and SqlCls.privacy == 'public'))) \
 
         page = int(params.get('page', 1))
+        nbs = base[25*(page-1):25*page]
 
         result = ListResult()
         result.total = base.count()
-
-        result.count = min(result.total, 25)
+        result.count = len(nbs)
         result.page = page
-        result.pages = math.ceil(result.total/result.count) if result.count > 0 else 1
-        nbs = base[25*(page-1):25*page]
+        result.pages = math.ceil(result.total/25) if result.count > 0 else 1
 
         logging.critical('list : {}, result : {} - {}'.format(SqlCls, result.total, len(nbs)))
 

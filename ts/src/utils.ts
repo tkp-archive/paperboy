@@ -385,8 +385,10 @@ namespace DomUtils {
     delete_all_children(sec.node);
     let page = data['page'];
     let pages = data['pages'];
-    let count = data['count'];
+    // let count = data['count'];
     let total = data['total'];
+    let start = (page-1)*25 + 1;
+    let end = Math.min((page)*25, total);
     
     let results = data['results'];
     if(results.length > 0) {
@@ -399,7 +401,7 @@ namespace DomUtils {
     }
     
     let p1 = document.createElement('p');
-    p1.textContent = 'Showing ' + count + ' of ' + total;
+    p1.textContent = 'Showing ' + start + ' to ' + end + ' of ' + total;
     
     let p2 = document.createElement('p');
     for(let i = 1; i <= pages; i++){
