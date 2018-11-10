@@ -25,7 +25,11 @@ class DummyScheduler(BaseScheduler):
         super(DummyScheduler, self).__init__(*args, **kwargs)
         cp = configparser.ConfigParser()
         cp.read(self.config.scheduler.config)
-        self.sql_conn = cp.get('core', {}).get('sql_alchemy_conn', '')
+        try:
+            self.sql_conn = cp['core']['sql_alchemy_conn']
+        except KeyError:
+            self.sql_conn = ''
+
         if self.sql_conn:
             self.engine = create_engine(self.sql_conn)
 
