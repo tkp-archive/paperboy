@@ -51,10 +51,7 @@ class BaseSQLStorageMixin(object):
         if id < 0:
             return {}
 
-        nb_sql = session.query(SqlCls) \
-            .filter(SqlCls.userId == int(user.id) or
-                    (hasattr(SqlCls, 'privacy') and SqlCls.privacy == 'public')) \
-            .get(id)
+        nb_sql = session.query(SqlCls).get(id)  # FIXME permission?
 
         logging.critical('detail : {}, result : {}'.format(id, nb_sql))
 
