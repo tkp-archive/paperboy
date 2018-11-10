@@ -89,9 +89,10 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
                     report_params = parameters.file.read().decode('utf-8')
             else:
                 report_params = parameters_inline
-
-            report_params = report_params.split(os.linesep)
-            report_params = [json.loads(p) for p in report_params]
+            if not report_params:
+                report_params = []
+            else:
+                report_params = [json.loads(p) for p in report_params.split(os.linesep)]
 
             user_sql = session.query(UserSQL).get(int(user.id))
 
