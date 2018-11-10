@@ -6,10 +6,8 @@
 paperboy
 ========
 
-.. figure:: https://img.shields.io/badge/Status-BETA-yellow.svg?&longCache=true&style=for-the-badge
+.. figure:: https://img.shields.io/badge/Status-BETA%201-yellow.svg?&longCache=true&style=for-the-badge
    :alt: Status
-
-   Status
 
 A web frontend for scheduling Jupyter Notebooks as reports
 
