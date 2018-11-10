@@ -27215,40 +27215,24 @@ const utils_1 = __webpack_require__(44);
 class StatusBrowser extends widgets_1.TabPanel {
     constructor() {
         super();
-        this.nbs = new widgets_1.BoxPanel();
-        this.nbs.title.label = 'Notebooks';
-        this.nbs.node.classList.add('schedulerbrowser-container');
         this.jbs = new widgets_1.BoxPanel();
         this.jbs.title.label = 'Jobs';
         this.jbs.node.classList.add('schedulerbrowser-container');
         this.rps = new widgets_1.BoxPanel();
         this.rps.title.label = 'Reports';
         this.rps.node.classList.add('schedulerbrowser-container');
-        this.addWidget(this.nbs);
         this.addWidget(this.jbs);
         this.addWidget(this.rps);
         this.setFlag(widgets_1.Widget.Flag.DisallowLayout);
         this.title.closable = false;
         this.node.id = 'schedulerbrowser';
         this.node.classList.add('schedulerbrowser');
-        request_1.request('get', utils_1.apiurl() + 'scheduler?type=notebooks').then((res) => {
-            utils_1.DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
-        });
         request_1.request('get', utils_1.apiurl() + 'scheduler?type=jobs').then((res) => {
             utils_1.DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
         });
         request_1.request('get', utils_1.apiurl() + 'scheduler?type=reports').then((res) => {
             utils_1.DomUtils.createStatusSection(this.rps, 'reports', res.json());
         });
-        setInterval(() => {
-            request_1.request('get', utils_1.apiurl() + 'scheduler?type=notebooks').then((res) => {
-                if (!res.url.includes(utils_1.apiurl() + 'scheduler?type=notebooks')) {
-                    window.location.href = document.loginurl;
-                }
-                utils_1.DomUtils.delete_all_children(this.nbs.node);
-                utils_1.DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
-            });
-        }, 10000);
         setInterval(() => {
             request_1.request('get', utils_1.apiurl() + 'scheduler?type=jobs').then((res) => {
                 if (!res.url.includes(utils_1.apiurl() + 'scheduler?type=jobs')) {

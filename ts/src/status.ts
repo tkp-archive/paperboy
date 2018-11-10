@@ -10,10 +10,6 @@ export
 class StatusBrowser extends TabPanel {
     constructor(){
         super();
-        this.nbs = new BoxPanel();
-        this.nbs.title.label = 'Notebooks';
-        this.nbs.node.classList.add('schedulerbrowser-container');
-
         this.jbs = new BoxPanel();
         this.jbs.title.label = 'Jobs';
         this.jbs.node.classList.add('schedulerbrowser-container');
@@ -22,7 +18,6 @@ class StatusBrowser extends TabPanel {
         this.rps.title.label = 'Reports';
         this.rps.node.classList.add('schedulerbrowser-container');
 
-        this.addWidget(this.nbs);
         this.addWidget(this.jbs);
         this.addWidget(this.rps);
 
@@ -31,25 +26,12 @@ class StatusBrowser extends TabPanel {
         this.node.id = 'schedulerbrowser';
         this.node.classList.add('schedulerbrowser');
 
-        request('get', apiurl() + 'scheduler?type=notebooks').then((res: RequestResult) => {
-            DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
-        });
         request('get', apiurl() + 'scheduler?type=jobs').then((res: RequestResult) => {
             DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
         });
         request('get', apiurl() + 'scheduler?type=reports').then((res: RequestResult) => {
             DomUtils.createStatusSection(this.rps, 'reports', res.json());
         });
-
-        setInterval(() => {
-            request('get', apiurl() + 'scheduler?type=notebooks').then((res: RequestResult) => {
-                if(!res.url.includes(apiurl() + 'scheduler?type=notebooks')){
-                  window.location.href = (document as any).loginurl;
-                }
-                DomUtils.delete_all_children(this.nbs.node);
-                DomUtils.createStatusSection(this.nbs, 'notebooks', res.json());
-            });
-        }, 10000);
 
         setInterval(() => {
             request('get', apiurl() + 'scheduler?type=jobs').then((res: RequestResult) => {
@@ -72,7 +54,6 @@ class StatusBrowser extends TabPanel {
         }, 10000);
     }
 
-    private nbs: BoxPanel;
     private jbs: BoxPanel;
     private rps: BoxPanel;
 }

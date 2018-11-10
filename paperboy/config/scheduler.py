@@ -11,4 +11,5 @@ class SchedulerConfig(HasTraits):
 class AirflowSchedulerConfig(SchedulerConfig):
     type = 'airflow'
     dagbag = Unicode(default_value=os.path.expanduser('~/airflow/dags'))
+    config = Unicode(default_value=os.path.expanduser('~/airflow/airflow.cfg'))
     clazz = DummyScheduler

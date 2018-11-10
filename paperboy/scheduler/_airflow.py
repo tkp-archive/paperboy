@@ -2,7 +2,6 @@ import json
 import os
 import os.path
 import jinja2
-from datetime import datetime
 from base64 import b64encode
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
@@ -11,6 +10,11 @@ from .base import BaseScheduler, TIMING_MAP
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
     TEMPLATE = fp.read()
+
+#######################################
+#  FIXME merge with dummy when        #
+#  airflow has better python3 support #
+#######################################
 
 
 class AirflowScheduler(BaseScheduler):
