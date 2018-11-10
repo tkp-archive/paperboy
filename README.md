@@ -25,12 +25,6 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
 - [PhosphorJS](https://phosphorjs.github.io) for the frontend
 - Support for Python [Virtualenvs](https://virtualenv.pypa.io/en/stable/) via `requirements.txt` or custom [Docker](https://www.docker.com) images via `Dockerfile`s on a per-notebook level
 
-
-Some future options include:
-
-- MongoDB storage
-- Luigi scheduler
-
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/ss.png)
 
 
