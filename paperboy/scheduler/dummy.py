@@ -88,7 +88,7 @@ class DummyScheduler(BaseScheduler):
 
     def statusgeneralfake(self):
         ret = {'jobs': [], 'reports': []}
-        for i, in range(10):
+        for i in range(10):
             ret['jobs'].append(
                 {'name': 'DAG-Job-{}'.format(i),
                  'id': 'Job-{}'.format(i),
