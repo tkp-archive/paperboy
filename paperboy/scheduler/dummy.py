@@ -25,14 +25,20 @@ class DummyScheduler(BaseScheduler):
         super(DummyScheduler, self).__init__(*args, **kwargs)
         cp = configparser.ConfigParser()
         cp.read(self.config.scheduler.config)
-        self.sql_conn = cp['core']['sql_alchemy_conn']
-        self.engine = create_engine(self.sql_conn)
+        self.sql_conn = cp.get('core', {}).get('sql_alchemy_conn', '')
+        if self.sql_conn:
+            self.engine = create_engine(self.sql_conn)
 
     def status(self, user, params, session, *args, **kwargs):
         type = params.get('type', '')
-        if type == 'notebooks':
-            return []
-        elif type == 'jobs':
+        if not self.sql_conn:
+            if type == 'jobs':
+                return self.statusgeneralfake()['jobs']
+            elif type == 'reports':
+                return self.statusgeneralfake()['reports']
+            else:
+                return self.statusgeneralfake()
+        if type == 'jobs':
             return self.statusgeneral()['jobs']
         elif type == 'reports':
             return self.statusgeneral()['reports']
@@ -40,7 +46,7 @@ class DummyScheduler(BaseScheduler):
             return self.statusgeneral()
 
     def statusgeneral(self):
-        ret = {'jobs':[], 'reports':[]}
+        ret = {'jobs': [], 'reports': []}
         with self.engine.begin() as conn:
             res = conn.execute(QUERY)
             for i, item in enumerate(res):
@@ -74,6 +80,30 @@ class DummyScheduler(BaseScheduler):
                         }
                      }
                 )
+            return ret
+
+    def statusgeneralfake(self):
+        ret = {'jobs': [], 'reports': []}
+        for i, in range(10):
+            ret['jobs'].append(
+                {'name': 'DAG-Job-{}'.format(i),
+                 'id': 'Job-{}'.format(i),
+                 'meta': {
+                    'id':  'Job-{}'.format(i),
+                    'execution': '01/02/2018 12:25:31',
+                    'status': choice(['✔', '✘'])}
+                 }
+            )
+            ret['reports'].append(
+                {'name': 'Report-{}'.format(i),
+                 'id': 'Report-{}'.format(i),
+                 'meta': {
+                    'run': '01/02/2018 12:25:31',
+                    'status': choice(['✔', '✘']),
+                    'type': choice(['Post', 'Papermill', 'NBConvert', 'Setup']),
+                    }
+                 }
+            )
             return ret
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):
