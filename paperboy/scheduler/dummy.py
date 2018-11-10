@@ -108,7 +108,7 @@ class DummyScheduler(BaseScheduler):
                     }
                  }
             )
-            return ret
+        return ret
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):
         owner = user.name
