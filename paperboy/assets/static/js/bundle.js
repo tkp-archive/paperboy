@@ -10813,7 +10813,10 @@ class PrimaryTab extends widgets_1.DockPanel {
     }
     update() {
         request_1.request('get', this.request).then((res) => {
-            utils_1.DomUtils.createPrimarySection(this, this.type, res.json());
+            utils_1.DomUtils.createPrimarySection(this, this.type, res.json(), (page) => {
+                this.request = utils_1.apiurl() + this.type + '?page=' + page;
+                this.update();
+            });
         });
     }
     controlView() {
@@ -14218,7 +14221,7 @@ var DomUtils;
     }
     DomUtils.createStatusSection = createStatusSection;
     /*** create paginated table from data ***/
-    function createPrimarySection(widget, clazz, data) {
+    function createPrimarySection(widget, clazz, data, paginate = (page) => { }) {
         let sec = widget.mine;
         delete_all_children(sec.node);
         let page = data['page'];
@@ -14245,6 +14248,8 @@ var DomUtils;
             else {
                 span.classList.add('page');
             }
+            // callback on page click
+            span.addEventListener('click', (ev) => { paginate(i); });
             p2.appendChild(span);
         }
         sec.node.appendChild(p1);

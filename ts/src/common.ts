@@ -85,7 +85,12 @@ class PrimaryTab extends DockPanel {
 
     update(): void {
         request('get', this.request).then((res: RequestResult) => {
-            DomUtils.createPrimarySection(this, this.type, res.json());
+
+            DomUtils.createPrimarySection(this, this.type, res.json(),
+                (page: number) => {
+                    this.request = apiurl() + this.type + '?page=' + page;
+                    this.update();
+               });
         });
     }
 

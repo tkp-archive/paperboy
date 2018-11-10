@@ -380,7 +380,7 @@ namespace DomUtils {
 
   /*** create paginated table from data ***/
   export
-  function createPrimarySection(widget: PrimaryTab, clazz: string, data: any) : void {
+  function createPrimarySection(widget: PrimaryTab, clazz: string, data: any, paginate=(page: number)=>{}) : void {
     let sec = widget.mine;
     delete_all_children(sec.node);
     let page = data['page'];
@@ -410,6 +410,8 @@ namespace DomUtils {
       } else {
         span.classList.add('page');
       }
+      // callback on page click
+      span.addEventListener('click', (ev: MouseEvent)=> {paginate(i);});
       p2.appendChild(span);
     }
     
