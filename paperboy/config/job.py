@@ -102,6 +102,20 @@ class JobConfig(Base):
         ]
         return f.to_json()
 
+    def entry(self):
+        f = Response()
+        f.entries = [
+            DOMEntry(name='name', type='label', value=self.name, label='Name'),
+            DOMEntry(name='id', type='label', value=self.id, label='Id', hidden=True),
+            DOMEntry(name='notebook', type='label', value=self.meta.notebook.name, label='Notebook'),
+            DOMEntry(name='interval', type='label', value=self.meta.interval, label='Interval'),
+            DOMEntry(name='level', type='label', value=self.meta.level, label='Level'),
+            DOMEntry(name='reports', type='label', value=str(self.meta.reports), label='Reports'),
+            DOMEntry(name='created', type='label', value=self.meta.created.strftime('%m/%d/%Y %H:%M:%S'), label='Created'),
+            DOMEntry(name='modified', type='label', value=self.meta.modified.strftime('%m/%d/%Y %H:%M:%S'), label='Modified')
+        ]
+        return f.to_json()
+
     def store(self):
         ret = Response()
         ret.entries = [

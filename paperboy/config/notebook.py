@@ -101,6 +101,28 @@ class NotebookConfig(Base):
         f.entries.append(FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'notebooks')))
         return f.to_json()
 
+    def entry(self):
+        f = Response()
+        f.entries = [
+            DOMEntry(name='name', type='label', value=self.name, label='Name'),
+            DOMEntry(name='id', type='label', value=self.id, label='Id', hidden=True),
+            DOMEntry(name='visibility', type='label', value=self.meta.privacy, label='Visibility'),
+            DOMEntry(name='level', type='label', value=self.meta.level, label='Level'),
+            DOMEntry(name='notebook', type='ipynb', value=self.meta.notebook, label='Notebook'),
+        ]
+        if self.meta.requirements:
+            f.entries.append(DOMEntry(name='requirements', type='textfile', value=self.meta.requirements, label='requirements.txt'))
+        if self.meta.dockerfile:
+            f.entries.append(DOMEntry(name='dockerfile', type='textfile', value=self.meta.dockerfile, label='Dockerfile'))
+
+        f.entries.extend([
+            DOMEntry(name='jobs', type='label', value=str(self.meta.jobs), label='Jobs'),
+            DOMEntry(name='reports', type='label', value=str(self.meta.reports), label='Reports'),
+            DOMEntry(name='created', type='label', value=self.meta.created.strftime('%m/%d/%Y %H:%M:%S'), label='Created'),
+            DOMEntry(name='modified', type='label', value=self.meta.modified.strftime('%m/%d/%Y %H:%M:%S'), label='Modified')
+        ])
+        return f.to_json()
+
     def store(self):
         ret = Response()
         ret.entries = [

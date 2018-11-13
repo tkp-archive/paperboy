@@ -279,7 +279,7 @@ namespace DomUtils {
     - label
    ***/
   export
-  function buildGeneric(type: string, content?: string): HTMLElement {
+  function buildGeneric(type: string, content?: string, name?: string): HTMLElement {
     switch(type) {
       case 'br': {}
       case 'span': {}
@@ -298,6 +298,32 @@ namespace DomUtils {
       case 'label': {
         return buildLabel(content || '');
       }
+      case 'json': {
+        let a = document.createElement('a');
+        a.download = 'download.json';
+        a.href = 'data:text/json;charset=utf-8,' +
+        encodeURIComponent(JSON.stringify(content));
+        a.target = '_blank';
+        a.textContent = name || 'Download';
+        return a;
+      }
+      case 'ipynb': {
+        let a = document.createElement('a');
+        a.download = 'download.ipynb';
+        a.href = 'data:text/json;charset=utf-8,' +
+        JSON.parse(JSON.stringify(content));
+        a.target = '_blank';
+        a.textContent = name || 'Download';
+        return a;
+      }
+      case 'textfile': {
+        let a = document.createElement('a');
+        a.download = 'download.txt';
+        a.href = 'data:text/plain;' + content;
+        a.target = '_blank';
+        a.textContent = name || 'Download';
+        return a;
+      }
       default: {
         return document.createElement('div');
       }
@@ -305,7 +331,7 @@ namespace DomUtils {
   }
 
   export
-  function buildHorizontalTable(data: any, ondblclick = (dat:any)=> {}): HTMLTableElement {
+  function buildHorizontalTable(data: any): HTMLTableElement {
     let table = document.createElement('table');
     let headerrow = document.createElement('tr');
     let name = document.createElement('th');
@@ -317,7 +343,6 @@ namespace DomUtils {
     for(let i=0; i<data.length; i++){
       let dat = data[i];
       let row = document.createElement('tr');
-      row.ondblclick = () => {ondblclick(dat);};
       let v = document.createElement('td');
       v.textContent = dat['name'];
       row.appendChild(v);
@@ -332,6 +357,47 @@ namespace DomUtils {
         v.textContent = dat['meta'][k];
         row.appendChild(v);
       }
+      table.appendChild(row);
+      first = false;
+    }
+    return table;    
+  }
+
+
+  export
+  function buildListTable(data: any, ondblclick = (id:any)=> {}): HTMLTableElement {
+    let table = document.createElement('table');
+    let headerrow = document.createElement('tr');
+    table.appendChild(headerrow);
+    let first = true;
+
+    for(let i=0; i<data.length; i++){
+      let data_row = data[i];
+      let row = document.createElement('tr');
+
+      for(let j=0; j<data_row.length; j++){
+        let dat = data_row[j];
+
+        let name = dat['name'];
+        let label = dat['label'];
+        let type = dat['type'];
+        let value = dat['value'];
+
+        if(name === 'id'){
+          row.ondblclick = () => {ondblclick(value);};
+          continue;
+        }
+
+        if(first){
+          let n = document.createElement('th');
+          n.textContent = toProperCase(label);
+          headerrow.appendChild(n);
+        }
+        let v = document.createElement('td');
+        v.appendChild(buildGeneric(type, value, name));
+        row.appendChild(v);
+      }
+
       table.appendChild(row);
       first = false;
     }
@@ -392,8 +458,8 @@ namespace DomUtils {
     
     let results = data['results'];
     if(results.length > 0) {
-      let table = buildHorizontalTable(results, (dat:any)=>{
-        widget.detailView(dat['id']);
+      let table = buildListTable(results, (id:any)=>{
+        widget.detailView(id);
       })
       // only add table if it has data
       

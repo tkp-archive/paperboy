@@ -55,10 +55,17 @@ body.dark {
   color: var(--dark-color);
   background-color: var(--dark-bg-color2);
 }
+body.dark a {
+  color: var(--dark-color);
+}
 
 body.light {
   color: var(--light-color);
   background-color: var(--light-bg-color2);
+}
+
+body.light a {
+  color: var(--light-color);
 }
 
 body div.footer {

@@ -1,7 +1,7 @@
 from traitlets import List, Int, Unicode, Bool, Instance, HasTraits, validate, TraitError
 from .base import Base
 
-_DOM_IMPLEMENTED = ('text', 'select', 'label', 'button', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span')
+_DOM_IMPLEMENTED = ('text', 'select', 'label', 'button', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'json', 'ipynb', 'textfile')
 _FORM_IMPLEMENTED = ('file', 'text', 'select', 'label', 'submit', 'datetime', 'autocomplete', 'checkbox', 'textarea', 'json')
 
 
@@ -22,6 +22,7 @@ class FormEntry(HasTraits):
     required = Bool(default_value=False)
     readonly = Bool(default_value=False)
     url = Unicode(allow_none=True)
+    hidden = Bool(default_value=False)
 
     def to_json(self):
         ret = {}
@@ -35,12 +36,13 @@ class FormEntry(HasTraits):
             ret['placeholder'] = self.placeholder
         if self.options:
             ret['options'] = self.options
-        if self.required:
-            ret['required'] = self.required
-        if self.readonly:
-            ret['readonly'] = self.readonly
         if self.url:
             ret['url'] = self.url
+
+        ret['required'] = self.required
+        ret['readonly'] = self.readonly
+        ret['hidden'] = self.hidden
+
         return ret
 
 
@@ -60,10 +62,11 @@ class DOMEntry(HasTraits):
     options = List(default_value=[])
     required = Bool(default_value=False)
     readonly = Bool(default_value=False)
+    hidden = Bool(default_value=False)
 
     def to_json(self):
         ret = {}
-        ret['name'] = self.type
+        ret['name'] = self.name
         ret['type'] = self.type
         if self.value:
             ret['value'] = self.value
@@ -73,10 +76,9 @@ class DOMEntry(HasTraits):
             ret['placeholder'] = self.placeholder
         if self.options:
             ret['options'] = self.options
-        if self.required:
-            ret['required'] = self.required
-        if self.readonly:
-            ret['readonly'] = self.readonly
+        ret['required'] = self.required
+        ret['readonly'] = self.readonly
+        ret['hidden'] = self.hidden
         return ret
 
     @staticmethod
@@ -111,5 +113,5 @@ class ListResult(HasTraits):
         ret['pages'] = self.pages
         ret['count'] = self.count
         ret['total'] = self.total
-        ret['results'] = [r.to_json() for r in self.results]
+        ret['results'] = [r.entry() for r in self.results]
         return ret

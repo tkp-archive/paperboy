@@ -12,18 +12,21 @@ class Base(HasTraits):
         super(Base, self).__init__(*args, **kwargs)
         self.config = config
 
-    def form(self):
-        raise NotImplemented
-
     @staticmethod
     def from_json(jsn, config):
-        raise NotImplemented
+        raise NotImplementedError()
+
+    def to_json(self, include_notebook=False):
+        raise NotImplementedError()
+
+    def form(self):
+        raise NotImplementedError()
 
     def edit(self):
-        raise NotImplemented
+        raise NotImplementedError()
+
+    def entry(self):
+        raise NotImplementedError()
 
     def store(self):
-        raise NotImplemented
-
-    def row(self):
-        raise NotImplemented
+        raise NotImplementedError()

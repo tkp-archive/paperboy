@@ -136,6 +136,24 @@ class ReportConfig(Base):
         ]
         return f.to_json()
 
+    def entry(self):
+        f = Response()
+        f.entries = [
+            DOMEntry(name='name', type='label', value=self.name, label='Name'),
+            DOMEntry(name='id', type='label', value=self.id, label='Id', hidden=True),
+            DOMEntry(name='notebook', type='label', value=self.meta.notebook.name, label='Notebook'),
+            DOMEntry(name='job', type='label', value=self.meta.job.name, label='Job'),
+            DOMEntry(name='parameters', type='json', value=self.meta.parameters, label='Parameters'),
+            DOMEntry(name='type', type='label', value=self.meta.type, label='Type'),
+            DOMEntry(name='output', type='label', value=self.meta.output, label='Output'),
+            DOMEntry(name='strip_code', type='label', value=str(self.meta.strip_code), label='Strip Code'),
+            DOMEntry(name='template', type='label', value=self.meta.template, label='Template'),
+            # DOMEntry(type='label', value=self.meta.run, label='Run'),
+            DOMEntry(name='created', type='label', value=self.meta.created.strftime('%m/%d/%Y %H:%M:%S'), label='Created'),
+            DOMEntry(name='modified', type='label', value=self.meta.modified.strftime('%m/%d/%Y %H:%M:%S'), label='Modified')
+        ]
+        return f.to_json()
+
     def store(self):
         ret = Response()
         ret.entries = [
@@ -145,16 +163,3 @@ class ReportConfig(Base):
             DOMEntry(type='p', value='Job: {}'.format(self.meta.job.name)),
         ]
         return ret.to_json()
-
-    def row(self):
-        f = Response()
-        f.entries = [
-            DOMEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Report...', required=True),
-            DOMEntry(name='notebook', type='jsondl', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
-            DOMEntry(name='job', type='text', value=self.meta.job.name, label='Job', required=True, readonly=True),
-            DOMEntry(name='parameters', type='textarea', value=self.meta.parameters, label='Parameters', placeholder='JSON Parameters...'),
-            DOMEntry(name='type', type='select', value=self.meta.type, label='Type', options=_REPORT_TYPES, required=True),
-            DOMEntry(name='output', type='select', value=self.meta.output, label='Output', options=_OUTPUT_TYPES, required=True),
-            DOMEntry(name='code', type='select', value='yes' if self.meta.strip_code else 'no', label='Strip Code', options=['yes', 'no'], required=True),
-        ]
-        return f.to_json()
