@@ -2,7 +2,7 @@ import {
     SplitPanel, BoxPanel, DockPanel
 } from '@phosphor/widgets';
 
-import {DomUtils, autocomplete, apiurl} from './utils';
+import {DomUtils, autocomplete, apiurl, showLoader, hideLoader} from './utils';
 import {PrimaryDetail} from './common';
 
 export
@@ -64,7 +64,9 @@ class Browser extends SplitPanel {
             } else {
                 type = '';
             }
+            showLoader();
             resultspanel.addWidget(new PrimaryDetail(type, search.value));
+            hideLoader();
         });
 
         holder.appendChild(search);

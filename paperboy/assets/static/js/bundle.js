@@ -7006,7 +7006,7 @@ var MessageLoop;
     }
 })(MessageLoop = exports.MessageLoop || (exports.MessageLoop = {}));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(41).setImmediate, __webpack_require__(41).clearImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42).setImmediate, __webpack_require__(42).clearImmediate))
 
 /***/ }),
 /* 9 */
@@ -7020,7 +7020,7 @@ var elliptic = exports;
 elliptic.version = __webpack_require__(218).version;
 elliptic.utils = __webpack_require__(217);
 elliptic.rand = __webpack_require__(73);
-elliptic.curve = __webpack_require__(37);
+elliptic.curve = __webpack_require__(38);
 elliptic.curves = __webpack_require__(209);
 
 // Protocols
@@ -7574,7 +7574,7 @@ var Private;
     }
 })(Private || (Private = {}));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(41).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42).setImmediate))
 
 /***/ }),
 /* 12 */
@@ -9200,7 +9200,7 @@ module.exports = CipherBase
 
 /*<replacement>*/
 
-var pna = __webpack_require__(40);
+var pna = __webpack_require__(41);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -9661,7 +9661,7 @@ __export(__webpack_require__(143));
 __export(__webpack_require__(16));
 __export(__webpack_require__(65));
 __export(__webpack_require__(144));
-__export(__webpack_require__(35));
+__export(__webpack_require__(36));
 __export(__webpack_require__(24));
 __export(__webpack_require__(145));
 __export(__webpack_require__(146));
@@ -10748,9 +10748,562 @@ BlockHash.prototype._pad = function pad() {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+const request_1 = __webpack_require__(44);
+const loader = makeLoader();
+function makeLoader() {
+    let loader = document.createElement('div');
+    loader.classList.add('loader');
+    loader.style.display = 'none';
+    let loader_icon = document.createElement('div');
+    loader_icon.classList.add('loader_icon');
+    loader.appendChild(loader_icon);
+    return loader;
+}
+function baseurl() {
+    return document.baseurl || '/';
+}
+exports.baseurl = baseurl;
+function apiurl() {
+    return document.apiurl || '/api/v1/';
+}
+exports.apiurl = apiurl;
+/*** Title Case formatter ***/
+function toProperCase(str) {
+    return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+}
+exports.toProperCase = toProperCase;
+function showLoader(close_on_click = false) {
+    loader.style.display = 'flex';
+    if (close_on_click) {
+        loader.onclick = () => {
+            loader.style.display = 'none';
+        };
+    }
+    else {
+        loader.onclick = () => { };
+    }
+    document.body.appendChild(loader);
+}
+exports.showLoader = showLoader;
+function hideLoader(minload = 200) {
+    setTimeout(() => {
+        document.body.removeChild(loader);
+    }, minload);
+}
+exports.hideLoader = hideLoader;
+/*** autocomplete key/name pairs from server ***/
+function autocomplete(path, value, autocomplete) {
+    request_1.request('get', path).then((res) => {
+        var jsn = res.json();
+        if (jsn) {
+            DomUtils.delete_all_children(autocomplete);
+            for (let val of jsn) {
+                let option = document.createElement('option');
+                option.value = val['id'];
+                option.innerText = val['id'] + ' - ' + val['name'];
+                autocomplete.appendChild(option);
+            }
+        }
+    });
+}
+exports.autocomplete = autocomplete;
+/*** A collection of dom builders ***/
+var DomUtils;
+(function (DomUtils) {
+    /*** require select ***/
+    let default_none = document.createElement('option');
+    default_none.selected = false;
+    default_none.disabled = true;
+    default_none.hidden = false;
+    default_none.style.display = 'none';
+    default_none.value = '';
+    /*** delete all children of element helper ***/
+    function delete_all_children(element) {
+        while (element.lastChild) {
+            element.removeChild(element.lastChild);
+        }
+    }
+    DomUtils.delete_all_children = delete_all_children;
+    /*** build a label ***/
+    function buildLabel(text) {
+        let label = document.createElement('label');
+        label.textContent = text;
+        return label;
+    }
+    DomUtils.buildLabel = buildLabel;
+    /*** build a textarea ***/
+    function buildTextarea(name, placeholder, value, required = false, json = false) {
+        let area = document.createElement('textarea');
+        if (name) {
+            area.name = name;
+        }
+        if (placeholder) {
+            area.placeholder = placeholder;
+        }
+        if (value) {
+            if (json) {
+                area.value = JSON.stringify(JSON.parse(value), undefined, 4);
+                area.classList.add('json');
+            }
+            else {
+                area.value = value;
+            }
+        }
+        area.required = required;
+        area.style.marginBottom = '15px';
+        return area;
+    }
+    DomUtils.buildTextarea = buildTextarea;
+    /*** build a select ***/
+    function buildSelect(name, list, def, required = false, readonly = false) {
+        let select = document.createElement('select');
+        select.name = name;
+        if (required) {
+            select.required = required;
+        }
+        if (readonly) {
+            select.disabled = true;
+        }
+        select.appendChild(default_none);
+        for (let i = 0; i < list.length; i++) {
+            let x = list[i];
+            let option = document.createElement('option');
+            option.value = x;
+            option.textContent = x;
+            select.appendChild(option);
+            if (def && x === def) {
+                option.selected = true;
+            }
+        }
+        select.style.marginBottom = '15px';
+        select.style.minHeight = '25px';
+        return select;
+    }
+    DomUtils.buildSelect = buildSelect;
+    /*** build an autocomplete ***/
+    function buildAutocomplete(name, url, required = false) {
+        let search = document.createElement('input');
+        if (required) {
+            search.required = true;
+        }
+        search.setAttribute('list', name + '-datalist');
+        search.placeholder = 'Search...';
+        search.name = name;
+        search.autocomplete = 'off';
+        let datalist = document.createElement('datalist');
+        datalist.id = name + '-datalist';
+        let last = '';
+        search.addEventListener('input', () => {
+            delete_all_children(datalist);
+        });
+        search.addEventListener('keyup', () => {
+            if (last != search.value) {
+                autocomplete(url + search.value, search.value, datalist);
+            }
+            last = search.value;
+        });
+        search.addEventListener('mousedown', () => {
+            delete_all_children(datalist);
+        });
+        return [search, datalist];
+    }
+    DomUtils.buildAutocomplete = buildAutocomplete;
+    /*** build an input ***/
+    /***
+      allowed:
+        - text
+        - file
+        - checkbox
+        - date picker
+        - submit button
+        - select
+        - textarea
+        - autocomplete
+     ***/
+    function buildInput(type, name, placeholder, value, required = false, readonly = false, options = [], json = false) {
+        if (!type) {
+            type = 'text';
+        }
+        let input = document.createElement('input');
+        if (required) {
+            input.required = true;
+        }
+        if (readonly) {
+            input.readOnly = true;
+            input.disabled = true;
+        }
+        switch (type) {
+            case 'text': {
+                input.type = type;
+                if (placeholder) {
+                    input.placeholder = placeholder;
+                }
+                if (value) {
+                    input.value = value;
+                }
+                if (name) {
+                    input.name = name;
+                }
+                break;
+            }
+            case 'file': {
+                input.type = type;
+                if (name) {
+                    input.name = name;
+                }
+                input.multiple = false;
+                break;
+            }
+            case 'checkbox': {
+                input.type = type;
+                if (name) {
+                    input.name = name;
+                }
+                if (value) {
+                    input.checked = true;
+                }
+                break;
+            }
+            case 'datetime': {
+                input.type = 'datetime-local';
+                if (name) {
+                    input.name = name;
+                }
+                let d = new Date();
+                input.value = d.toISOString().slice(0, 16);
+                break;
+            }
+            case 'submit': {
+                input.type = type;
+                if (value) {
+                    input.value = value;
+                }
+                if (name) {
+                    input.name = name;
+                }
+                break;
+            }
+            case 'select': {
+                return buildSelect(name || '', options, value, required, readonly);
+            }
+            case 'textarea': { }
+            case 'json': {
+                return buildTextarea(name || '', placeholder, value, required, json);
+            }
+        }
+        return input;
+    }
+    DomUtils.buildInput = buildInput;
+    /*** build a generic element ***/
+    /***
+      allowed:
+      - br
+      - span
+      - p
+      - button
+      - h1
+      - h2
+      - h3
+      - h4
+      - h5
+      - h6
+      - label
+     ***/
+    function buildGeneric(type, content, name) {
+        switch (type) {
+            case 'br': { }
+            case 'span': { }
+            case 'p': { }
+            case 'button': { }
+            case 'h1': { }
+            case 'h2': { }
+            case 'h3': { }
+            case 'h4': { }
+            case 'h5': { }
+            case 'h6': {
+                let d = document.createElement(type);
+                d.textContent = content || '';
+                return d;
+            }
+            case 'label': {
+                return buildLabel(content || '');
+            }
+            case 'json': {
+                let a = document.createElement('a');
+                a.download = 'download.json';
+                a.href = 'data:text/json;charset=utf-8,' +
+                    encodeURIComponent(JSON.stringify(content));
+                a.target = '_blank';
+                a.textContent = name || 'Download';
+                return a;
+            }
+            case 'ipynb': {
+                let a = document.createElement('a');
+                a.download = 'download.ipynb';
+                a.href = 'data:text/json;charset=utf-8,' +
+                    JSON.parse(JSON.stringify(content));
+                a.target = '_blank';
+                a.textContent = name || 'Download';
+                return a;
+            }
+            case 'textfile': {
+                let a = document.createElement('a');
+                a.download = 'download.txt';
+                a.href = 'data:text/plain;' + content;
+                a.target = '_blank';
+                a.textContent = name || 'Download';
+                return a;
+            }
+            default: {
+                return document.createElement('div');
+            }
+        }
+    }
+    DomUtils.buildGeneric = buildGeneric;
+    function buildHorizontalTable(data) {
+        let table = document.createElement('table');
+        let headerrow = document.createElement('tr');
+        let name = document.createElement('th');
+        name.textContent = 'Name';
+        headerrow.appendChild(name);
+        table.appendChild(headerrow);
+        let first = true;
+        for (let i = 0; i < data.length; i++) {
+            let dat = data[i];
+            let row = document.createElement('tr');
+            let v = document.createElement('td');
+            v.textContent = dat['name'];
+            row.appendChild(v);
+            for (let k of Object.keys(dat['meta'])) {
+                if (first) {
+                    let name = document.createElement('th');
+                    name.textContent = toProperCase(k);
+                    headerrow.appendChild(name);
+                }
+                let v = document.createElement('td');
+                v.textContent = dat['meta'][k];
+                row.appendChild(v);
+            }
+            table.appendChild(row);
+            first = false;
+        }
+        return table;
+    }
+    DomUtils.buildHorizontalTable = buildHorizontalTable;
+    function buildListTable(data, ondblclick = (id) => { }) {
+        let table = document.createElement('table');
+        let headerrow = document.createElement('tr');
+        table.appendChild(headerrow);
+        let first = true;
+        for (let i = 0; i < data.length; i++) {
+            let data_row = data[i];
+            let row = document.createElement('tr');
+            for (let j = 0; j < data_row.length; j++) {
+                let dat = data_row[j];
+                let name = dat['name'];
+                let label = dat['label'];
+                let type = dat['type'];
+                let value = dat['value'];
+                if (name === 'id') {
+                    row.ondblclick = () => { ondblclick(value); };
+                    continue;
+                }
+                if (first) {
+                    let n = document.createElement('th');
+                    n.textContent = toProperCase(label);
+                    headerrow.appendChild(n);
+                }
+                let v = document.createElement('td');
+                v.appendChild(buildGeneric(type, value, name));
+                row.appendChild(v);
+            }
+            table.appendChild(row);
+            first = false;
+        }
+        return table;
+    }
+    DomUtils.buildListTable = buildListTable;
+    function buildVerticalTable(data, title) {
+        let table = document.createElement('table');
+        for (let i = 0; i < data.length; i++) {
+            let row = document.createElement('tr');
+            let td1 = document.createElement('td');
+            let td2 = document.createElement('td');
+            if (data[i]['name'] === 'name') {
+                if (title) {
+                    title.label = data[i]['value'];
+                }
+            }
+            td1.textContent = toProperCase(data[i]['name']);
+            let conts = DomUtils.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly'], data[i]['options'], (data[i]['type'] == 'json'));
+            td2.appendChild(conts);
+            row.appendChild(td1);
+            row.appendChild(td2);
+            table.appendChild(row);
+        }
+        return table;
+    }
+    DomUtils.buildVerticalTable = buildVerticalTable;
+    /*** create paginated table from data ***/
+    function createStatusSection(sec, clazz, data) {
+        let table = buildHorizontalTable(data);
+        delete_all_children(sec.node);
+        sec.node.appendChild(table);
+    }
+    DomUtils.createStatusSection = createStatusSection;
+    /*** create paginated table from data ***/
+    function createPrimarySection(widget, clazz, data, paginate = (page) => { }) {
+        let sec = widget.mine;
+        delete_all_children(sec.node);
+        let page = data['page'];
+        let pages = data['pages'];
+        // let count = data['count'];
+        let total = data['total'];
+        let start = (page - 1) * 25 + 1;
+        let end = Math.min((page) * 25, total);
+        let results = data['results'];
+        if (results.length > 0) {
+            let table = buildListTable(results, (id) => {
+                showLoader();
+                widget.detailView(id);
+                hideLoader();
+            });
+            // only add table if it has data
+            sec.node.appendChild(table);
+        }
+        let p1 = document.createElement('p');
+        p1.textContent = 'Showing ' + start + ' to ' + end + ' of ' + total;
+        let p2 = document.createElement('p');
+        for (let i = 1; i <= pages; i++) {
+            let span = document.createElement('span');
+            span.textContent = i + ' ';
+            if (i === page) {
+                span.classList.add('page-active');
+            }
+            else {
+                span.classList.add('page');
+            }
+            // callback on page click
+            span.addEventListener('click', (ev) => {
+                showLoader();
+                paginate(i);
+                hideLoader();
+            });
+            p2.appendChild(span);
+        }
+        sec.node.appendChild(p1);
+        sec.node.appendChild(p2);
+    }
+    DomUtils.createPrimarySection = createPrimarySection;
+    /*** create response modal from python json response to config ***/
+    function createResponseModal(resp, callback = () => { }) {
+        let modal = document.createElement('div');
+        modal.classList.add('modal');
+        for (let i = 0; i < resp.length; i++) {
+            let dat = resp[i];
+            modal.appendChild(buildGeneric(dat['type'], dat['value']));
+        }
+        let button = buildGeneric('button', 'OK');
+        button.onclick = () => {
+            document.body.removeChild(modal);
+            callback();
+        };
+        modal.appendChild(button);
+        document.body.appendChild(modal);
+        button.focus();
+    }
+    DomUtils.createResponseModal = createResponseModal;
+    /*** create detail view from python json response to detail ***/
+    function createDetail(data, title, node) {
+        delete_all_children(node);
+        let table = buildVerticalTable(data, title);
+        node.appendChild(table);
+    }
+    DomUtils.createDetail = createDetail;
+    /*** create config from python json ***/
+    /***
+      allowed:
+        - label
+        - text
+        - textarea
+        - file
+        - checkbox
+        - date picker
+        - submit button
+    ***/
+    function createConfigForm(sec, clazz, data, callback = () => { }) {
+        if (!sec) {
+            return;
+        }
+        for (let i = 0; i < data.length; i++) {
+            let name = data[i]['name'];
+            let type = data[i]['type'];
+            if (data[i]['label']) {
+                sec.appendChild(buildLabel(data[i]['label']));
+            }
+            switch (type) {
+                case 'label': {
+                    //no more
+                    break;
+                }
+                case 'text': { }
+                case 'file': { }
+                case 'checkbox': { }
+                case 'datetime': {
+                    let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
+                    sec.appendChild(input);
+                    break;
+                }
+                case 'textarea': {
+                    let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
+                    sec.appendChild(input);
+                    break;
+                }
+                case 'json': {
+                    let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required'], true);
+                    sec.appendChild(input);
+                    break;
+                }
+                case 'submit': {
+                    let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
+                    sec.appendChild(input);
+                    sec.onsubmit = () => {
+                        let form = new FormData(sec);
+                        request_1.requestFormData(data[i]['url'], form).then((res) => {
+                            createResponseModal(res.json(), callback);
+                        });
+                        return false;
+                    };
+                    break;
+                }
+                case 'autocomplete': {
+                    let auto = buildAutocomplete(name, data[i]['url'], data[i]['required']);
+                    sec.appendChild(auto[0]);
+                    sec.appendChild(auto[1]);
+                    break;
+                }
+                case 'select': {
+                    let select = buildSelect(name, data[i]['options']);
+                    sec.appendChild(select);
+                    break;
+                }
+            }
+        }
+    }
+    DomUtils.createConfigForm = createConfigForm;
+})(DomUtils = exports.DomUtils || (exports.DomUtils = {}));
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 const widgets_1 = __webpack_require__(22);
-const request_1 = __webpack_require__(43);
-const utils_1 = __webpack_require__(44);
+const request_1 = __webpack_require__(44);
+const utils_1 = __webpack_require__(31);
 class PrimaryForm extends widgets_1.Widget {
     static createNode(clz) {
         let div = document.createElement('div');
@@ -10830,7 +11383,7 @@ exports.PrimaryTab = PrimaryTab;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10855,7 +11408,7 @@ __export(__webpack_require__(134));
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11697,7 +12250,7 @@ var Private;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12265,7 +12818,7 @@ var Private;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12367,7 +12920,7 @@ var Private;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // based on the aes implimentation in triple sec
@@ -12601,7 +13154,7 @@ module.exports.AES = AES
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12616,7 +13169,7 @@ curve.edwards = __webpack_require__(206);
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(1).Buffer
@@ -12667,7 +13220,7 @@ module.exports = EVP_BytesToKey
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var asn1 = __webpack_require__(230)
@@ -12780,7 +13333,7 @@ function decrypt (data, password) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12832,7 +13385,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -12902,7 +13455,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12916,7 +13469,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
-var coreutils_1 = __webpack_require__(32);
+var coreutils_1 = __webpack_require__(33);
 var disposable_1 = __webpack_require__(45);
 var domutils_1 = __webpack_require__(7);
 var keyboard_1 = __webpack_require__(46);
@@ -13791,7 +14344,7 @@ var Private;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13895,524 +14448,6 @@ function requestFormData(url, formdata) {
     });
 }
 exports.requestFormData = requestFormData;
-
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const request_1 = __webpack_require__(43);
-function baseurl() {
-    return document.baseurl || '/';
-}
-exports.baseurl = baseurl;
-function apiurl() {
-    return document.apiurl || '/api/v1/';
-}
-exports.apiurl = apiurl;
-/*** Title Case formatter ***/
-function toProperCase(str) {
-    return str.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
-}
-exports.toProperCase = toProperCase;
-/*** autocomplete key/name pairs from server ***/
-function autocomplete(path, value, autocomplete) {
-    request_1.request('get', path).then((res) => {
-        var jsn = res.json();
-        if (jsn) {
-            DomUtils.delete_all_children(autocomplete);
-            for (let val of jsn) {
-                let option = document.createElement('option');
-                option.value = val['id'];
-                option.innerText = val['id'] + ' - ' + val['name'];
-                autocomplete.appendChild(option);
-            }
-        }
-    });
-}
-exports.autocomplete = autocomplete;
-/*** A collection of dom builders ***/
-var DomUtils;
-(function (DomUtils) {
-    /*** require select ***/
-    let default_none = document.createElement('option');
-    default_none.selected = false;
-    default_none.disabled = true;
-    default_none.hidden = false;
-    default_none.style.display = 'none';
-    default_none.value = '';
-    /*** delete all children of element helper ***/
-    function delete_all_children(element) {
-        while (element.lastChild) {
-            element.removeChild(element.lastChild);
-        }
-    }
-    DomUtils.delete_all_children = delete_all_children;
-    /*** build a label ***/
-    function buildLabel(text) {
-        let label = document.createElement('label');
-        label.textContent = text;
-        return label;
-    }
-    DomUtils.buildLabel = buildLabel;
-    /*** build a textarea ***/
-    function buildTextarea(name, placeholder, value, required = false, json = false) {
-        let area = document.createElement('textarea');
-        if (name) {
-            area.name = name;
-        }
-        if (placeholder) {
-            area.placeholder = placeholder;
-        }
-        if (value) {
-            if (json) {
-                area.value = JSON.stringify(JSON.parse(value), undefined, 4);
-                area.classList.add('json');
-            }
-            else {
-                area.value = value;
-            }
-        }
-        area.required = required;
-        area.style.marginBottom = '15px';
-        return area;
-    }
-    DomUtils.buildTextarea = buildTextarea;
-    /*** build a select ***/
-    function buildSelect(name, list, def, required = false, readonly = false) {
-        let select = document.createElement('select');
-        select.name = name;
-        if (required) {
-            select.required = required;
-        }
-        if (readonly) {
-            select.disabled = true;
-        }
-        select.appendChild(default_none);
-        for (let i = 0; i < list.length; i++) {
-            let x = list[i];
-            let option = document.createElement('option');
-            option.value = x;
-            option.textContent = x;
-            select.appendChild(option);
-            if (def && x === def) {
-                option.selected = true;
-            }
-        }
-        select.style.marginBottom = '15px';
-        select.style.minHeight = '25px';
-        return select;
-    }
-    DomUtils.buildSelect = buildSelect;
-    /*** build an autocomplete ***/
-    function buildAutocomplete(name, url, required = false) {
-        let search = document.createElement('input');
-        if (required) {
-            search.required = true;
-        }
-        search.setAttribute('list', name + '-datalist');
-        search.placeholder = 'Search...';
-        search.name = name;
-        search.autocomplete = 'off';
-        let datalist = document.createElement('datalist');
-        datalist.id = name + '-datalist';
-        let last = '';
-        search.addEventListener('input', () => {
-            delete_all_children(datalist);
-        });
-        search.addEventListener('keyup', () => {
-            if (last != search.value) {
-                autocomplete(url + search.value, search.value, datalist);
-            }
-            last = search.value;
-        });
-        search.addEventListener('mousedown', () => {
-            delete_all_children(datalist);
-        });
-        return [search, datalist];
-    }
-    DomUtils.buildAutocomplete = buildAutocomplete;
-    /*** build an input ***/
-    /***
-      allowed:
-        - text
-        - file
-        - checkbox
-        - date picker
-        - submit button
-        - select
-        - textarea
-        - autocomplete
-     ***/
-    function buildInput(type, name, placeholder, value, required = false, readonly = false, options = [], json = false) {
-        if (!type) {
-            type = 'text';
-        }
-        let input = document.createElement('input');
-        if (required) {
-            input.required = true;
-        }
-        if (readonly) {
-            input.readOnly = true;
-            input.disabled = true;
-        }
-        switch (type) {
-            case 'text': {
-                input.type = type;
-                if (placeholder) {
-                    input.placeholder = placeholder;
-                }
-                if (value) {
-                    input.value = value;
-                }
-                if (name) {
-                    input.name = name;
-                }
-                break;
-            }
-            case 'file': {
-                input.type = type;
-                if (name) {
-                    input.name = name;
-                }
-                input.multiple = false;
-                break;
-            }
-            case 'checkbox': {
-                input.type = type;
-                if (name) {
-                    input.name = name;
-                }
-                if (value) {
-                    input.checked = true;
-                }
-                break;
-            }
-            case 'datetime': {
-                input.type = 'datetime-local';
-                if (name) {
-                    input.name = name;
-                }
-                let d = new Date();
-                input.value = d.toISOString().slice(0, 16);
-                break;
-            }
-            case 'submit': {
-                input.type = type;
-                if (value) {
-                    input.value = value;
-                }
-                if (name) {
-                    input.name = name;
-                }
-                break;
-            }
-            case 'select': {
-                return buildSelect(name || '', options, value, required, readonly);
-            }
-            case 'textarea': { }
-            case 'json': {
-                return buildTextarea(name || '', placeholder, value, required, json);
-            }
-        }
-        return input;
-    }
-    DomUtils.buildInput = buildInput;
-    /*** build a generic element ***/
-    /***
-      allowed:
-      - br
-      - span
-      - p
-      - button
-      - h1
-      - h2
-      - h3
-      - h4
-      - h5
-      - h6
-      - label
-     ***/
-    function buildGeneric(type, content, name) {
-        switch (type) {
-            case 'br': { }
-            case 'span': { }
-            case 'p': { }
-            case 'button': { }
-            case 'h1': { }
-            case 'h2': { }
-            case 'h3': { }
-            case 'h4': { }
-            case 'h5': { }
-            case 'h6': {
-                let d = document.createElement(type);
-                d.textContent = content || '';
-                return d;
-            }
-            case 'label': {
-                return buildLabel(content || '');
-            }
-            case 'json': {
-                let a = document.createElement('a');
-                a.download = 'download.json';
-                a.href = 'data:text/json;charset=utf-8,' +
-                    encodeURIComponent(JSON.stringify(content));
-                a.target = '_blank';
-                a.textContent = name || 'Download';
-                return a;
-            }
-            case 'ipynb': {
-                let a = document.createElement('a');
-                a.download = 'download.ipynb';
-                a.href = 'data:text/json;charset=utf-8,' +
-                    JSON.parse(JSON.stringify(content));
-                a.target = '_blank';
-                a.textContent = name || 'Download';
-                return a;
-            }
-            case 'textfile': {
-                let a = document.createElement('a');
-                a.download = 'download.txt';
-                a.href = 'data:text/plain;' + content;
-                a.target = '_blank';
-                a.textContent = name || 'Download';
-                return a;
-            }
-            default: {
-                return document.createElement('div');
-            }
-        }
-    }
-    DomUtils.buildGeneric = buildGeneric;
-    function buildHorizontalTable(data) {
-        let table = document.createElement('table');
-        let headerrow = document.createElement('tr');
-        let name = document.createElement('th');
-        name.textContent = 'Name';
-        headerrow.appendChild(name);
-        table.appendChild(headerrow);
-        let first = true;
-        for (let i = 0; i < data.length; i++) {
-            let dat = data[i];
-            let row = document.createElement('tr');
-            let v = document.createElement('td');
-            v.textContent = dat['name'];
-            row.appendChild(v);
-            for (let k of Object.keys(dat['meta'])) {
-                if (first) {
-                    let name = document.createElement('th');
-                    name.textContent = toProperCase(k);
-                    headerrow.appendChild(name);
-                }
-                let v = document.createElement('td');
-                v.textContent = dat['meta'][k];
-                row.appendChild(v);
-            }
-            table.appendChild(row);
-            first = false;
-        }
-        return table;
-    }
-    DomUtils.buildHorizontalTable = buildHorizontalTable;
-    function buildListTable(data, ondblclick = (id) => { }) {
-        let table = document.createElement('table');
-        let headerrow = document.createElement('tr');
-        table.appendChild(headerrow);
-        let first = true;
-        for (let i = 0; i < data.length; i++) {
-            let data_row = data[i];
-            let row = document.createElement('tr');
-            for (let j = 0; j < data_row.length; j++) {
-                let dat = data_row[j];
-                let name = dat['name'];
-                let label = dat['label'];
-                let type = dat['type'];
-                let value = dat['value'];
-                if (name === 'id') {
-                    row.ondblclick = () => { ondblclick(value); };
-                    continue;
-                }
-                if (first) {
-                    let n = document.createElement('th');
-                    n.textContent = toProperCase(label);
-                    headerrow.appendChild(n);
-                }
-                let v = document.createElement('td');
-                v.appendChild(buildGeneric(type, value, name));
-                row.appendChild(v);
-            }
-            table.appendChild(row);
-            first = false;
-        }
-        return table;
-    }
-    DomUtils.buildListTable = buildListTable;
-    function buildVerticalTable(data, title) {
-        let table = document.createElement('table');
-        for (let i = 0; i < data.length; i++) {
-            let row = document.createElement('tr');
-            let td1 = document.createElement('td');
-            let td2 = document.createElement('td');
-            if (data[i]['name'] === 'name') {
-                if (title) {
-                    title.label = data[i]['value'];
-                }
-            }
-            td1.textContent = toProperCase(data[i]['name']);
-            let conts = DomUtils.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly'], data[i]['options'], (data[i]['type'] == 'json'));
-            td2.appendChild(conts);
-            row.appendChild(td1);
-            row.appendChild(td2);
-            table.appendChild(row);
-        }
-        return table;
-    }
-    DomUtils.buildVerticalTable = buildVerticalTable;
-    /*** create paginated table from data ***/
-    function createStatusSection(sec, clazz, data) {
-        let table = buildHorizontalTable(data);
-        delete_all_children(sec.node);
-        sec.node.appendChild(table);
-    }
-    DomUtils.createStatusSection = createStatusSection;
-    /*** create paginated table from data ***/
-    function createPrimarySection(widget, clazz, data, paginate = (page) => { }) {
-        let sec = widget.mine;
-        delete_all_children(sec.node);
-        let page = data['page'];
-        let pages = data['pages'];
-        // let count = data['count'];
-        let total = data['total'];
-        let start = (page - 1) * 25 + 1;
-        let end = Math.min((page) * 25, total);
-        let results = data['results'];
-        if (results.length > 0) {
-            let table = buildListTable(results, (id) => {
-                widget.detailView(id);
-            });
-            // only add table if it has data
-            sec.node.appendChild(table);
-        }
-        let p1 = document.createElement('p');
-        p1.textContent = 'Showing ' + start + ' to ' + end + ' of ' + total;
-        let p2 = document.createElement('p');
-        for (let i = 1; i <= pages; i++) {
-            let span = document.createElement('span');
-            span.textContent = i + ' ';
-            if (i === page) {
-                span.classList.add('page-active');
-            }
-            else {
-                span.classList.add('page');
-            }
-            // callback on page click
-            span.addEventListener('click', (ev) => { paginate(i); });
-            p2.appendChild(span);
-        }
-        sec.node.appendChild(p1);
-        sec.node.appendChild(p2);
-    }
-    DomUtils.createPrimarySection = createPrimarySection;
-    /*** create response modal from python json response to config ***/
-    function createResponseModal(resp, callback = () => { }) {
-        let modal = document.createElement('div');
-        modal.classList.add('modal');
-        for (let i = 0; i < resp.length; i++) {
-            let dat = resp[i];
-            modal.appendChild(buildGeneric(dat['type'], dat['value']));
-        }
-        let button = buildGeneric('button', 'OK');
-        button.onclick = () => {
-            document.body.removeChild(modal);
-            callback();
-        };
-        modal.appendChild(button);
-        document.body.appendChild(modal);
-        button.focus();
-    }
-    DomUtils.createResponseModal = createResponseModal;
-    /*** create detail view from python json response to detail ***/
-    function createDetail(data, title, node) {
-        delete_all_children(node);
-        let table = buildVerticalTable(data, title);
-        node.appendChild(table);
-    }
-    DomUtils.createDetail = createDetail;
-    /*** create config from python json ***/
-    /***
-      allowed:
-        - label
-        - text
-        - textarea
-        - file
-        - checkbox
-        - date picker
-        - submit button
-    ***/
-    function createConfigForm(sec, clazz, data, callback = () => { }) {
-        if (!sec) {
-            return;
-        }
-        for (let i = 0; i < data.length; i++) {
-            let name = data[i]['name'];
-            let type = data[i]['type'];
-            if (data[i]['label']) {
-                sec.appendChild(buildLabel(data[i]['label']));
-            }
-            switch (type) {
-                case 'label': {
-                    //no more
-                    break;
-                }
-                case 'text': { }
-                case 'file': { }
-                case 'checkbox': { }
-                case 'datetime': {
-                    let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
-                    sec.appendChild(input);
-                    break;
-                }
-                case 'textarea': {
-                    let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
-                    sec.appendChild(input);
-                    break;
-                }
-                case 'json': {
-                    let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required'], true);
-                    sec.appendChild(input);
-                    break;
-                }
-                case 'submit': {
-                    let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
-                    sec.appendChild(input);
-                    sec.onsubmit = () => {
-                        let form = new FormData(sec);
-                        request_1.requestFormData(data[i]['url'], form).then((res) => {
-                            createResponseModal(res.json(), callback);
-                        });
-                        return false;
-                    };
-                    break;
-                }
-                case 'autocomplete': {
-                    let auto = buildAutocomplete(name, data[i]['url'], data[i]['required']);
-                    sec.appendChild(auto[0]);
-                    sec.appendChild(auto[1]);
-                    break;
-                }
-                case 'select': {
-                    let select = buildSelect(name, data[i]['options']);
-                    sec.appendChild(select);
-                    break;
-                }
-            }
-        }
-    }
-    DomUtils.createConfigForm = createConfigForm;
-})(DomUtils = exports.DomUtils || (exports.DomUtils = {}));
 
 
 /***/ }),
@@ -15408,10 +15443,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
-var dragdrop_1 = __webpack_require__(33);
+var dragdrop_1 = __webpack_require__(34);
 var messaging_1 = __webpack_require__(8);
 var signaling_1 = __webpack_require__(11);
-var virtualdom_1 = __webpack_require__(34);
+var virtualdom_1 = __webpack_require__(35);
 var title_1 = __webpack_require__(49);
 var widget_1 = __webpack_require__(6);
 /**
@@ -17532,7 +17567,7 @@ module.exports = MD5
 
 /*<replacement>*/
 
-var pna = __webpack_require__(40);
+var pna = __webpack_require__(41);
 /*</replacement>*/
 
 module.exports = Writable;
@@ -18190,7 +18225,7 @@ Writable.prototype._destroy = function (err, cb) {
   this.end();
   cb(err);
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(41).setImmediate, __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(42).setImmediate, __webpack_require__(14)))
 
 /***/ }),
 /* 58 */
@@ -20517,13 +20552,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
-var commands_1 = __webpack_require__(42);
-var coreutils_1 = __webpack_require__(32);
+var commands_1 = __webpack_require__(43);
+var coreutils_1 = __webpack_require__(33);
 var domutils_1 = __webpack_require__(7);
 var keyboard_1 = __webpack_require__(46);
 var messaging_1 = __webpack_require__(8);
 var signaling_1 = __webpack_require__(11);
-var virtualdom_1 = __webpack_require__(34);
+var virtualdom_1 = __webpack_require__(35);
 var widget_1 = __webpack_require__(6);
 /**
  * A widget which displays items as a canonical menu.
@@ -22987,7 +23022,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 var signaling_1 = __webpack_require__(11);
-var panel_1 = __webpack_require__(35);
+var panel_1 = __webpack_require__(36);
 var stackedlayout_1 = __webpack_require__(67);
 /**
  * A panel where visible widgets are stacked atop one another.
@@ -23903,7 +23938,7 @@ if (typeof self === 'object') {
 /* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var aes = __webpack_require__(36)
+var aes = __webpack_require__(37)
 var Buffer = __webpack_require__(1).Buffer
 var Transform = __webpack_require__(17)
 var inherits = __webpack_require__(0)
@@ -24089,7 +24124,7 @@ module.exports = {"aes-128-ecb":{"cipher":"AES","key":128,"iv":0,"mode":"ECB","t
 /* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var aes = __webpack_require__(36)
+var aes = __webpack_require__(37)
 var Buffer = __webpack_require__(1).Buffer
 var Transform = __webpack_require__(17)
 var inherits = __webpack_require__(0)
@@ -25373,7 +25408,7 @@ module.exports = function xor(a, b) {
 
 /*<replacement>*/
 
-var pna = __webpack_require__(40);
+var pna = __webpack_require__(41);
 /*</replacement>*/
 
 module.exports = Readable;
@@ -26598,7 +26633,7 @@ function done(stream, er, data) {
 
 /*<replacement>*/
 
-var pna = __webpack_require__(40);
+var pna = __webpack_require__(41);
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -27091,8 +27126,8 @@ module.exports = Sha512
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const widgets_1 = __webpack_require__(22);
-const utils_1 = __webpack_require__(44);
-const common_1 = __webpack_require__(31);
+const utils_1 = __webpack_require__(31);
+const common_1 = __webpack_require__(32);
 class Browser extends widgets_1.SplitPanel {
     constructor() {
         super({ orientation: 'vertical', spacing: 0 });
@@ -27145,7 +27180,9 @@ class Browser extends widgets_1.SplitPanel {
             else {
                 type = '';
             }
+            utils_1.showLoader();
             resultspanel.addWidget(new common_1.PrimaryDetail(type, search.value));
+            utils_1.hideLoader();
         });
         holder.appendChild(search);
         holder.appendChild(datalist);
@@ -27221,7 +27258,7 @@ exports.Header = Header;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = __webpack_require__(31);
+const common_1 = __webpack_require__(32);
 class Jobs extends common_1.PrimaryTab {
     constructor() {
         super('scheduler', 'jobs');
@@ -27237,7 +27274,7 @@ exports.Jobs = Jobs;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = __webpack_require__(31);
+const common_1 = __webpack_require__(32);
 class Notebooks extends common_1.PrimaryTab {
     constructor() {
         super('uploader', 'notebooks');
@@ -27253,7 +27290,7 @@ exports.Notebooks = Notebooks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = __webpack_require__(31);
+const common_1 = __webpack_require__(32);
 class Reports extends common_1.PrimaryTab {
     constructor() {
         super('configurator', 'reports');
@@ -27270,8 +27307,8 @@ exports.Reports = Reports;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const widgets_1 = __webpack_require__(22);
-const request_1 = __webpack_require__(43);
-const utils_1 = __webpack_require__(44);
+const request_1 = __webpack_require__(44);
+const utils_1 = __webpack_require__(31);
 class StatusBrowser extends widgets_1.TabPanel {
     constructor() {
         super();
@@ -27450,7 +27487,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 __webpack_require__(110); // polyfill Promise on IE
-const commands_1 = __webpack_require__(42);
+const commands_1 = __webpack_require__(43);
 const widgets_1 = __webpack_require__(22);
 const header_1 = __webpack_require__(105);
 const status_1 = __webpack_require__(109);
@@ -27458,34 +27495,21 @@ const browser_1 = __webpack_require__(104);
 const notebooks_1 = __webpack_require__(107);
 const jobs_1 = __webpack_require__(106);
 const reports_1 = __webpack_require__(108);
+const utils_1 = __webpack_require__(31);
 __webpack_require__(111);
 const commands = new commands_1.CommandRegistry();
-function makeLoader() {
-    let loader = document.createElement('div');
-    loader.classList.add('loader');
-    loader.style.display = 'none';
-    let loader_icon = document.createElement('div');
-    loader_icon.classList.add('loader_icon');
-    loader.appendChild(loader_icon);
-    loader.onclick = () => {
-        loader.style.display = 'none';
-        document.body.removeChild(loader);
-    };
-    return loader;
-}
 function main() {
+    utils_1.showLoader();
     /* Home "Menu" */
     let menu = new widgets_1.Menu({ commands });
     menu.title.label = 'About';
     menu.title.mnemonic = 0;
-    let loader = makeLoader();
     commands.addCommand('open-loader', {
         label: 'Open Loader',
         mnemonic: 2,
         iconClass: 'fa fa-plus',
         execute: () => {
-            loader.style.display = 'flex';
-            document.body.appendChild(loader);
+            utils_1.showLoader(true);
         }
     });
     commands.addCommand('login', {
@@ -27534,6 +27558,7 @@ function main() {
     widgets_1.Widget.attach(header, document.body);
     widgets_1.Widget.attach(bar, document.body);
     widgets_1.Widget.attach(main, document.body);
+    utils_1.hideLoader(1000);
 }
 window.onload = main;
 
@@ -31764,7 +31789,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 var boxlayout_1 = __webpack_require__(47);
-var panel_1 = __webpack_require__(35);
+var panel_1 = __webpack_require__(36);
 /**
  * A panel which arranges its widgets in a single row or column.
  *
@@ -31957,10 +31982,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
-var coreutils_1 = __webpack_require__(32);
-var commands_1 = __webpack_require__(42);
+var coreutils_1 = __webpack_require__(33);
+var commands_1 = __webpack_require__(43);
 var domutils_1 = __webpack_require__(7);
-var virtualdom_1 = __webpack_require__(34);
+var virtualdom_1 = __webpack_require__(35);
 var widget_1 = __webpack_require__(6);
 /**
  * A widget which displays command items as a searchable palette.
@@ -33245,9 +33270,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
-var coreutils_1 = __webpack_require__(32);
+var coreutils_1 = __webpack_require__(33);
 var domutils_1 = __webpack_require__(7);
-var dragdrop_1 = __webpack_require__(33);
+var dragdrop_1 = __webpack_require__(34);
 var messaging_1 = __webpack_require__(8);
 var properties_1 = __webpack_require__(19);
 var signaling_1 = __webpack_require__(11);
@@ -35418,7 +35443,7 @@ var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var keyboard_1 = __webpack_require__(46);
 var messaging_1 = __webpack_require__(8);
-var virtualdom_1 = __webpack_require__(34);
+var virtualdom_1 = __webpack_require__(35);
 var widget_1 = __webpack_require__(6);
 /**
  * A widget which displays menus as a canonical menu bar.
@@ -36192,7 +36217,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var domutils_1 = __webpack_require__(7);
-var dragdrop_1 = __webpack_require__(33);
+var dragdrop_1 = __webpack_require__(34);
 var signaling_1 = __webpack_require__(11);
 var widget_1 = __webpack_require__(6);
 /**
@@ -37067,8 +37092,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
-var dragdrop_1 = __webpack_require__(33);
-var panel_1 = __webpack_require__(35);
+var dragdrop_1 = __webpack_require__(34);
+var panel_1 = __webpack_require__(36);
 var splitlayout_1 = __webpack_require__(66);
 /**
  * A panel which arranges its widgets into resizable sections.
@@ -38929,8 +38954,8 @@ var Buffer = __webpack_require__(1).Buffer
 var MODES = __webpack_require__(51)
 var StreamCipher = __webpack_require__(78)
 var Transform = __webpack_require__(17)
-var aes = __webpack_require__(36)
-var ebtk = __webpack_require__(38)
+var aes = __webpack_require__(37)
+var ebtk = __webpack_require__(39)
 var inherits = __webpack_require__(0)
 
 function Decipher (mode, key, iv) {
@@ -39059,8 +39084,8 @@ var AuthCipher = __webpack_require__(74)
 var Buffer = __webpack_require__(1).Buffer
 var StreamCipher = __webpack_require__(78)
 var Transform = __webpack_require__(17)
-var aes = __webpack_require__(36)
-var ebtk = __webpack_require__(38)
+var aes = __webpack_require__(37)
+var ebtk = __webpack_require__(39)
 var inherits = __webpack_require__(0)
 
 function Cipher (mode, key, iv) {
@@ -39450,7 +39475,7 @@ var DES = __webpack_require__(168)
 var aes = __webpack_require__(50)
 var aesModes = __webpack_require__(51)
 var desModes = __webpack_require__(169)
-var ebtk = __webpack_require__(38)
+var ebtk = __webpack_require__(39)
 
 function createCipher (suite, password) {
   suite = suite.toLowerCase()
@@ -39709,7 +39734,7 @@ var createHmac = __webpack_require__(82)
 var crt = __webpack_require__(52)
 var EC = __webpack_require__(9).ec
 var BN = __webpack_require__(4)
-var parseKeys = __webpack_require__(39)
+var parseKeys = __webpack_require__(40)
 var curves = __webpack_require__(80)
 
 function sign (hash, key, hashType, signType, tag) {
@@ -39859,7 +39884,7 @@ module.exports.makeKey = makeKey
 /* WEBPACK VAR INJECTION */(function(Buffer) {// much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var BN = __webpack_require__(4)
 var EC = __webpack_require__(9).ec
-var parseKeys = __webpack_require__(39)
+var parseKeys = __webpack_require__(40)
 var curves = __webpack_require__(80)
 
 function verify (sig, hash, key, signType, tag) {
@@ -41837,7 +41862,7 @@ BasePoint.prototype.dblp = function dblp(k) {
 "use strict";
 
 
-var curve = __webpack_require__(37);
+var curve = __webpack_require__(38);
 var elliptic = __webpack_require__(9);
 var BN = __webpack_require__(4);
 var inherits = __webpack_require__(0);
@@ -42277,7 +42302,7 @@ Point.prototype.mixedAdd = Point.prototype.add;
 "use strict";
 
 
-var curve = __webpack_require__(37);
+var curve = __webpack_require__(38);
 var BN = __webpack_require__(4);
 var inherits = __webpack_require__(0);
 var Base = curve.base;
@@ -42464,7 +42489,7 @@ Point.prototype.getX = function getX() {
 "use strict";
 
 
-var curve = __webpack_require__(37);
+var curve = __webpack_require__(38);
 var elliptic = __webpack_require__(9);
 var BN = __webpack_require__(4);
 var inherits = __webpack_require__(0);
@@ -47379,7 +47404,7 @@ module.exports = X509Certificate
 var findProc = /Proc-Type: 4,ENCRYPTED[\n\r]+DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)[\n\r]+([0-9A-z\n\r\+\/\=]+)[\n\r]+/m
 var startRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----/m
 var fullRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----([0-9A-z\n\r\+\/\=]+)-----END \1-----$/m
-var evp = __webpack_require__(38)
+var evp = __webpack_require__(39)
 var ciphers = __webpack_require__(50)
 module.exports = function (okey, password) {
   var key = okey.toString()
@@ -47534,7 +47559,7 @@ exports.publicDecrypt = function publicDecrypt(key, buf) {
 /* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(39);
+/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(40);
 var mgf = __webpack_require__(95);
 var xor = __webpack_require__(97);
 var bn = __webpack_require__(4);
@@ -47648,7 +47673,7 @@ function compare(a, b){
 /* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(39);
+/* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(40);
 var randomBytes = __webpack_require__(20);
 var createHash = __webpack_require__(29);
 var mgf = __webpack_require__(95);

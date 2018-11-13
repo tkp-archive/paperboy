@@ -5,6 +5,19 @@ import {
 import {request, requestFormData, RequestResult} from './request';
 import {PrimaryTab} from './common';
 
+const loader = makeLoader()
+
+function makeLoader(): HTMLDivElement {
+  let loader = document.createElement('div');
+  loader.classList.add('loader');
+  loader.style.display = 'none';
+  let loader_icon = document.createElement('div');
+  loader_icon.classList.add('loader_icon');
+  loader.appendChild(loader_icon);
+  return loader
+}
+
+
 export
 function baseurl(){
   return (document as any).baseurl || '/';
@@ -20,6 +33,27 @@ export
 function toProperCase(str: string) {
   return str.replace(/\w\S*/g, function(txt: string){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
+
+export 
+function showLoader(close_on_click = false){
+  loader.style.display = 'flex';
+  if(close_on_click){
+    loader.onclick = () => {
+      loader.style.display = 'none';
+    }
+  } else {
+    loader.onclick = () => {};
+  }
+  document.body.appendChild(loader);
+}
+
+export 
+function hideLoader(minload=200){
+  setTimeout(()=> {
+    document.body.removeChild(loader);
+  }, minload);
+}
+
 
 /*** autocomplete key/name pairs from server ***/
 export
@@ -459,7 +493,9 @@ namespace DomUtils {
     let results = data['results'];
     if(results.length > 0) {
       let table = buildListTable(results, (id:any)=>{
+        showLoader();
         widget.detailView(id);
+        hideLoader();
       })
       // only add table if it has data
       
@@ -479,7 +515,11 @@ namespace DomUtils {
         span.classList.add('page');
       }
       // callback on page click
-      span.addEventListener('click', (ev: MouseEvent)=> {paginate(i);});
+      span.addEventListener('click', (ev: MouseEvent)=> {
+        showLoader();
+        paginate(i);
+        hideLoader();
+      });
       p2.appendChild(span);
     }
     

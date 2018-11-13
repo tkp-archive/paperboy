@@ -21,40 +21,26 @@ import {Browser} from './browser';
 import {Notebooks} from './notebooks';
 import {Jobs} from './jobs';
 import {Reports} from './reports';
+import {showLoader, hideLoader} from './utils';
 
 import '../ts/style/index.css';
 
 const commands = new CommandRegistry();
 
-function makeLoader(): HTMLDivElement {
-  let loader = document.createElement('div');
-  loader.classList.add('loader');
-  loader.style.display = 'none';
-  let loader_icon = document.createElement('div');
-  loader_icon.classList.add('loader_icon');
-  loader.appendChild(loader_icon);
-  loader.onclick = () => {
-    loader.style.display = 'none';
-    document.body.removeChild(loader);
-  }
-  return loader
-}
-
-
 function main(): void {
+  showLoader();
+
   /* Home "Menu" */
   let menu = new Menu({ commands });
   menu.title.label = 'About';
   menu.title.mnemonic = 0;
  
-  let loader = makeLoader();
   commands.addCommand('open-loader', {
     label: 'Open Loader',
     mnemonic: 2,
     iconClass: 'fa fa-plus',
     execute: () => {
-      loader.style.display = 'flex';
-      document.body.appendChild(loader);
+      showLoader(true);
     }
   });
 
@@ -117,6 +103,8 @@ function main(): void {
   Widget.attach(header, document.body);
   Widget.attach(bar, document.body);
   Widget.attach(main, document.body);
+
+  hideLoader(1000);
 }
 
 
