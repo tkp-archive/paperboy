@@ -158,6 +158,6 @@ class Status extends SplitPanel {
         super({ orientation: 'vertical'});
         this.addWidget(new StatusOverview());
         this.addWidget(new StatusBrowser());
-        this.setRelativeSizes([.6, .4]);
+        this.setRelativeSizes([.5, .5]);
     }
 }

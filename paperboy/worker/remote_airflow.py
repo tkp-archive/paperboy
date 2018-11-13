@@ -76,49 +76,51 @@ class RemoteAirflowResource(object):
     def __init__(self):
         pass
 
-    def schedule(self, user, notebook, job, reports, *args, **kwargs):
-        AirflowScheduler.schedule_airflow(self.config, user, notebook, job, reports, *args, **kwargs)
-
     def on_get(self, req, resp):
         resp.content_type = 'application/json'
-        resp.body = json.dumps({'test': 'ok'})
+        resp.body = json.dumps({'status': 'ok'})
 
     def on_post(self, req, resp):
-        # TODO pull schedule args out of request
+        template = req.params['template']
+        name = req.params['name']
+        with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
+            fp.write(template)
+
         resp.content_type = 'application/json'
-        resp.body = json.dumps({'test': 'ok'})
+        resp.body = json.dumps({'status': 'ok'})
 
 
 class RemoteAirflowStatusResource(object):
     def __init__(self):
         pass
 
-    def status(self, user, params, session, *args, **kwargs):
-        type = params.get('type', '')
-        if not self.sql_conn:
-            gen = AirflowScheduler.fakequery(self.engine)
-            if type == 'jobs':
-                return gen['jobs']
-            elif type == 'reports':
-                return gen['reports']
-            else:
-                return gen
-        gen = AirflowScheduler.query(self.engine)
-        if type == 'jobs':
-            return gen['jobs']
-        elif type == 'reports':
-            return gen['reports']
-        else:
-            return gen
-
     def on_get(self, req, resp):
         # TODO pull status args out of request
+        engine = req.params.get('engine')
+        type = req.params.get('type', '')
+        if not self.sql_conn:
+            gen = AirflowScheduler.fakequery(engine)
+            if type == 'jobs':
+                ret = gen['jobs']
+            elif type == 'reports':
+                ret = gen['reports']
+            else:
+                ret = gen
+        else:
+            gen = AirflowScheduler.query(engine)
+            if type == 'jobs':
+                ret = gen['jobs']
+            elif type == 'reports':
+                ret = gen['reports']
+            else:
+                ret = gen
+
         resp.content_type = 'application/json'
-        resp.body = json.dumps({'test': 'ok'})
+        resp.body = json.dumps(ret)
 
     def on_post(self, req, resp):
         resp.content_type = 'application/json'
-        resp.body = json.dumps({'test': 'ok'})
+        resp.body = json.dumps({'status': 'ok'})
 
 
 if __name__ == '__main__':

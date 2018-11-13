@@ -119,7 +119,7 @@ class AirflowScheduler(BaseScheduler):
         return ret
 
     @staticmethod
-    def schedule_airflow(config, user, notebook, job, reports, *args, **kwargs):
+    def template(config, user, notebook, job, reports, *args, **kwargs):
         owner = user.name
         start_date = job.meta.start_time.strftime('%m/%d/%Y %H:%M:%S')
         email = 'test@test.com'
@@ -136,9 +136,11 @@ class AirflowScheduler(BaseScheduler):
             report_json=report_json,
             output_config=json.dumps(config.output.to_json())
             )
-        with open(os.path.join(config.scheduler.dagbag, job.id + '.py'), 'w') as fp:
-            fp.write(tpl)
         return tpl
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):
-        AirflowScheduler.schedule_airflow(self.config, user, notebook, job, reports, *args, **kwargs)
+        template = AirflowScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
+        name = job.id + '.py'
+        with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
+            fp.write(template)
+        return template

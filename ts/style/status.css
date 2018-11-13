@@ -41,7 +41,7 @@ div.status span.number {
 }
 
 div.status span.subtitle {
-    font-size: 10px;
+    font-size: 15px;
     width:100%;
 }
 
@@ -73,7 +73,7 @@ body.dark div.status span.reports {
 
 
 div.schedulerbrowser {
-    font-size: 10px;
+    font-size: 15px;
 }
 div.schedulerbrowser ul li {
     flex: 1;
