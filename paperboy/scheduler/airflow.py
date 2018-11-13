@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
 import configparser
 import json
 import os
 import os.path
 import jinja2
-from sqlalchemy import create_engine
 from base64 import b64encode
-from random import randint, choice
+from random import choice
+from sqlalchemy import create_engine
 from .base import BaseScheduler, TIMING_MAP
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
@@ -19,10 +18,15 @@ ORDER BY execution_date ASC
 LIMIT 20;
 '''
 
+#######################################
+#  FIXME merge with dummy when        #
+#  airflow has better python3 support #
+#######################################
 
-class DummyScheduler(BaseScheduler):
+
+class AirflowScheduler(BaseScheduler):
     def __init__(self, *args, **kwargs):
-        super(DummyScheduler, self).__init__(*args, **kwargs)
+        super(AirflowScheduler, self).__init__(*args, **kwargs)
         cp = configparser.ConfigParser()
         cp.read(self.config.scheduler.config)
         try:
@@ -36,22 +40,25 @@ class DummyScheduler(BaseScheduler):
     def status(self, user, params, session, *args, **kwargs):
         type = params.get('type', '')
         if not self.sql_conn:
+            gen = AirflowScheduler.fakequery(self.engine)
             if type == 'jobs':
-                return self.statusgeneralfake()['jobs']
+                return gen['jobs']
             elif type == 'reports':
-                return self.statusgeneralfake()['reports']
+                return gen['reports']
             else:
-                return self.statusgeneralfake()
+                return gen
+        gen = AirflowScheduler.query(self.engine)
         if type == 'jobs':
-            return self.statusgeneral()['jobs']
+            return gen['jobs']
         elif type == 'reports':
-            return self.statusgeneral()['reports']
+            return gen['reports']
         else:
-            return self.statusgeneral()
+            return gen
 
-    def statusgeneral(self):
+    @staticmethod
+    def query(engine):
         ret = {'jobs': [], 'reports': []}
-        with self.engine.begin() as conn:
+        with engine.begin() as conn:
             res = conn.execute(QUERY)
             for i, item in enumerate(res):
                 ret['jobs'].append(
@@ -86,7 +93,8 @@ class DummyScheduler(BaseScheduler):
                 )
             return ret
 
-    def statusgeneralfake(self):
+    @staticmethod
+    def fakequery(engine):
         ret = {'jobs': [], 'reports': []}
         for i in range(10):
             ret['jobs'].append(
@@ -110,7 +118,8 @@ class DummyScheduler(BaseScheduler):
             )
         return ret
 
-    def schedule(self, user, notebook, job, reports, *args, **kwargs):
+    @staticmethod
+    def schedule_airflow(config, user, notebook, job, reports, *args, **kwargs):
         owner = user.name
         start_date = job.meta.start_time.strftime('%m/%d/%Y %H:%M:%S')
         email = 'test@test.com'
@@ -125,8 +134,11 @@ class DummyScheduler(BaseScheduler):
             email=email,
             job_json=job_json,
             report_json=report_json,
-            output_config=json.dumps(self.config.output.to_json())
+            output_config=json.dumps(config.output.to_json())
             )
-        with open(os.path.join(self.config.scheduler.dagbag, job.id + '.py'), 'w') as fp:
+        with open(os.path.join(config.scheduler.dagbag, job.id + '.py'), 'w') as fp:
             fp.write(tpl)
         return tpl
+
+    def schedule(self, user, notebook, job, reports, *args, **kwargs):
+        AirflowScheduler.schedule_airflow(self.config, user, notebook, job, reports, *args, **kwargs)

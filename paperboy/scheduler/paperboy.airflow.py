@@ -1,8 +1,8 @@
 import json
 from base64 import b64decode
-from paperboy.scheduler._airflow import JobOperator, JobCleanupOperator
-from paperboy.scheduler._airflow import ReportOperator, ReportPostOperator
-from paperboy.scheduler._airflow import PapermillOperator, NBConvertOperator
+from paperboy.scheduler.airflow_operators import JobOperator, JobCleanupOperator
+from paperboy.scheduler.airflow_operators import ReportOperator, ReportPostOperator
+from paperboy.scheduler.airflow_operators import PapermillOperator, NBConvertOperator
 from airflow import DAG
 from datetime import timedelta, datetime
 

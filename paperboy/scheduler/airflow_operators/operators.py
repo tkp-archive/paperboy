@@ -1,55 +1,6 @@
-import json
-import os
-import os.path
-import jinja2
-from base64 import b64encode
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from paperboy.utils import name_to_class
-from .base import BaseScheduler, TIMING_MAP
-
-with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
-    TEMPLATE = fp.read()
-
-#######################################
-#  FIXME merge with dummy when        #
-#  airflow has better python3 support #
-#######################################
-
-
-class AirflowScheduler(BaseScheduler):
-    def status(self, user, params, session, *args, **kwargs):
-        type = params.get('type', '')
-        if type == 'notebooks':
-            return []
-        elif type == 'jobs':
-            return []
-        elif type == 'reports':
-            return []
-        else:
-            return {'notebook': [], 'jobs': [], 'reports': []}
-
-    def schedule(self, user, notebook, job, reports, *args, **kwargs):
-        owner = user.name
-        start_date = job.meta.start_time.strftime('%m/%d/%Y %H:%M:%S')
-        email = 'test@test.com'
-        job_json = b64encode(json.dumps(job.to_json(True)).encode('utf-8'))
-        report_json = b64encode(json.dumps([r.to_json() for r in reports]).encode('utf-8'))
-        interval = TIMING_MAP.get(job.meta.interval)
-
-        tpl = jinja2.Template(TEMPLATE).render(
-            owner=owner,
-            start_date=start_date,
-            interval=interval,
-            email=email,
-            job_json=job_json,
-            report_json=report_json,
-            output_type=self.config.output_type,
-            output_dir=self.config.output_dir,
-            )
-        with open(os.path.join(self.config.airflow_dagbag, job.id + '.py'), 'w') as fp:
-            fp.write(tpl)
-        return tpl
 
 
 class JobOperator(BaseOperator):

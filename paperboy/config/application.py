@@ -23,9 +23,6 @@ from .scheduler import AirflowSchedulerConfig
 from .storage import SQLAStorageConfig
 from .output import LocalOutputConfig
 
-# dummy
-from ..scheduler import DummyScheduler
-
 # no auth
 from ..middleware import NoUserMiddleware, NoAuthRequiredMiddleware
 

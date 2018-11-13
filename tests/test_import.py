@@ -19,7 +19,7 @@ class TestConfig:
         from paperboy.resources import AutocompleteResource, ConfigResource, HTMLResource, JobResource, JobDetailResource, LoginResource, LogoutResource, NotebookResource, NotebookDetailResource, RegisterResource, ReportResource, ReportDetailResource, StaticResource, StatusResource
 
     def test_import6(self):
-        from paperboy.scheduler import DummyScheduler
+        from paperboy.scheduler import AirflowScheduler
 
     def test_import7(self):
         from paperboy.server.api import FalconAPI
