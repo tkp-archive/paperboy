@@ -23,6 +23,7 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
     - [Dask](https://dask.org) for [Airflow Workers](https://airflow.readthedocs.io/en/stable/howto/executor/use-dask.html)
 - [PhosphorJS](https://phosphorjs.github.io) for the frontend
 - Support for Python [Virtualenvs](https://virtualenv.pypa.io/en/stable/) via `requirements.txt` or custom [Docker](https://www.docker.com) images via `Dockerfile`s on a per-notebook level
+- Traitlets parameterization of storage and scheduler classes for easy integration with custom storage backends and custom schedulers
 
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/ss.png)
 
