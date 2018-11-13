@@ -11376,7 +11376,9 @@ class PrimaryTab extends widgets_1.DockPanel {
         return new PrimaryForm(this.clz, this.type, this);
     }
     detailView(id) {
-        this.addWidget(new PrimaryDetail(this.type, id));
+        let pd = new PrimaryDetail(this.type, id);
+        this.addWidget(pd);
+        this.selectWidget(pd);
     }
 }
 exports.PrimaryTab = PrimaryTab;

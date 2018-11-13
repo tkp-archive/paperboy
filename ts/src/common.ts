@@ -99,7 +99,9 @@ class PrimaryTab extends DockPanel {
     }
 
     detailView(id: string): void {
-        this.addWidget(new PrimaryDetail(this.type, id));
+        let pd = new PrimaryDetail(this.type, id);
+        this.addWidget(pd);
+        this.selectWidget(pd);
     }
 
     clz: string;
