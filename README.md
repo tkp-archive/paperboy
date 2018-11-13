@@ -20,8 +20,7 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
 - [Papermill](https://github.com/nteract/papermill) to parameterize notebooks
 - [SQLAlchemy](https://www.sqlalchemy.org) for Storage
 - [Apache Airflow](https://airflow.apache.org) for Scheduling
-- [Dask](https://dask.org) for [Airflow Workers](https://airflow.readthedocs.io/en/stable/howto/executor/use-dask.html)
-- [Kubernetes](https://kubernetes.io) for worker instances
+    - [Dask](https://dask.org) for [Airflow Workers](https://airflow.readthedocs.io/en/stable/howto/executor/use-dask.html)
 - [PhosphorJS](https://phosphorjs.github.io) for the frontend
 - Support for Python [Virtualenvs](https://virtualenv.pypa.io/en/stable/) via `requirements.txt` or custom [Docker](https://www.docker.com) images via `Dockerfile`s on a per-notebook level
 
