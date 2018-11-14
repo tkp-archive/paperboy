@@ -27,5 +27,9 @@ class BaseScheduler(with_metaclass(ABCMeta)):
         pass
 
     @abstractmethod
-    def schedule(self, job, reports, *args, **kwargs):
+    def schedule(self, user, notebook, job, reports, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def unschedule(self, user, notebook, job, reports, *args, **kwargs):
         pass

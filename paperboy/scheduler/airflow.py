@@ -3,6 +3,7 @@ import json
 import os
 import os.path
 import jinja2
+import subprocess
 from base64 import b64encode
 from random import choice
 from sqlalchemy import create_engine
@@ -144,3 +145,21 @@ class AirflowScheduler(BaseScheduler):
         with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
             fp.write(template)
         return template
+
+    def unschedule(self, user, notebook, job, reports, *args, **kwargs):
+        if reports:
+            # reschedule
+            return self.schedule(user, notebook, job, reports, *args, **kwargs)
+
+        else:
+            # delete
+            name = job.id + '.py'
+            file = os.path.join(self.config.scheduler.dagbag, name)
+            dag = 'DAG-' + job.id
+
+            # delete dag file
+            os.remove(file)
+
+            # delete dag
+            cmd = ['airflow', 'delete_dag', dag, '-y']
+            subprocess.call(cmd)
