@@ -41,7 +41,7 @@ class AirflowScheduler(BaseScheduler):
     def status(self, user, params, session, *args, **kwargs):
         type = params.get('type', '')
         if not self.sql_conn:
-            gen = AirflowScheduler.fakequery(self.engine)
+            gen = AirflowScheduler.fakequery()
             if type == 'jobs':
                 return gen['jobs']
             elif type == 'reports':
@@ -95,7 +95,7 @@ class AirflowScheduler(BaseScheduler):
             return ret
 
     @staticmethod
-    def fakequery(engine):
+    def fakequery():
         ret = {'jobs': [], 'reports': []}
         for i in range(10):
             ret['jobs'].append(
