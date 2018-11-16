@@ -182,7 +182,7 @@ div.details {
 }
 
 div.details > table {
-  width: 300px;
+  width: 500px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 5px;
@@ -194,12 +194,12 @@ div.details > table > tr > td:nth-child(2) {
 
 div.details > table > tr > td > * {
   min-width: 200px !important;
-  width: 200px;
+  width: 250px;
   margin-bottom:0px !important;
 }
 
 div.details > table > tr > td > textarea {
-  min-width: 200px !important;
+  min-width: 250px !important;
   min-height: 300px !important;
   width:100%;
 }
@@ -294,7 +294,7 @@ body.light .primary > table > tr > td {
 
 /****** Forms ******/
 .p-DockPanel-widget > form  {
-    width:300px;
+    width: 500px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 5px;
@@ -314,8 +314,8 @@ body.light .primary > table > tr > td {
 
 .p-DockPanel-widget > form > table > tr> td > * {
     min-height:20px;
-    min-width: 200px !important;
-    width: 200px;
+    min-width: 250px !important;
+    width: 250px;
 
     margin-bottom: 0px !important;
     border: none !important;
@@ -325,7 +325,7 @@ body.light .primary > table > tr > td {
 }
 
 .p-DockPanel-widget > form > table > tr> td > textarea {
-  min-width: 200px !important;
+  min-width: 250px !important;
   min-height: 300px !important;
   width:100%;
 }
