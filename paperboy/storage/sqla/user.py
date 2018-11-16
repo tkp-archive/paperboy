@@ -54,3 +54,7 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
         token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
         logging.critical("Storing user {} {} {}".format(username, token, user.id))
         return token
+
+    def delete(self, user, params, session, *args, **kwargs):
+        session.query(UserSQL).filter(UserSQL.id == user.id).delete()
+        return ''

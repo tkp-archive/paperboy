@@ -78,6 +78,11 @@ body div.footer {
   bottom: 10px;
 }
 
+button:hover {
+    color: white;
+    background-color: var(--highlight-blue);
+}
+
 #menuBar {
   flex: 0 0 auto;
   height: 45px;
@@ -173,7 +178,7 @@ div.details {
 }
 
 div.details > table {
-  width: 50%;
+  width: 300px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 5px;
@@ -206,6 +211,7 @@ div.details > table > tr > td > input[type=submit]:hover {
 div.details > table > tr > td {
   border: none;
   border-bottom: none !important;
+  margin-bottom:5px;
 }
 
 /****** Tables ******/
@@ -283,51 +289,65 @@ body.light .primary > table > tr > td {
 
 
 /****** Forms ******/
-.p-DockPanel-widget > form {
-    padding: 15px;
-}
-
-.p-DockPanel-widget > form {
-    display: flex;
-    flex-direction: column;
-}
-
-.p-DockPanel-widget > form > * {
-    width: 50%;
-    min-height:20px;
+.p-DockPanel-widget > form  {
+    width:300px;
     margin-left: auto;
     margin-right: auto;
-    margin-top:10px;
+    margin-top: 5px;
 }
 
+.p-DockPanel-widget > form {
 
-.p-DockPanel-widget > form > textarea {
-  min-height: 150px;
-  height: 150px;
 }
 
-.p-DockPanel-widget > form > input[type=submit] {
-    width: 15%;
+.p-DockPanel-widget > form > table {
+  width:100%;
 }
 
-.p-DockPanel-widget > form > input[type=checkbox] {
+.p-DockPanel-widget > form > table > tr> td {
+    margin-bottom: 5px;
+}
+
+.p-DockPanel-widget > form > table > tr> td > * {
+    min-height:20px;
+    min-width: 200px !important;
+    width: 200px;
+
+    margin-bottom: 0px !important;
+    border: none !important;
+}
+
+.p-DockPanel-widget > form > table > tr> td > input[type=text] {
+}
+
+.p-DockPanel-widget > form > table > tr> td > textarea {
+  min-width: 200px !important;
+  min-height: 300px !important;
+  width:100%;
+}
+
+.p-DockPanel-widget > form > table > tr> td > input[type=submit] {
+    min-width: 200px !important;
+}
+
+.p-DockPanel-widget > form > table > tr> td > input[type=checkbox] {
     /*margin-left:10px;*/
 }
 
-.p-DockPanel-widget > form > input[type=submit]:hover {
+.p-DockPanel-widget > form > table > tr> td > input[type=submit]:hover {
     color: white;
     background-color: var(--highlight-blue);
 }
 
 .notebooks .uploader form {
-    min-height: 475px;
+    min-height: 275px;
 }
 
 .jobs .scheduler form {
-    min-height: 1000px;
+    min-height: 600px;
 }
 
 .reports .configurator form {
-    min-height: 750px;
+    min-height: 350px;
 }
 /****** ******/

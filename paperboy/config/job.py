@@ -76,7 +76,7 @@ class JobConfig(Base):
             FormEntry(name='type', type='select', label='Type', options=_REPORT_TYPES, required=True),
             FormEntry(name='output', type='select', label='Output', options=_OUTPUT_TYPES, required=True),
             FormEntry(name='strip_code', type='select', label='Strip Code', options=['yes', 'no'], required=True),
-            FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'jobs'))
+            FormEntry(name='submit', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs?action=save'))
         ]
         return f.to_json()
 
@@ -98,7 +98,8 @@ class JobConfig(Base):
             FormEntry(name='interval', type='select', value=self.meta.interval, label='Interval', options=_INTERVAL_TYPES, required=True),
             FormEntry(name='level', type='select', value=self.meta.level, label='Level', options=_SERVICE_LEVELS, required=True),
             FormEntry(name='reports', type='text', value=str(self.meta.reports), readonly=True),
-            FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs'))
+            FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs?action=save')),
+            FormEntry(name='delete', type='submit', value='delete', url=urljoin(self.config.apiurl, 'jobs?action=delete'))
         ]
         return f.to_json()
 
@@ -112,7 +113,8 @@ class JobConfig(Base):
             DOMEntry(name='level', type='label', value=self.meta.level, label='Level'),
             DOMEntry(name='reports', type='label', value=str(self.meta.reports), label='Reports'),
             DOMEntry(name='created', type='label', value=self.meta.created.strftime('%m/%d/%Y %H:%M:%S'), label='Created'),
-            DOMEntry(name='modified', type='label', value=self.meta.modified.strftime('%m/%d/%Y %H:%M:%S'), label='Modified')
+            DOMEntry(name='modified', type='label', value=self.meta.modified.strftime('%m/%d/%Y %H:%M:%S'), label='Modified'),
+            DOMEntry(name='delete', type='button', value='delete', label='delete', url=urljoin(self.config.apiurl, 'jobs?action=delete'))
         ]
         return f.to_json()
 

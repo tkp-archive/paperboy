@@ -137,3 +137,8 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
             session.flush()
 
         return ret
+
+    def delete(self, user, params, session, *args, **kwargs):
+        id = params.get('id')
+        session.query(ReportSQL).filter(ReportSQL.id == id).delete()
+        return ''

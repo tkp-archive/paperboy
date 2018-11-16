@@ -63,3 +63,8 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         store = nb.to_config(self.config).store()
         logging.critical("Storing notebook {}".format(nb))
         return store
+
+    def delete(self, user, params, session, *args, **kwargs):
+        id = params.get('id')
+        session.query(NotebookSQL).filter(NotebookSQL.id == id).delete()
+        return ''

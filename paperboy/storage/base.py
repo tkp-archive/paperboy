@@ -31,6 +31,10 @@ class BaseStorage(with_metaclass(ABCMeta)):
     def store(self, req, resp, *args, **kwargs):
         pass
 
+    @abstractmethod
+    def delete(self, *args, **kwargs):
+        pass
+
 
 class UserStorage(BaseStorage):
     def __init__(self, config, *args, **kwargs):
@@ -55,4 +59,8 @@ class JobStorage(BaseStorage):
 class ReportStorage(BaseStorage):
     @abstractmethod
     def generate(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def delete(self, *args, **kwargs):
         pass

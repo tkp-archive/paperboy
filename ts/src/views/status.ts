@@ -2,8 +2,10 @@ import {
     Widget, TabPanel, BoxPanel, SplitPanel
 } from '@phosphor/widgets';
 
-import {request, RequestResult} from './request';
-import {toProperCase, apiurl, DomUtils} from './utils';
+import {request, RequestResult} from '../utils/request';
+import {toProperCase, apiurl} from '../utils/index';
+import {createStatusSection} from '../utils/views/index';
+import {deleteAllChildren} from '../utils/dom/index';
 
 
 export
@@ -27,10 +29,10 @@ class StatusBrowser extends TabPanel {
         this.node.classList.add('schedulerbrowser');
 
         request('get', apiurl() + 'scheduler?type=jobs').then((res: RequestResult) => {
-            DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
+            createStatusSection(this.jbs, 'jobs', res.json());
         });
         request('get', apiurl() + 'scheduler?type=reports').then((res: RequestResult) => {
-            DomUtils.createStatusSection(this.rps, 'reports', res.json());
+            createStatusSection(this.rps, 'reports', res.json());
         });
 
         setInterval(() => {
@@ -38,8 +40,8 @@ class StatusBrowser extends TabPanel {
                 if(!res.url.includes(apiurl() + 'scheduler?type=jobs')){
                   window.location.href = (document as any).loginurl;
                 }
-                DomUtils.delete_all_children(this.jbs.node);
-                DomUtils.createStatusSection(this.jbs, 'jobs', res.json());
+                deleteAllChildren(this.jbs.node);
+                createStatusSection(this.jbs, 'jobs', res.json());
             });
         }, 10000);
 
@@ -48,8 +50,8 @@ class StatusBrowser extends TabPanel {
                 if(!res.url.includes(apiurl() + 'scheduler?type=reports')){
                   window.location.href = (document as any).loginurl;
                 }
-                DomUtils.delete_all_children(this.rps.node);
-                DomUtils.createStatusSection(this.rps, 'reports', res.json());
+                deleteAllChildren(this.rps.node);
+                createStatusSection(this.rps, 'reports', res.json());
             });
         }, 10000);
     }

@@ -18,7 +18,7 @@ class UserConfig(Base):
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', placeholder='Name for Notebook...', required=True),
-            FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'notebooks')),
+            FormEntry(name='submit', type='submit', value='save', url=urljoin(self.config.apiurl, 'users?action=save')),
         ]
         return f.to_json()
 
@@ -33,7 +33,7 @@ class UserConfig(Base):
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, placeholder='Name for Job...', required=True),
-            FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'notebooks'))
+            FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'users?action=save'))
         ]
         return f.to_json()
 

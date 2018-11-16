@@ -2,7 +2,7 @@ import {
     SplitPanel, BoxPanel, DockPanel
 } from '@phosphor/widgets';
 
-import {DomUtils, autocomplete, apiurl, showLoader, hideLoader} from './utils';
+import {deleteAllChildren, autocomplete, apiurl, showLoader, hideLoader} from '../utils/index';
 import {PrimaryDetail} from './common';
 
 export
@@ -30,7 +30,7 @@ class Browser extends SplitPanel {
 
         let foo = (e: KeyboardEvent) => {
             if (e.keyCode === 13){
-                DomUtils.delete_all_children(datalist);
+                deleteAllChildren(datalist);
             }
 
             if (last == search.value){
@@ -47,7 +47,7 @@ class Browser extends SplitPanel {
 
         search.addEventListener('keyup', foo);
         go.addEventListener('click', () => {
-            DomUtils.delete_all_children(datalist);
+            deleteAllChildren(datalist);
             if (last == search.value){
                 // duplicate
             } else {

@@ -75,3 +75,8 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
 
         scheduler.schedule(user, notebook_config, job_config, report_configs)
         return store
+
+    def delete(self, user, params, session, *args, **kwargs):
+        id = params.get('id')
+        session.query(JobSQL).filter(JobSQL.id == id).delete()
+        return ''

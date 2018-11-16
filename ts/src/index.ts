@@ -15,13 +15,8 @@ import {
   TabPanel,  SplitPanel, MenuBar, Widget, Menu
 } from '@phosphor/widgets';
 
-import {Header} from './header';
-import {Status} from './status';
-import {Browser} from './browser';
-import {Notebooks} from './notebooks';
-import {Jobs} from './jobs';
-import {Reports} from './reports';
-import {showLoader, hideLoader} from './utils';
+import {Header, Status, Browser, Notebooks, Jobs, Reports} from './views/index';
+import {showLoader, hideLoader} from './utils/index';
 
 import '../ts/style/index.css';
 

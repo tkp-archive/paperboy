@@ -2,8 +2,8 @@ import {
     Widget, DockPanel, BoxPanel
 } from '@phosphor/widgets';
 
-import {request, RequestResult} from './request';
-import {toProperCase, DomUtils, apiurl} from './utils';
+import {request, RequestResult} from '../utils/request';
+import {toProperCase, apiurl, createDetail, createConfigForm, createPrimarySection} from '../utils/index';
 
 
 export
@@ -22,7 +22,7 @@ class PrimaryForm extends Widget {
         this.title.closable = false;
         this.title.label = toProperCase(clz);
         request('get', apiurl() + 'config?type=' + type).then((res: RequestResult) => {
-            DomUtils.createConfigForm(this.node.querySelector('form'), type, res.json(),
+            createConfigForm(this.node.querySelector('form'), type, res.json(),
                 () => {detail.update();});
         });
     }
@@ -51,7 +51,7 @@ class PrimaryDetail extends Widget {
     update(): void {
         request('get', this.request).then((res: RequestResult) => {
             let dat = res.json() as any;
-            DomUtils.createDetail(dat, this.title, this.node);
+            createDetail(dat, this.title, this.node);
         });
     }
 
@@ -86,7 +86,7 @@ class PrimaryTab extends DockPanel {
     update(): void {
         request('get', this.request).then((res: RequestResult) => {
 
-            DomUtils.createPrimarySection(this, this.type, res.json(),
+            createPrimarySection(this, this.type, res.json(),
                 (page: number) => {
                     this.request = apiurl() + this.type + '?page=' + page;
                     this.update();

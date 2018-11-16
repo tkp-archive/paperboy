@@ -108,7 +108,7 @@ class ReportConfig(Base):
             FormEntry(name='output', type='select', label='Output', options=_OUTPUT_TYPES, required=True),
             FormEntry(name='code', type='select', label='Strip Code', options=['yes', 'no'], required=True),
             FormEntry(name='template', type='text', label='Template', required=False),
-            FormEntry(name='submit', type='submit', value='Create', url=urljoin(self.config.apiurl, 'reports'))
+            FormEntry(name='submit', type='submit', value='save', url=urljoin(self.config.apiurl, 'reports?action=save'))
         ]
         return f.to_json()
 
@@ -132,7 +132,8 @@ class ReportConfig(Base):
             FormEntry(name='type', type='select', value=self.meta.type, label='Type', options=_REPORT_TYPES, required=True),
             FormEntry(name='output', type='select', value=self.meta.output, label='Output', options=_OUTPUT_TYPES, required=True),
             FormEntry(name='code', type='select', value='yes' if self.meta.strip_code else 'no', label='Strip Code', options=['yes', 'no'], required=True),
-            FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'jobs'))
+            FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'reports?action=save')),
+            FormEntry(name='delete', type='submit', value='delete', url=urljoin(self.config.apiurl, 'reports?action=delete'))
         ]
         return f.to_json()
 
@@ -150,7 +151,8 @@ class ReportConfig(Base):
             DOMEntry(name='template', type='label', value=self.meta.template, label='Template'),
             # DOMEntry(type='label', value=self.meta.run, label='Run'),
             DOMEntry(name='created', type='label', value=self.meta.created.strftime('%m/%d/%Y %H:%M:%S'), label='Created'),
-            DOMEntry(name='modified', type='label', value=self.meta.modified.strftime('%m/%d/%Y %H:%M:%S'), label='Modified')
+            DOMEntry(name='modified', type='label', value=self.meta.modified.strftime('%m/%d/%Y %H:%M:%S'), label='Modified'),
+            DOMEntry(name='delete', type='button', value='delete', label='delete', url=urljoin(self.config.apiurl, 'reports?action=delete'))
         ]
         return f.to_json()
 
