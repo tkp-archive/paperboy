@@ -3,7 +3,7 @@ import {buildInput} from './input';
 import {buildAutocomplete} from '../autocomplete';
 
 export
-function buildVerticalTable(data: any, title?: any): HTMLTableElement {
+function buildVerticalTable(data: any, title?: any, form?: HTMLFormElement, form_callback=(url?:string)=>{}): HTMLTableElement {
   let table = document.createElement('table');
   for(let i=0; i<data.length; i++){
       let row = document.createElement('tr');
@@ -25,14 +25,11 @@ function buildVerticalTable(data: any, title?: any): HTMLTableElement {
           case 'submit': {
             let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
             td2.appendChild(input);
-            // td.onsubmit = () => {
-            //   let form = new FormData(sec);
-            //   requestFormData(data[i]['url'], form).then((res: RequestResult) => {
-            //     createResponseModal(res.json(), callback);
-            //   });
-            //   return false;
-            // };
-            // break;
+            if(form && form_callback){
+              form.onsubmit = ()=> {
+                return form_callback(data[i]['url']);
+              };
+            }
             break
           }
           case 'autocomplete': {

@@ -9181,7 +9181,7 @@ __export(__webpack_require__(64));
 __export(__webpack_require__(72));
 __export(__webpack_require__(122));
 __export(__webpack_require__(73));
-__export(__webpack_require__(34));
+__export(__webpack_require__(25));
 __export(__webpack_require__(123));
 
 
@@ -9262,7 +9262,7 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var util = __webpack_require__(31);
+var util = __webpack_require__(32);
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -9696,7 +9696,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 |
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
-__export(__webpack_require__(26));
+__export(__webpack_require__(27));
 __export(__webpack_require__(48));
 __export(__webpack_require__(159));
 __export(__webpack_require__(160));
@@ -9709,7 +9709,7 @@ __export(__webpack_require__(16));
 __export(__webpack_require__(77));
 __export(__webpack_require__(165));
 __export(__webpack_require__(38));
-__export(__webpack_require__(27));
+__export(__webpack_require__(28));
 __export(__webpack_require__(166));
 __export(__webpack_require__(167));
 __export(__webpack_require__(78));
@@ -9729,8 +9729,115 @@ __export(__webpack_require__(6));
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULT_REQUEST_OPTIONS = {
+    ignoreCache: false,
+    headers: {
+        Accept: 'application/json, text/javascript, text/plain',
+    },
+    // default max duration for a request
+    timeout: 5000,
+};
+function queryParams(params = {}) {
+    return Object.keys(params)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+        .join('&');
+}
+function withQuery(url, params = {}) {
+    const queryString = queryParams(params);
+    return queryString ? url + (url.indexOf('?') === -1 ? '?' : '&') + queryString : url;
+}
+function parseXHRResult(xhr) {
+    return {
+        ok: xhr.status >= 200 && xhr.status < 300,
+        status: xhr.status,
+        statusText: xhr.statusText,
+        headers: xhr.getAllResponseHeaders(),
+        data: xhr.responseText,
+        json: () => JSON.parse(xhr.responseText),
+        url: xhr.responseURL
+    };
+}
+function errorResponse(xhr, message = null) {
+    return {
+        ok: false,
+        status: xhr.status,
+        statusText: xhr.statusText,
+        headers: xhr.getAllResponseHeaders(),
+        data: message || xhr.statusText,
+        json: () => JSON.parse(message || xhr.statusText),
+        url: xhr.responseURL
+    };
+}
+function request(method, url, queryParams = {}, body = null, options = exports.DEFAULT_REQUEST_OPTIONS) {
+    const ignoreCache = options.ignoreCache || exports.DEFAULT_REQUEST_OPTIONS.ignoreCache;
+    const headers = options.headers || exports.DEFAULT_REQUEST_OPTIONS.headers;
+    const timeout = options.timeout || exports.DEFAULT_REQUEST_OPTIONS.timeout;
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, withQuery(url, queryParams));
+        if (headers) {
+            Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
+        }
+        if (ignoreCache) {
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+        }
+        xhr.timeout = timeout;
+        xhr.onload = evt => {
+            resolve(parseXHRResult(xhr));
+        };
+        xhr.onerror = evt => {
+            resolve(errorResponse(xhr, 'Failed to make request.'));
+        };
+        xhr.ontimeout = evt => {
+            resolve(errorResponse(xhr, 'Request took longer than expected.'));
+        };
+        if (method === 'post' && body) {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(body));
+        }
+        else {
+            xhr.send();
+        }
+    });
+}
+exports.request = request;
+function requestFormData(url, formdata) {
+    let options = exports.DEFAULT_REQUEST_OPTIONS;
+    const ignoreCache = options.ignoreCache || exports.DEFAULT_REQUEST_OPTIONS.ignoreCache;
+    const headers = options.headers || exports.DEFAULT_REQUEST_OPTIONS.headers;
+    const timeout = options.timeout || exports.DEFAULT_REQUEST_OPTIONS.timeout;
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('post', withQuery(url, queryParams));
+        Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
+        if (ignoreCache) {
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+        }
+        xhr.timeout = timeout;
+        xhr.onload = evt => {
+            resolve(parseXHRResult(xhr));
+        };
+        xhr.onerror = evt => {
+            resolve(errorResponse(xhr, 'Failed to make request.'));
+        };
+        xhr.ontimeout = evt => {
+            resolve(errorResponse(xhr, 'Request took longer than expected.'));
+        };
+        xhr.send(formdata);
+    });
+}
+exports.requestFormData = requestFormData;
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 const widgets_1 = __webpack_require__(24);
-const request_1 = __webpack_require__(34);
+const request_1 = __webpack_require__(25);
 const index_1 = __webpack_require__(18);
 class PrimaryForm extends widgets_1.Widget {
     static createNode(clz) {
@@ -9813,7 +9920,7 @@ exports.PrimaryTab = PrimaryTab;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10286,7 +10393,7 @@ var BoxEngine;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10585,7 +10692,7 @@ exports.PanelLayout = PanelLayout;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var asn1 = exports;
@@ -10593,14 +10700,14 @@ var asn1 = exports;
 asn1.bignum = __webpack_require__(4);
 
 asn1.define = __webpack_require__(170).define;
-asn1.base = __webpack_require__(29);
+asn1.base = __webpack_require__(30);
 asn1.constants = __webpack_require__(82);
 asn1.decoders = __webpack_require__(174);
 asn1.encoders = __webpack_require__(176);
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var base = exports;
@@ -10612,7 +10719,7 @@ base.Node = __webpack_require__(171);
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function xor (a, b) {
@@ -10629,7 +10736,7 @@ base.Node = __webpack_require__(171);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
@@ -10743,7 +10850,7 @@ function objectToString(o) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10780,7 +10887,7 @@ module.exports = function createHash (alg) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10876,113 +10983,6 @@ BlockHash.prototype._pad = function pad() {
 
   return res;
 };
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DEFAULT_REQUEST_OPTIONS = {
-    ignoreCache: false,
-    headers: {
-        Accept: 'application/json, text/javascript, text/plain',
-    },
-    // default max duration for a request
-    timeout: 5000,
-};
-function queryParams(params = {}) {
-    return Object.keys(params)
-        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-        .join('&');
-}
-function withQuery(url, params = {}) {
-    const queryString = queryParams(params);
-    return queryString ? url + (url.indexOf('?') === -1 ? '?' : '&') + queryString : url;
-}
-function parseXHRResult(xhr) {
-    return {
-        ok: xhr.status >= 200 && xhr.status < 300,
-        status: xhr.status,
-        statusText: xhr.statusText,
-        headers: xhr.getAllResponseHeaders(),
-        data: xhr.responseText,
-        json: () => JSON.parse(xhr.responseText),
-        url: xhr.responseURL
-    };
-}
-function errorResponse(xhr, message = null) {
-    return {
-        ok: false,
-        status: xhr.status,
-        statusText: xhr.statusText,
-        headers: xhr.getAllResponseHeaders(),
-        data: message || xhr.statusText,
-        json: () => JSON.parse(message || xhr.statusText),
-        url: xhr.responseURL
-    };
-}
-function request(method, url, queryParams = {}, body = null, options = exports.DEFAULT_REQUEST_OPTIONS) {
-    const ignoreCache = options.ignoreCache || exports.DEFAULT_REQUEST_OPTIONS.ignoreCache;
-    const headers = options.headers || exports.DEFAULT_REQUEST_OPTIONS.headers;
-    const timeout = options.timeout || exports.DEFAULT_REQUEST_OPTIONS.timeout;
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open(method, withQuery(url, queryParams));
-        if (headers) {
-            Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
-        }
-        if (ignoreCache) {
-            xhr.setRequestHeader('Cache-Control', 'no-cache');
-        }
-        xhr.timeout = timeout;
-        xhr.onload = evt => {
-            resolve(parseXHRResult(xhr));
-        };
-        xhr.onerror = evt => {
-            resolve(errorResponse(xhr, 'Failed to make request.'));
-        };
-        xhr.ontimeout = evt => {
-            resolve(errorResponse(xhr, 'Request took longer than expected.'));
-        };
-        if (method === 'post' && body) {
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify(body));
-        }
-        else {
-            xhr.send();
-        }
-    });
-}
-exports.request = request;
-function requestFormData(url, formdata) {
-    let options = exports.DEFAULT_REQUEST_OPTIONS;
-    const ignoreCache = options.ignoreCache || exports.DEFAULT_REQUEST_OPTIONS.ignoreCache;
-    const headers = options.headers || exports.DEFAULT_REQUEST_OPTIONS.headers;
-    const timeout = options.timeout || exports.DEFAULT_REQUEST_OPTIONS.timeout;
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('post', withQuery(url, queryParams));
-        Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
-        if (ignoreCache) {
-            xhr.setRequestHeader('Cache-Control', 'no-cache');
-        }
-        xhr.timeout = timeout;
-        xhr.onload = evt => {
-            resolve(parseXHRResult(xhr));
-        };
-        xhr.onerror = evt => {
-            resolve(errorResponse(xhr, 'Failed to make request.'));
-        };
-        xhr.ontimeout = evt => {
-            resolve(errorResponse(xhr, 'Request took longer than expected.'));
-        };
-        xhr.send(formdata);
-    });
-}
-exports.requestFormData = requestFormData;
 
 
 /***/ }),
@@ -12444,7 +12444,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 |
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
-var panellayout_1 = __webpack_require__(27);
+var panellayout_1 = __webpack_require__(28);
 var widget_1 = __webpack_require__(6);
 /**
  * A simple and convenient panel widget class.
@@ -14367,9 +14367,9 @@ var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
 var properties_1 = __webpack_require__(21);
-var boxengine_1 = __webpack_require__(26);
+var boxengine_1 = __webpack_require__(27);
 var layout_1 = __webpack_require__(16);
-var panellayout_1 = __webpack_require__(27);
+var panellayout_1 = __webpack_require__(28);
 var widget_1 = __webpack_require__(6);
 /**
  * A layout which arranges its widgets in a single row or column.
@@ -16862,7 +16862,7 @@ function isUndefined(arg) {
 var hash = exports;
 
 hash.utils = __webpack_require__(13);
-hash.common = __webpack_require__(33);
+hash.common = __webpack_require__(34);
 hash.sha = __webpack_require__(243);
 hash.ripemd = __webpack_require__(242);
 hash.hmac = __webpack_require__(241);
@@ -17100,7 +17100,7 @@ var Duplex;
 Writable.WritableState = WritableState;
 
 /*<replacement>*/
-var util = __webpack_require__(31);
+var util = __webpack_require__(32);
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -18369,7 +18369,7 @@ function simpleEnd(buf) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const request_1 = __webpack_require__(34);
+const request_1 = __webpack_require__(25);
 const index_1 = __webpack_require__(19);
 /*** autocomplete key/name pairs from server ***/
 function autocomplete(path, value, autocomplete) {
@@ -18760,12 +18760,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(19);
 const modal = document.createElement('div');
 modal.classList.add('modal');
-function createModal(ok = true, cancel = true, ok_callback = () => { }, cancel_callback = () => { }) {
+function createModal(data, ok = true, cancel = true, ok_callback = () => { }, cancel_callback = () => { }) {
+    for (let i = 0; i < data.length; i++) {
+        let dat = data[i];
+        modal.appendChild(index_1.buildGeneric(dat['type'], dat['value']));
+    }
     document.body.appendChild(modal);
     if (ok) {
         let button = index_1.buildGeneric('button', 'OK');
         button.onclick = () => {
             ok_callback();
+            hideModal();
         };
         modal.appendChild(button);
         button.focus();
@@ -18774,6 +18779,7 @@ function createModal(ok = true, cancel = true, ok_callback = () => { }, cancel_c
         let button = index_1.buildGeneric('button', 'Cancel');
         button.onclick = () => {
             cancel_callback();
+            hideModal();
         };
         modal.appendChild(button);
     }
@@ -18905,7 +18911,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
-var boxengine_1 = __webpack_require__(26);
+var boxengine_1 = __webpack_require__(27);
 var layout_1 = __webpack_require__(16);
 var widget_1 = __webpack_require__(6);
 /**
@@ -21988,9 +21994,9 @@ var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
 var properties_1 = __webpack_require__(21);
-var boxengine_1 = __webpack_require__(26);
+var boxengine_1 = __webpack_require__(27);
 var layout_1 = __webpack_require__(16);
-var panellayout_1 = __webpack_require__(27);
+var panellayout_1 = __webpack_require__(28);
 var widget_1 = __webpack_require__(6);
 /**
  * A layout which arranges its widgets into resizable sections.
@@ -22686,7 +22692,7 @@ var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
 var layout_1 = __webpack_require__(16);
-var panellayout_1 = __webpack_require__(27);
+var panellayout_1 = __webpack_require__(28);
 var widget_1 = __webpack_require__(6);
 /**
  * A layout where visible widgets are stacked atop one another.
@@ -23026,7 +23032,7 @@ var Private;
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(0);
-var Reporter = __webpack_require__(29).Reporter;
+var Reporter = __webpack_require__(30).Reporter;
 var Buffer = __webpack_require__(2).Buffer;
 
 function DecoderBuffer(base, options) {
@@ -23174,7 +23180,7 @@ constants.der = __webpack_require__(173);
 
 var inherits = __webpack_require__(0);
 
-var asn1 = __webpack_require__(28);
+var asn1 = __webpack_require__(29);
 var base = asn1.base;
 var bignum = asn1.bignum;
 
@@ -23505,7 +23511,7 @@ function derDecodeLen(buf, primitive, fail) {
 var inherits = __webpack_require__(0);
 var Buffer = __webpack_require__(2).Buffer;
 
-var asn1 = __webpack_require__(28);
+var asn1 = __webpack_require__(29);
 var base = asn1.base;
 
 // Import DER constants
@@ -23879,7 +23885,7 @@ var Buffer = __webpack_require__(1).Buffer
 var Transform = __webpack_require__(17)
 var inherits = __webpack_require__(0)
 var GHASH = __webpack_require__(181)
-var xor = __webpack_require__(30)
+var xor = __webpack_require__(31)
 var incr32 = __webpack_require__(87)
 
 function xorTest (a, b) {
@@ -24018,7 +24024,7 @@ module.exports = incr32
 /* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var xor = __webpack_require__(30)
+var xor = __webpack_require__(31)
 var Buffer = __webpack_require__(1).Buffer
 var incr32 = __webpack_require__(87)
 
@@ -24402,7 +24408,7 @@ module.exports = HashBase
 
 
 var utils = __webpack_require__(13);
-var common = __webpack_require__(33);
+var common = __webpack_require__(34);
 var shaCommon = __webpack_require__(99);
 var assert = __webpack_require__(10);
 
@@ -24514,7 +24520,7 @@ SHA256.prototype._digest = function digest(enc) {
 
 
 var utils = __webpack_require__(13);
-var common = __webpack_require__(33);
+var common = __webpack_require__(34);
 var assert = __webpack_require__(10);
 
 var rotr64_hi = utils.rotr64_hi;
@@ -25267,7 +25273,7 @@ module.exports = pbkdf2
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(32);
+/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(33);
 module.exports = function (seed, len) {
   var t = new Buffer('');
   var  i = 0, c;
@@ -25385,7 +25391,7 @@ function _isUint8Array(obj) {
 /*</replacement>*/
 
 /*<replacement>*/
-var util = __webpack_require__(31);
+var util = __webpack_require__(32);
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -26415,7 +26421,7 @@ module.exports = Transform;
 var Duplex = __webpack_require__(20);
 
 /*<replacement>*/
-var util = __webpack_require__(31);
+var util = __webpack_require__(32);
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -27065,7 +27071,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(128));
-__export(__webpack_require__(25));
+__export(__webpack_require__(26));
 __export(__webpack_require__(129));
 __export(__webpack_require__(130));
 __export(__webpack_require__(131));
@@ -27250,7 +27256,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(18);
 const input_1 = __webpack_require__(68);
 const autocomplete_1 = __webpack_require__(64);
-function buildVerticalTable(data, title) {
+function buildVerticalTable(data, title, form, form_callback = (url) => { }) {
     let table = document.createElement('table');
     for (let i = 0; i < data.length; i++) {
         let row = document.createElement('tr');
@@ -27269,14 +27275,11 @@ function buildVerticalTable(data, title) {
                 case 'submit': {
                     let input = input_1.buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
                     td2.appendChild(input);
-                    // td.onsubmit = () => {
-                    //   let form = new FormData(sec);
-                    //   requestFormData(data[i]['url'], form).then((res: RequestResult) => {
-                    //     createResponseModal(res.json(), callback);
-                    //   });
-                    //   return false;
-                    // };
-                    // break;
+                    if (form && form_callback) {
+                        form.onsubmit = () => {
+                            return form_callback(data[i]['url']);
+                        };
+                    }
                     break;
                 }
                 case 'autocomplete': {
@@ -27410,76 +27413,25 @@ exports.createDetail = createDetail;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(19);
+const request_1 = __webpack_require__(25);
 const modal_1 = __webpack_require__(73);
 /*** create config from python json ***/
 function createConfigForm(sec, clazz, data, callback = () => { }) {
     if (!sec) {
         return;
     }
-    sec.appendChild(index_1.buildVerticalTable(data));
-    // for(let i=0; i<data.length; i++){
-    //   let name = data[i]['name'];
-    //   let type = data[i]['type'];
-    //   if(data[i]['label']){
-    //     sec.appendChild(buildLabel(data[i]['label']));
-    //   }
-    //   switch(type){
-    //     case 'label': {
-    //       //no more
-    //       break;
-    //     }
-    //     case 'text': {}
-    //     case 'file': {}
-    //     case 'checkbox': {}
-    //     case 'datetime': {
-    //       let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
-    //       sec.appendChild(input);
-    //       break;
-    //     }
-    //     case 'textarea': {
-    //       let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
-    //       sec.appendChild(input);
-    //       break;
-    //     }
-    //     case 'json': {
-    //       let input = buildTextarea(name, data[i]['placeholder'], data[i]['value'], data[i]['required'], true);
-    //       sec.appendChild(input);
-    //       break;
-    //     }
-    //     case 'submit': {
-    //       let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
-    //       sec.appendChild(input);
-    //       sec.onsubmit = () => {
-    //         let form = new FormData(sec);
-    //         requestFormData(data[i]['url'], form).then((res: RequestResult) => {
-    //           createResponseModal(res.json(), callback);
-    //         });
-    //         return false;
-    //       };
-    //       break;
-    //     }
-    //     case 'autocomplete': {
-    //       let auto = buildAutocomplete(name, data[i]['url'], data[i]['required']);
-    //       sec.appendChild(auto[0]);
-    //       sec.appendChild(auto[1]);
-    //       break;
-    //     }
-    //     case 'select': {
-    //       let select = buildSelect(name, data[i]['options']);
-    //       sec.appendChild(select);
-    //       break;
-    //     }
-    //   }
-    // }
+    sec.appendChild(index_1.buildVerticalTable(data, '', sec, (url) => {
+        let form = new FormData(sec);
+        request_1.requestFormData(url, form).then((res) => {
+            createResponseModal(res.json(), callback);
+        });
+        return false;
+    }));
 }
 exports.createConfigForm = createConfigForm;
 /*** create response modal from python json response to config ***/
 function createResponseModal(resp, callback = () => { }) {
-    let modal = modal_1.createModal(true, false, callback);
-    for (let i = 0; i < resp.length; i++) {
-        let dat = resp[i];
-        modal.appendChild(index_1.buildGeneric(dat['type'], dat['value']));
-    }
+    modal_1.createModal(resp, true, false, callback);
 }
 exports.createResponseModal = createResponseModal;
 
@@ -27511,7 +27463,7 @@ exports.createStatusSection = createStatusSection;
 Object.defineProperty(exports, "__esModule", { value: true });
 const widgets_1 = __webpack_require__(24);
 const index_1 = __webpack_require__(18);
-const common_1 = __webpack_require__(25);
+const common_1 = __webpack_require__(26);
 class Browser extends widgets_1.SplitPanel {
     constructor() {
         super({ orientation: 'vertical', spacing: 0 });
@@ -27642,7 +27594,7 @@ exports.Header = Header;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = __webpack_require__(25);
+const common_1 = __webpack_require__(26);
 class Jobs extends common_1.PrimaryTab {
     constructor() {
         super('scheduler', 'jobs');
@@ -27658,7 +27610,7 @@ exports.Jobs = Jobs;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = __webpack_require__(25);
+const common_1 = __webpack_require__(26);
 class Notebooks extends common_1.PrimaryTab {
     constructor() {
         super('uploader', 'notebooks');
@@ -27674,7 +27626,7 @@ exports.Notebooks = Notebooks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = __webpack_require__(25);
+const common_1 = __webpack_require__(26);
 class Reports extends common_1.PrimaryTab {
     constructor() {
         super('configurator', 'reports');
@@ -27691,7 +27643,7 @@ exports.Reports = Reports;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const widgets_1 = __webpack_require__(24);
-const request_1 = __webpack_require__(34);
+const request_1 = __webpack_require__(25);
 const index_1 = __webpack_require__(18);
 const index_2 = __webpack_require__(74);
 const index_3 = __webpack_require__(19);
@@ -34975,7 +34927,7 @@ var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
 var properties_1 = __webpack_require__(21);
-var boxengine_1 = __webpack_require__(26);
+var boxengine_1 = __webpack_require__(27);
 var layout_1 = __webpack_require__(16);
 var widget_1 = __webpack_require__(6);
 /**
@@ -38065,7 +38017,7 @@ var Private;
 /* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var asn1 = __webpack_require__(28);
+var asn1 = __webpack_require__(29);
 var inherits = __webpack_require__(0);
 
 var api = exports;
@@ -38132,9 +38084,9 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
 /* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Reporter = __webpack_require__(29).Reporter;
-var EncoderBuffer = __webpack_require__(29).EncoderBuffer;
-var DecoderBuffer = __webpack_require__(29).DecoderBuffer;
+var Reporter = __webpack_require__(30).Reporter;
+var EncoderBuffer = __webpack_require__(30).EncoderBuffer;
+var DecoderBuffer = __webpack_require__(30).DecoderBuffer;
 var assert = __webpack_require__(10);
 
 // Supported tags
@@ -39552,7 +39504,7 @@ module.exports = GHASH
 /* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var xor = __webpack_require__(30)
+var xor = __webpack_require__(31)
 
 exports.encrypt = function (self, block) {
   var data = xor(block, self._prev)
@@ -39576,7 +39528,7 @@ exports.decrypt = function (self, block) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(1).Buffer
-var xor = __webpack_require__(30)
+var xor = __webpack_require__(31)
 
 function encryptStart (self, data, decrypt) {
   var len = data.length
@@ -39706,7 +39658,7 @@ exports.decrypt = function (self, block) {
 /* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(30)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(31)
 
 function getBlock (self) {
   self._prev = self._cipher.encryptBlock(self._prev)
@@ -39889,7 +39841,7 @@ module.exports = __webpack_require__(91)
 /* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(32)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(33)
 var stream = __webpack_require__(62)
 var inherits = __webpack_require__(0)
 var sign = __webpack_require__(193)
@@ -40417,7 +40369,7 @@ module.exports = Hmac
 
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(22)
-exports.createHash = exports.Hash = __webpack_require__(32)
+exports.createHash = exports.Hash = __webpack_require__(33)
 exports.createHmac = exports.Hmac = __webpack_require__(94)
 
 var algos = __webpack_require__(191)
@@ -40735,7 +40687,7 @@ exports.i(__webpack_require__(215), "");
 exports.i(__webpack_require__(216), "");
 
 // module
-exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n\ntextarea.json {\n  min-height: 500px;\n}\n\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\nbody.dark a {\n  color: var(--dark-color);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody.light a {\n  color: var(--light-color);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\nbutton:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}\n\ndiv.details {\n  overflow-y: scroll;\n}\n\ndiv.details > table {\n  width: 300px;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 5px;\n}\n\ndiv.details > table > tr > td:nth-child(2) {\n  background-color: transparent !important;\n}\n\ndiv.details > table > tr > td > * {\n  min-width: 200px !important;\n  width: 200px;\n  margin-bottom:0px !important;\n}\n\ndiv.details > table > tr > td > textarea {\n  min-width: 200px !important;\n  min-height: 300px !important;\n  width:100%;\n}\n\ndiv.details > table > tr > td > input[type=submit] {\n  min-width: 200px !important;\n}\n\ndiv.details > table > tr > td > input[type=submit]:hover {\n  background-color: var(--highlight-blue);\n}\n\ndiv.details > table > tr > td {\n  border: none;\n  border-bottom: none !important;\n  margin-bottom:5px;\n}\n\n/****** Tables ******/\n.uploader, .scheduler, .configurator,\n.primary {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.primary > table {\n    height:95%;\n    text-align: left;\n}\n\n.primary form > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .primary > p span.page:hover {\n    color: white;\n}\n\nbody.light .primary > p span.page:hover {\n    color: #999;\n}\n\n.primary > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.primary > table > tr:first-child {\n    height: 20px;\n    max-height: 20px;\n}\n\n.primary > table > tr > th {\n    padding: 5px;\n}\n\n.primary > p {\n  margin-top:0px;\n  margin-bottom:0px;\n}\n\nbody.dark .primary > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light .primary > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n    border-right: 1px solid var(--light-border);\n}\n\n.primary > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .primary > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light .primary > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n    border-right: 1px solid var(--light-border);\n}\n\n/****** ******/\n\n\n/****** Forms ******/\n.p-DockPanel-widget > form  {\n    width:300px;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top: 5px;\n}\n\n.p-DockPanel-widget > form {\n\n}\n\n.p-DockPanel-widget > form > table {\n  width:100%;\n}\n\n.p-DockPanel-widget > form > table > tr> td {\n    margin-bottom: 5px;\n}\n\n.p-DockPanel-widget > form > table > tr> td > * {\n    min-height:20px;\n    min-width: 200px !important;\n    width: 200px;\n\n    margin-bottom: 0px !important;\n    border: none !important;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=text] {\n}\n\n.p-DockPanel-widget > form > table > tr> td > textarea {\n  min-width: 200px !important;\n  min-height: 300px !important;\n  width:100%;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=submit] {\n    min-width: 200px !important;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=checkbox] {\n    /*margin-left:10px;*/\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n.notebooks .uploader form {\n    min-height: 275px;\n}\n\n.jobs .scheduler form {\n    min-height: 600px;\n}\n\n.reports .configurator form {\n    min-height: 350px;\n}\n/****** ******/\n", ""]);
+exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n\ntextarea.json {\n  min-height: 500px;\n}\n\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\nbody.dark a {\n  color: var(--dark-color);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody.light a {\n  color: var(--light-color);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\nbutton {\n  width: 100px;\n}\n\nbutton:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}\n\ndiv.details {\n  overflow-y: scroll;\n}\n\ndiv.details > table {\n  width: 300px;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 5px;\n}\n\ndiv.details > table > tr > td:nth-child(2) {\n  background-color: transparent !important;\n}\n\ndiv.details > table > tr > td > * {\n  min-width: 200px !important;\n  width: 200px;\n  margin-bottom:0px !important;\n}\n\ndiv.details > table > tr > td > textarea {\n  min-width: 200px !important;\n  min-height: 300px !important;\n  width:100%;\n}\n\ndiv.details > table > tr > td > input[type=submit] {\n  min-width: 200px !important;\n}\n\ndiv.details > table > tr > td > input[type=submit]:hover {\n  background-color: var(--highlight-blue);\n}\n\ndiv.details > table > tr > td {\n  border: none;\n  border-bottom: none !important;\n  margin-bottom:5px;\n}\n\n/****** Tables ******/\n.uploader, .scheduler, .configurator,\n.primary {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.primary > table {\n    height:95%;\n    text-align: left;\n}\n\n.primary form > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .primary > p span.page:hover {\n    color: white;\n}\n\nbody.light .primary > p span.page:hover {\n    color: #999;\n}\n\n.primary > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.primary > table > tr:first-child {\n    height: 20px;\n    max-height: 20px;\n}\n\n.primary > table > tr > th {\n    padding: 5px;\n}\n\n.primary > p {\n  margin-top:0px;\n  margin-bottom:0px;\n}\n\nbody.dark .primary > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light .primary > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n    border-right: 1px solid var(--light-border);\n}\n\n.primary > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .primary > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light .primary > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n    border-right: 1px solid var(--light-border);\n}\n\n/****** ******/\n\n\n/****** Forms ******/\n.p-DockPanel-widget > form  {\n    width:300px;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top: 5px;\n}\n\n.p-DockPanel-widget > form {\n\n}\n\n.p-DockPanel-widget > form > table {\n  width:100%;\n}\n\n.p-DockPanel-widget > form > table > tr> td {\n    margin-bottom: 5px;\n}\n\n.p-DockPanel-widget > form > table > tr> td > * {\n    min-height:20px;\n    min-width: 200px !important;\n    width: 200px;\n\n    margin-bottom: 0px !important;\n    border: none !important;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=text] {\n}\n\n.p-DockPanel-widget > form > table > tr> td > textarea {\n  min-width: 200px !important;\n  min-height: 300px !important;\n  width:100%;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=submit] {\n    min-width: 200px !important;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=checkbox] {\n    /*margin-left:10px;*/\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n.notebooks .uploader form {\n    min-height: 275px;\n}\n\n.jobs .scheduler form {\n    min-height: 600px;\n}\n\n.reports .configurator form {\n    min-height: 350px;\n}\n/****** ******/\n", ""]);
 
 // exports
 
@@ -46880,7 +46832,7 @@ Hmac.prototype.digest = function digest(enc) {
 
 
 var utils = __webpack_require__(13);
-var common = __webpack_require__(33);
+var common = __webpack_require__(34);
 
 var rotl32 = utils.rotl32;
 var sum32 = utils.sum32;
@@ -47047,7 +46999,7 @@ exports.sha512 = __webpack_require__(98);
 
 
 var utils = __webpack_require__(13);
-var common = __webpack_require__(33);
+var common = __webpack_require__(34);
 var shaCommon = __webpack_require__(99);
 
 var rotl32 = utils.rotl32;
@@ -47439,7 +47391,7 @@ module.exports = {"2.16.840.1.101.3.4.1.1":"aes-128-ecb","2.16.840.1.101.3.4.1.2
 // Fedor, you are amazing.
 
 
-var asn1 = __webpack_require__(28)
+var asn1 = __webpack_require__(29)
 
 exports.certificate = __webpack_require__(252)
 
@@ -47569,7 +47521,7 @@ exports.signature = asn1.define('signature', function () {
 
 
 
-var asn = __webpack_require__(28)
+var asn = __webpack_require__(29)
 
 var Time = asn.define('Time', function () {
   this.choice({
@@ -47822,7 +47774,7 @@ var mgf = __webpack_require__(107);
 var xor = __webpack_require__(109);
 var bn = __webpack_require__(4);
 var crt = __webpack_require__(53);
-var createHash = __webpack_require__(32);
+var createHash = __webpack_require__(33);
 var withPublic = __webpack_require__(108);
 module.exports = function privateDecrypt(private_key, enc, reverse) {
   var padding;
@@ -47933,7 +47885,7 @@ function compare(a, b){
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(42);
 var randomBytes = __webpack_require__(22);
-var createHash = __webpack_require__(32);
+var createHash = __webpack_require__(33);
 var mgf = __webpack_require__(107);
 var xor = __webpack_require__(109);
 var bn = __webpack_require__(4);
@@ -48188,7 +48140,7 @@ module.exports = PassThrough;
 var Transform = __webpack_require__(111);
 
 /*<replacement>*/
-var util = __webpack_require__(31);
+var util = __webpack_require__(32);
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 

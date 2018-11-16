@@ -78,6 +78,10 @@ body div.footer {
   bottom: 10px;
 }
 
+button {
+  width: 100px;
+}
+
 button:hover {
     color: white;
     background-color: var(--highlight-blue);
