@@ -21,6 +21,7 @@ function buildVerticalTable(data: any, title?: any, form?: HTMLFormElement, form
       }
 
       let type = data[i]['type'];
+      let name = data[i]['name'];
 
       if(type !== 'label'){
         switch(type){
@@ -50,8 +51,8 @@ function buildVerticalTable(data: any, title?: any, form?: HTMLFormElement, form
             break;
           }
           default: {
-            let conts = buildInput(data[i]['type'], 
-                    data[i]['name'],
+            let conts = buildInput(type, 
+                    name,
                     data[i]['placeholder'],
                     data[i]['value'],
                     data[i]['required'],

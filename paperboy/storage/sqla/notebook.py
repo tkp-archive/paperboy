@@ -35,7 +35,7 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
     def store(self, user, params, session, *args, **kwargs):
         name = params.get('name')
         user_sql = session.query(UserSQL).get(int(user.id))
-        if params.get('file'):
+        if params.get('file') is not None:
             notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('file').file.read(), 4)))
         elif params.get('notebook'):
             notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('notebook'), 4)))
@@ -87,6 +87,6 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         id = justid(params.get('id'))
         nb = session.query(NotebookSQL).filter(NotebookSQL.id == id).first()
         name = nb.name
-        session.query(NotebookSQL).filter(NotebookSQL.id == id).delete()
+        session.delete(nb)
         return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
                 {"name": "", "type": "p", "value": "Successfully deleted notebook: " + name, "required": False, "readonly": False, "hidden": False}]

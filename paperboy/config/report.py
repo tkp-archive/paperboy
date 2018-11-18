@@ -127,8 +127,10 @@ class ReportConfig(Base):
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Report...', required=True),
             FormEntry(name='id', type='text', value=self.id, label='Id', hidden=True),
-            FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
-            FormEntry(name='job', type='text', value=self.meta.job.name, label='Job', required=True, readonly=True),
+            FormEntry(name='notebook name', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
+            FormEntry(name='notebook', type='text', value=self.meta.notebook.id, required=True, readonly=True, hidden=True),
+            FormEntry(name='job name', type='text', value=self.meta.job.name, label='Job', required=True, readonly=True),
+            FormEntry(name='job', type='text', value=self.meta.job.id, required=True, readonly=True, hidden=True),
             FormEntry(name='parameters', type='textarea', value=self.meta.parameters, label='Parameters', placeholder='JSON Parameters...'),
             FormEntry(name='type', type='select', value=self.meta.type, label='Type', options=_REPORT_TYPES, required=True),
             FormEntry(name='output', type='select', value=self.meta.output, label='Output', options=_OUTPUT_TYPES, required=True),

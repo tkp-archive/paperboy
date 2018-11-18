@@ -34,8 +34,8 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
     def store(self, user, params, session, scheduler, *args, **kwargs):
         name = params.get('name')
         user_sql = session.query(UserSQL).get(int(user.id))
-        notebook = params.get('notebook')
-        nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
+        notebookid = params.get('notebook')
+        nb_sql = session.query(NotebookSQL).get(int(justid(notebookid)))
         notebook_config = nb_sql.to_config(self.config)
 
         start_time = datetime.strptime(params.get('starttime'), '%Y-%m-%dT%H:%M')
@@ -58,7 +58,7 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
             jb = JobSQL(name=name,
                         userId=user.id,
                         user=user_sql,
-                        notebookId=notebook,
+                        notebookId=notebookid,
                         notebook=nb_sql,
                         start_time=start_time,
                         interval=interval,
@@ -92,6 +92,6 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         id = justid(params.get('id'))
         jb = session.query(JobSQL).filter(JobSQL.id == id).first()
         name = jb.name
-        session.query(JobSQL).filter(JobSQL.id == id).delete()
+        session.delete(jb)
         return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
                 {"name": "", "type": "p", "value": "Successfully deleted job: " + name, "required": False, "readonly": False, "hidden": False}]

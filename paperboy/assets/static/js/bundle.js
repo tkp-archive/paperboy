@@ -18619,7 +18619,7 @@ function buildInput(type, name, placeholder, value, required = false, readonly =
     }
     if (readonly) {
         input.readOnly = true;
-        input.disabled = true;
+        input.style.filter = 'opacity(.5)';
     }
     switch (type) {
         case 'hidden': { }
@@ -27298,6 +27298,7 @@ function buildVerticalTable(data, title, form, form_callback = (url) => { }) {
             row.appendChild(td1);
         }
         let type = data[i]['type'];
+        let name = data[i]['name'];
         if (type !== 'label') {
             switch (type) {
                 case 'submit': {
@@ -27325,7 +27326,7 @@ function buildVerticalTable(data, title, form, form_callback = (url) => { }) {
                     break;
                 }
                 default: {
-                    let conts = input_1.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly'], data[i]['hidden'], data[i]['options'], (data[i]['type'] == 'json'));
+                    let conts = input_1.buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly'], data[i]['hidden'], data[i]['options'], (data[i]['type'] == 'json'));
                     td2.appendChild(conts);
                 }
             }

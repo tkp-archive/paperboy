@@ -13,8 +13,8 @@ class NotebookSQL(Base):
     userId = Column(Integer, ForeignKey('users.id'))
     user = relationship('UserSQL', back_populates='notebooks')
 
-    jobs = relationship('JobSQL', back_populates='notebook')
-    reports = relationship('ReportSQL', back_populates='notebook')
+    jobs = relationship('JobSQL', cascade='all,delete,delete-orphan', back_populates='notebook')
+    reports = relationship('ReportSQL', cascade='all,delete,delete-orphan', back_populates='notebook')
 
     notebook = Column(String)
     privacy = Column(String, nullable=True)

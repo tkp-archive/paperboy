@@ -13,10 +13,10 @@ class JobSQL(Base):
     userId = Column(Integer, ForeignKey('users.id'))
     user = relationship('UserSQL', back_populates='jobs')
 
-    notebookId = Column(Integer, ForeignKey('notebooks.id'))
+    notebookId = Column(Integer, ForeignKey('notebooks.id', ondelete='cascade'))
     notebook = relationship('NotebookSQL', back_populates='jobs')
 
-    reports = relationship('ReportSQL', back_populates='job')
+    reports = relationship('ReportSQL', cascade='all,delete,delete-orphan', back_populates='job')
 
     start_time = Column(DateTime)
     interval = Column(String)

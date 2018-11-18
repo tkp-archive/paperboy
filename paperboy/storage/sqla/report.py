@@ -39,11 +39,11 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         name = params.get('name')
         user_sql = session.query(UserSQL).get(int(user.id))
 
-        notebook = params.get('notebook')
-        nb_sql = session.query(NotebookSQL).get(int(justid(notebook)))
+        notebookid = params.get('notebook')
+        nb_sql = session.query(NotebookSQL).get(int(justid(notebookid)))
 
-        job = params.get('job')
-        jb_sql = session.query(JobSQL).get(int(justid(job)))
+        jobid = params.get('job')
+        jb_sql = session.query(JobSQL).get(int(justid(jobid)))
 
         type = params.get('type') or 'run'
         output = params.get('output') or 'pdf'
@@ -68,9 +68,9 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
             rp = ReportSQL(name=name,
                            userId=user.id,
                            user=user_sql,
-                           notebookId=notebook,
+                           notebookId=notebookid,
                            notebook=nb_sql,
-                           jobId=job,
+                           jobId=jobid,
                            job=jb_sql,
                            type=type,
                            output=output,
@@ -156,6 +156,6 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         id = justid(params.get('id'))
         rp = session.query(ReportSQL).filter(ReportSQL.id == id).first()
         name = rp.name
-        session.query(ReportSQL).filter(ReportSQL.id == id).delete()
+        session.delete(rp)
         return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
                 {"name": "", "type": "p", "value": "Successfully deleted report: " + name, "required": False, "readonly": False, "hidden": False}]

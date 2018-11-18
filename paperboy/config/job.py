@@ -94,7 +94,8 @@ class JobConfig(Base):
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Job...', required=True),
             FormEntry(name='id', type='text', value=self.id, label='Id', hidden=True),
-            FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
+            FormEntry(name='notebook name', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
+            FormEntry(name='notebook', type='text', value=self.meta.notebook.id, required=True, readonly=True, hidden=True),
             FormEntry(name='starttime', value=self.meta.start_time.strftime('%Y-%m-%dT%H:%M'), type='datetime', label='Start Time/Date', required=True),
             FormEntry(name='interval', type='select', value=self.meta.interval, label='Interval', options=_INTERVAL_TYPES, required=True),
             FormEntry(name='level', type='select', value=self.meta.level, label='Level', options=_SERVICE_LEVELS, required=True),

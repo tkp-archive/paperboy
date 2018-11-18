@@ -27,7 +27,7 @@ function buildInput(type?: string,
   }
   if(readonly){
     input.readOnly = true;
-    input.disabled = true;
+    input.style.filter = 'opacity(.5)';
   }
 
   switch(type) {

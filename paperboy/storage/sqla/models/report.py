@@ -13,10 +13,10 @@ class ReportSQL(Base):
     userId = Column(Integer, ForeignKey('users.id'))
     user = relationship('UserSQL', back_populates='reports')
 
-    notebookId = Column(Integer, ForeignKey('notebooks.id'))
+    notebookId = Column(Integer, ForeignKey('notebooks.id', ondelete='cascade'))
     notebook = relationship('NotebookSQL', back_populates='reports')
 
-    jobId = Column(Integer, ForeignKey('jobs.id'))
+    jobId = Column(Integer, ForeignKey('jobs.id', ondelete='cascade'))
     job = relationship('JobSQL', back_populates='reports')
 
     parameters = Column(String)
