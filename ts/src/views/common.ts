@@ -4,7 +4,7 @@ import {
 
 import {request, RequestResult} from '../utils/request';
 import {toProperCase, apiurl, createDetail, createConfigForm, createPrimarySection} from '../utils/index';
-
+import {Status} from './status';
 
 export
 class PrimaryForm extends Widget {
@@ -17,17 +17,30 @@ class PrimaryForm extends Widget {
         return div;
     }
 
-    constructor(clz: string, type: string, detail: PrimaryTab){
+    constructor(clz: string, type: string, primary: PrimaryTab, status: Status){
         super({node: PrimaryForm.createNode(clz)});
         this.title.closable = false;
         this.title.label = toProperCase(clz);
-        request('get', apiurl() + 'config?type=' + type).then((res: RequestResult) => {
-            createConfigForm(this.node.querySelector('form'), type, res.json(),
-                () => {detail.update();});
+        this.type = type;
+        this.primary = primary;
+        this.status = status;
+        this.update();
+    }
+
+    update(): void {
+        request('get', apiurl() + 'config?type=' + this.type).then((res: RequestResult) => {
+            createConfigForm(this.node.querySelector('form'), this.type, res.json(),
+                () => {
+                    this.primary.update();
+                    this.status.update();
+                }
+            );
         });
     }
     clz: string;
     type: string;
+    primary: PrimaryTab;
+    status: Status;
 }
 
 
@@ -37,34 +50,47 @@ class PrimaryDetail extends Widget {
         let div = document.createElement('div');
         div.classList.add('details');
         div.classList.add(type + '-detail');
+        let form = document.createElement('form');
+        form.enctype = 'multipart/form-data';
+        div.appendChild(form);
         return div;
     }
 
-    constructor(type: string, id: string){
+    constructor(type: string, id: string, primary: PrimaryTab, status: Status){
         super({node: PrimaryDetail.createNode(type)});
         this.type = type;
         this.title.closable = true;
         this.request = apiurl() + this.type + '/details?id=' + id;
+        this.primary = primary;
+        this.status = status;
         this.update();
     }
 
     update(): void {
         request('get', this.request).then((res: RequestResult) => {
             let dat = res.json() as any;
-            createDetail(dat, this.title, this.node);
+            createDetail(this.node.querySelector('form'), this.title, dat, 
+                () => {
+                    this.primary.update();
+                    this.status.update();
+                }
+            );
         });
     }
 
     type: string;
     request: string;
+    primary: PrimaryTab;
+    status: Status;
 }
 
 export
 class PrimaryTab extends DockPanel {
-    constructor(clz: string, type: string){
+    constructor(clz: string, type: string, status: Status){
         super();
         this.clz = clz;
         this.type = type;
+        this.status = status;
 
         this.setFlag(Widget.Flag.DisallowLayout);
         this.title.label = toProperCase(type);
@@ -95,11 +121,11 @@ class PrimaryTab extends DockPanel {
     }
 
     controlView(): PrimaryForm {
-        return new PrimaryForm(this.clz, this.type, this);
+        return new PrimaryForm(this.clz, this.type, this, this.status);
     }
 
     detailView(id: string): void {
-        let pd = new PrimaryDetail(this.type, id);
+        let pd = new PrimaryDetail(this.type, id, this, this.status);
         this.addWidget(pd);
         this.selectWidget(pd);
     }
@@ -109,4 +135,5 @@ class PrimaryTab extends DockPanel {
     request: string;
     mine = new BoxPanel();
     control: PrimaryForm;
+    status: Status;
 }

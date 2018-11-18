@@ -80,8 +80,12 @@ function main(): void {
 
   let overview = new Status();
 
+  let notebooks = new Notebooks(overview);
+  let jobs = new Jobs(overview);
+  let reports = new Reports(overview);
+
   home.addWidget(overview);
-  home.addWidget(new Browser());
+  home.addWidget(new Browser(notebooks, jobs, reports, overview));
 
   home.setRelativeSizes([.3, .7]);
 
@@ -89,9 +93,9 @@ function main(): void {
   main.id = 'main';
 
   main.addWidget(home);
-  main.addWidget(new Notebooks());
-  main.addWidget(new Jobs());
-  main.addWidget(new Reports());
+  main.addWidget(notebooks);
+  main.addWidget(jobs);
+  main.addWidget(reports);
 
   window.onresize = () => { main.update(); };
 

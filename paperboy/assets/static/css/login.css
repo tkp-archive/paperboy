@@ -39,22 +39,6 @@ body {
   background-color: black;
 }
 
-div.background {
-  position:absolute;
-  height:100%;
-  width: 100%;
-  background: url(https://upload.wikimedia.org/wikipedia/en/3/3c/Paperboy_Apple2_Box.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  -webkit-filter: blur(10px) brightness(.2);
-  -moz-filter: blur(10px) brightness(.2);
-  -o-filter:  blur(10px) brightness(.2);
-  -ms-filter: blur(10px) brightness(.2);
-  filter: blur(10px) brightness(.2);
-}
-
 .log-form {
   width: 40%;
   min-width: 320px;

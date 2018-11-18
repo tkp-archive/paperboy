@@ -12,6 +12,24 @@
 </script>
 </head>
 <body>
+  <style>
+  /* has to be here for parameterizing */
+  div.background {
+  position:absolute;
+  height:100%;
+  width: 100%;
+  background: url({{baseurl}}static/img/paperboy.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  -webkit-filter: blur(10px) brightness(.2);
+  -moz-filter: blur(10px) brightness(.2);
+  -o-filter:  blur(10px) brightness(.2);
+  -ms-filter: blur(10px) brightness(.2);
+  filter: blur(10px) brightness(.2);
+}
+</style>
   <div class="background"></div>
     <div class="log-form">
         <h2>Login to your account</h2>

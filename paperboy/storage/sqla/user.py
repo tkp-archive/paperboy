@@ -56,5 +56,8 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
         return token
 
     def delete(self, user, params, session, *args, **kwargs):
-        session.query(UserSQL).filter(UserSQL.id == user.id).delete()
-        return ''
+        user = session.query(UserSQL).filter(UserSQL.id == user.id)
+        name = user.name
+        user.delete()
+        return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
+                {"name": "", "type": "p", "value": "Successfully deleted user: " + name, "required": False, "readonly": False, "hidden": False}]

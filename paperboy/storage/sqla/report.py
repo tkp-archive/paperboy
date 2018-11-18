@@ -53,19 +53,32 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         created = datetime.now()
         modified = datetime.now()
 
-        rp = ReportSQL(name=name,
-                       userId=user.id,
-                       user=user_sql,
-                       notebookId=notebook,
-                       notebook=nb_sql,
-                       jobId=job,
-                       job=jb_sql,
-                       type=type,
-                       output=output,
-                       strip_code=strip_code,
-                       parameters=parameters,
-                       created=created,
-                       modified=modified)
+        id = params.get('id')
+        if id:
+            id = justid(id)
+            rp = session.query(ReportSQL).filter(ReportSQL.id == id).first()
+            rp.name = name
+            rp.type = type
+            rp.output = output
+            rp.strip_code = strip_code
+            rp.parameters = parameters
+            rp.modified = modified
+
+        else:
+            rp = ReportSQL(name=name,
+                           userId=user.id,
+                           user=user_sql,
+                           notebookId=notebook,
+                           notebook=nb_sql,
+                           jobId=job,
+                           job=jb_sql,
+                           type=type,
+                           output=output,
+                           strip_code=strip_code,
+                           parameters=parameters,
+                           created=created,
+                           modified=modified)
+
         session.add(rp)
 
         # generate id
@@ -139,6 +152,10 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
         return ret
 
     def delete(self, user, params, session, *args, **kwargs):
-        id = params.get('id')
+        # TODO only if allowed
+        id = justid(params.get('id'))
+        rp = session.query(ReportSQL).filter(ReportSQL.id == id).first()
+        name = rp.name
         session.query(ReportSQL).filter(ReportSQL.id == id).delete()
-        return ''
+        return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
+                {"name": "", "type": "p", "value": "Successfully deleted report: " + name, "required": False, "readonly": False, "hidden": False}]

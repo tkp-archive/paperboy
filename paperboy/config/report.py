@@ -126,6 +126,7 @@ class ReportConfig(Base):
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Report...', required=True),
+            FormEntry(name='id', type='text', value=self.id, label='Id', hidden=True),
             FormEntry(name='notebook', type='text', value=self.meta.notebook.name, label='Notebook', required=True, readonly=True),
             FormEntry(name='job', type='text', value=self.meta.job.name, label='Job', required=True, readonly=True),
             FormEntry(name='parameters', type='textarea', value=self.meta.parameters, label='Parameters', placeholder='JSON Parameters...'),

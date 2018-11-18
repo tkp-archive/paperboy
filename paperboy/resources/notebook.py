@@ -12,7 +12,11 @@ class NotebookResource(BaseResource):
 
     def on_post(self, req, resp):
         resp.content_type = 'application/json'
-        resp.body = json.dumps(self.db.notebooks.store(req.context['user'], req.params, self.session))
+        action = req.params.get('action')
+        if action == 'delete':
+            resp.body = json.dumps(self.db.notebooks.delete(req.context['user'], req.params, self.session))
+        else:
+            resp.body = json.dumps(self.db.notebooks.store(req.context['user'], req.params, self.session))
 
 
 class NotebookDetailResource(BaseResource):

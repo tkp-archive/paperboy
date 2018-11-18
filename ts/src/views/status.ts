@@ -56,6 +56,10 @@ class StatusBrowser extends TabPanel {
         }, 10000);
     }
 
+    update(): void {
+
+    }
+
     private jbs: BoxPanel;
     private rps: BoxPanel;
 }
@@ -88,6 +92,7 @@ class StatusOverview extends Widget {
 
     static createSubsection(sec: HTMLDivElement, clazz: string, title: string, data: any) : void {
         sec.classList.add('status-breakdown');
+        deleteAllChildren(sec);
 
         let sec_sp = document.createElement('span');
         sec_sp.classList.add('subtitle');
@@ -116,6 +121,7 @@ class StatusOverview extends Widget {
 
     private populateTop(data: any): void {
         this.top.classList.add('status-container');
+        deleteAllChildren(this.top);
 
         let nb = StatusOverview.createSubtitle('notebooks', data);
         let jb = StatusOverview.createSubtitle('jobs', data);
@@ -136,7 +142,10 @@ class StatusOverview extends Widget {
         this.node.appendChild(this.nbs);
         this.node.appendChild(this.jbs);
         this.node.appendChild(this.rps);
+        this.update();
+    }
 
+    update(): void {
         request('get', apiurl() + 'status').then((res: RequestResult) => {
             let data = res.json()
             this.populateTop(data);
@@ -158,8 +167,18 @@ export
 class Status extends SplitPanel {
     constructor(){
         super({ orientation: 'vertical'});
-        this.addWidget(new StatusOverview());
-        this.addWidget(new StatusBrowser());
+        this.overview = new StatusOverview();
+        this.browser = new StatusBrowser();
+        this.addWidget(this.overview);
+        this.addWidget(this.browser);
         this.setRelativeSizes([.5, .5]);
     }
+
+    update(): void {
+        this.overview.update();
+        this.browser.update();
+    }
+
+    overview: StatusOverview;
+    browser: StatusBrowser;
 }

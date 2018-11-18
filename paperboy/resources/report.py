@@ -12,7 +12,11 @@ class ReportResource(BaseResource):
 
     def on_post(self, req, resp):
         resp.content_type = 'application/json'
-        resp.body = json.dumps(self.db.reports.store(req.context['user'], req.params, self.session))
+        action = req.params.get('action')
+        if action == 'delete':
+            resp.body = json.dumps(self.db.reports.delete(req.context['user'], req.params, self.session))
+        else:
+            resp.body = json.dumps(self.db.reports.store(req.context['user'], req.params, self.session))
 
 
 class ReportDetailResource(BaseResource):

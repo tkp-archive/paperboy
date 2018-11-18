@@ -1,8 +1,9 @@
 import {PrimaryTab} from './common';
+import {Status} from './status';
 
 export
 class Notebooks extends PrimaryTab {
-    constructor(){
-        super('uploader', 'notebooks');
+    constructor(status: Status){
+        super('uploader', 'notebooks', status);
     }
 }

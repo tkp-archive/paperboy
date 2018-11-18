@@ -4,7 +4,7 @@ from datetime import datetime
 from paperboy.config import NotebookConfig
 from paperboy.storage import NotebookStorage
 from sqlalchemy import or_
-from .base import BaseSQLStorageMixin
+from .base import BaseSQLStorageMixin, justid
 from .models.user import UserSQL
 from .models.notebook import NotebookSQL
 from ..utils import strip_outputs
@@ -35,8 +35,12 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
     def store(self, user, params, session, *args, **kwargs):
         name = params.get('name')
         user_sql = session.query(UserSQL).get(int(user.id))
-
-        notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('file').file.read(), 4)))
+        if params.get('file'):
+            notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('file').file.read(), 4)))
+        elif params.get('notebook'):
+            notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('notebook'), 4)))
+        else:
+            raise NotImplementedError()
         privacy = params.get('privacy') or ''
         level = params.get('level') or ''
         requirements = params.get('requirements') or ''
@@ -44,16 +48,30 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         created = datetime.now()
         modified = datetime.now()
 
-        nb = NotebookSQL(name=name,
-                         userId=int(user.id),
-                         user=user_sql,
-                         notebook=notebook,
-                         privacy=privacy,
-                         level=level,
-                         requirements=requirements,
-                         dockerfile=dockerfile,
-                         created=created,
-                         modified=modified)
+        id = params.get('id')
+        if id:
+            id = justid(id)
+            nb = session.query(NotebookSQL).filter(NotebookSQL.id == id).first()
+            nb.name = name
+            nb.notebook = notebook
+            nb.privacy = privacy
+            nb.level = level
+            nb.requirements = requirements
+            nb.dockerfile = dockerfile
+            nb.modified = modified
+
+        else:
+            nb = NotebookSQL(name=name,
+                             userId=int(user.id),
+                             user=user_sql,
+                             notebook=notebook,
+                             privacy=privacy,
+                             level=level,
+                             requirements=requirements,
+                             dockerfile=dockerfile,
+                             created=created,
+                             modified=modified)
+
         session.add(nb)
 
         # generate id
@@ -65,6 +83,10 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         return store
 
     def delete(self, user, params, session, *args, **kwargs):
-        id = params.get('id')
+        # TODO only if allowed
+        id = justid(params.get('id'))
+        nb = session.query(NotebookSQL).filter(NotebookSQL.id == id).first()
+        name = nb.name
         session.query(NotebookSQL).filter(NotebookSQL.id == id).delete()
-        return ''
+        return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
+                {"name": "", "type": "p", "value": "Successfully deleted notebook: " + name, "required": False, "readonly": False, "hidden": False}]

@@ -3,11 +3,12 @@ import {
 } from '@phosphor/widgets';
 
 import {deleteAllChildren, autocomplete, apiurl, showLoader, hideLoader} from '../utils/index';
-import {PrimaryDetail} from './common';
+import {PrimaryDetail, PrimaryTab} from './common';
+import {Status} from './status';
 
 export
 class Browser extends SplitPanel {
-    constructor(){
+    constructor(notebooks: PrimaryTab, jobs: PrimaryTab, reports: PrimaryTab, status: Status){
         super({ orientation: 'vertical', spacing: 0 });
         this.node.classList.add('browser');
         let searchpanel = new BoxPanel();
@@ -65,7 +66,13 @@ class Browser extends SplitPanel {
                 type = '';
             }
             showLoader();
-            resultspanel.addWidget(new PrimaryDetail(type, search.value));
+            if (type == 'notebooks'){
+                resultspanel.addWidget(new PrimaryDetail(type, search.value, notebooks, status));
+            } else if (type == 'jobs'){
+                resultspanel.addWidget(new PrimaryDetail(type, search.value, jobs, status));
+            } else if (type == 'reports'){
+                resultspanel.addWidget(new PrimaryDetail(type, search.value, reports, status));
+            }
             hideLoader();
         });
 

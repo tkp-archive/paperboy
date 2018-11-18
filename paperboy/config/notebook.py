@@ -89,6 +89,7 @@ class NotebookConfig(Base):
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, placeholder='Name for Job...', required=True),
+            FormEntry(name='id', type='text', value=self.id, label='Id', hidden=True),
             FormEntry(name='privacy', type='select', value=self.meta.privacy, label='Visibility', options=_PRIVACY_LEVELS, required=True),
             FormEntry(name='level', type='select', value=self.meta.level, label='Level', options=_SERVICE_LEVELS, required=True),
             FormEntry(name='notebook', type='json', value=self.meta.notebook, placeholder='Notebook json...', required=True)

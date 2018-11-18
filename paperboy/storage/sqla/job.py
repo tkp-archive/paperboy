@@ -44,16 +44,27 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         created = datetime.now()
         modified = datetime.now()
 
-        jb = JobSQL(name=name,
-                    userId=user.id,
-                    user=user_sql,
-                    notebookId=notebook,
-                    notebook=nb_sql,
-                    start_time=start_time,
-                    interval=interval,
-                    level=level,
-                    created=created,
-                    modified=modified)
+        id = params.get('id')
+        if id:
+            id = justid(id)
+            jb = session.query(JobSQL).filter(JobSQL.id == id).first()
+            jb.name = name
+            jb.start_time = start_time
+            jb.interval = interval
+            jb.level = level
+            jb.modified = modified
+
+        else:
+            jb = JobSQL(name=name,
+                        userId=user.id,
+                        user=user_sql,
+                        notebookId=notebook,
+                        notebook=nb_sql,
+                        start_time=start_time,
+                        interval=interval,
+                        level=level,
+                        created=created,
+                        modified=modified)
         session.add(jb)
 
         # generate id
@@ -77,6 +88,10 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         return store
 
     def delete(self, user, params, session, *args, **kwargs):
-        id = params.get('id')
+        # TODO only if allowed
+        id = justid(params.get('id'))
+        jb = session.query(JobSQL).filter(JobSQL.id == id).first()
+        name = jb.name
         session.query(JobSQL).filter(JobSQL.id == id).delete()
-        return ''
+        return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
+                {"name": "", "type": "p", "value": "Successfully deleted job: " + name, "required": False, "readonly": False, "hidden": False}]

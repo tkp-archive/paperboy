@@ -1,4 +1,4 @@
-import {buildGeneric} from './dom/index';
+import {buildGeneric, deleteAllChildren} from './dom/index';
 
 const modal = document.createElement('div');
 modal.classList.add('modal');
@@ -9,6 +9,8 @@ function createModal(data: {[key:string]: string}[],
                      cancel=true,
                      ok_callback=()=>{},
                      cancel_callback=()=>{}){
+  deleteAllChildren(modal);
+
   for(let i=0; i<data.length; i++){
     let dat = data[i];
     modal.appendChild(buildGeneric(dat['type'], dat['value']))

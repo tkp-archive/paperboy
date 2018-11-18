@@ -16,18 +16,29 @@ function buildVerticalTable(data: any, title?: any, form?: HTMLFormElement, form
         }
       }
       td1.textContent = toProperCase(data[i]['name']);
-      row.appendChild(td1);
+      if(!data[i]['hidden']){
+        row.appendChild(td1);
+      }
 
       let type = data[i]['type'];
 
       if(type !== 'label'){
         switch(type){
           case 'submit': {
-            let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
+            let input = buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required'],data[i]['readonly'], data[i]['hidden']);
             td2.appendChild(input);
             if(form && form_callback){
-              form.onsubmit = ()=> {
-                return form_callback(data[i]['url']);
+              let url = data[i]['url'];
+              // doesnt work right
+              // input.setAttribute('formaction', url);
+
+              // workaround
+              // these better not be reordered!!
+              input.onclick = ()=>{
+                form.action = url;
+              }
+              form.onsubmit = () => {
+                return form_callback(form.action);
               };
             }
             break
@@ -45,6 +56,7 @@ function buildVerticalTable(data: any, title?: any, form?: HTMLFormElement, form
                     data[i]['value'],
                     data[i]['required'],
                     data[i]['readonly'],
+                    data[i]['hidden'],
                     data[i]['options'],
                     (data[i]['type'] == 'json'));
             td2.appendChild(conts);

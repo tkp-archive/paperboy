@@ -5511,9 +5511,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
 var messaging_1 = __webpack_require__(8);
-var properties_1 = __webpack_require__(21);
+var properties_1 = __webpack_require__(22);
 var signaling_1 = __webpack_require__(11);
-var title_1 = __webpack_require__(50);
+var title_1 = __webpack_require__(51);
 /**
  * The base class of the Phosphor widget hierarchy.
  *
@@ -8293,7 +8293,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
-var properties_1 = __webpack_require__(21);
+var properties_1 = __webpack_require__(22);
 var signaling_1 = __webpack_require__(11);
 var widget_1 = __webpack_require__(6);
 /**
@@ -9065,8 +9065,8 @@ var Private;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(1).Buffer
-var Transform = __webpack_require__(62).Transform
-var StringDecoder = __webpack_require__(63).StringDecoder
+var Transform = __webpack_require__(63).Transform
+var StringDecoder = __webpack_require__(64).StringDecoder
 var inherits = __webpack_require__(0)
 
 function CipherBase (hashMode) {
@@ -9177,11 +9177,11 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(19));
 __export(__webpack_require__(74));
-__export(__webpack_require__(64));
-__export(__webpack_require__(72));
-__export(__webpack_require__(122));
+__export(__webpack_require__(65));
 __export(__webpack_require__(73));
-__export(__webpack_require__(25));
+__export(__webpack_require__(122));
+__export(__webpack_require__(46));
+__export(__webpack_require__(21));
 __export(__webpack_require__(123));
 
 
@@ -9192,21 +9192,21 @@ __export(__webpack_require__(123));
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var common_1 = __webpack_require__(65);
+var common_1 = __webpack_require__(66);
 exports.deleteAllChildren = common_1.deleteAllChildren;
-var generic_1 = __webpack_require__(66);
+var generic_1 = __webpack_require__(67);
 exports.buildGeneric = generic_1.buildGeneric;
-var horizontalTable_1 = __webpack_require__(67);
+var horizontalTable_1 = __webpack_require__(68);
 exports.buildHorizontalTable = horizontalTable_1.buildHorizontalTable;
-var input_1 = __webpack_require__(68);
+var input_1 = __webpack_require__(69);
 exports.buildInput = input_1.buildInput;
-var label_1 = __webpack_require__(69);
+var label_1 = __webpack_require__(70);
 exports.buildLabel = label_1.buildLabel;
 var listTable_1 = __webpack_require__(120);
 exports.buildListTable = listTable_1.buildListTable;
-var select_1 = __webpack_require__(70);
+var select_1 = __webpack_require__(71);
 exports.buildSelect = select_1.buildSelect;
-var textarea_1 = __webpack_require__(71);
+var textarea_1 = __webpack_require__(72);
 exports.buildTextarea = textarea_1.buildTextarea;
 var verticalTable_1 = __webpack_require__(121);
 exports.buildVerticalTable = verticalTable_1.buildVerticalTable;
@@ -9267,7 +9267,7 @@ util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
 var Readable = __webpack_require__(110);
-var Writable = __webpack_require__(58);
+var Writable = __webpack_require__(59);
 
 util.inherits(Duplex, Readable);
 
@@ -9351,6 +9351,113 @@ Duplex.prototype._destroy = function (err, cb) {
 
 /***/ }),
 /* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DEFAULT_REQUEST_OPTIONS = {
+    ignoreCache: false,
+    headers: {
+        Accept: 'application/json, text/javascript, text/plain',
+    },
+    // default max duration for a request
+    timeout: 5000,
+};
+function queryParams(params = {}) {
+    return Object.keys(params)
+        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+        .join('&');
+}
+function withQuery(url, params = {}) {
+    const queryString = queryParams(params);
+    return queryString ? url + (url.indexOf('?') === -1 ? '?' : '&') + queryString : url;
+}
+function parseXHRResult(xhr) {
+    return {
+        ok: xhr.status >= 200 && xhr.status < 300,
+        status: xhr.status,
+        statusText: xhr.statusText,
+        headers: xhr.getAllResponseHeaders(),
+        data: xhr.responseText,
+        json: () => JSON.parse(xhr.responseText),
+        url: xhr.responseURL
+    };
+}
+function errorResponse(xhr, message = null) {
+    return {
+        ok: false,
+        status: xhr.status,
+        statusText: xhr.statusText,
+        headers: xhr.getAllResponseHeaders(),
+        data: message || xhr.statusText,
+        json: () => JSON.parse(message || xhr.statusText),
+        url: xhr.responseURL
+    };
+}
+function request(method, url, queryParams = {}, body = null, options = exports.DEFAULT_REQUEST_OPTIONS) {
+    const ignoreCache = options.ignoreCache || exports.DEFAULT_REQUEST_OPTIONS.ignoreCache;
+    const headers = options.headers || exports.DEFAULT_REQUEST_OPTIONS.headers;
+    const timeout = options.timeout || exports.DEFAULT_REQUEST_OPTIONS.timeout;
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, withQuery(url, queryParams));
+        if (headers) {
+            Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
+        }
+        if (ignoreCache) {
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+        }
+        xhr.timeout = timeout;
+        xhr.onload = evt => {
+            resolve(parseXHRResult(xhr));
+        };
+        xhr.onerror = evt => {
+            resolve(errorResponse(xhr, 'Failed to make request.'));
+        };
+        xhr.ontimeout = evt => {
+            resolve(errorResponse(xhr, 'Request took longer than expected.'));
+        };
+        if (method === 'post' && body) {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(body));
+        }
+        else {
+            xhr.send();
+        }
+    });
+}
+exports.request = request;
+function requestFormData(url, formdata) {
+    let options = exports.DEFAULT_REQUEST_OPTIONS;
+    const ignoreCache = options.ignoreCache || exports.DEFAULT_REQUEST_OPTIONS.ignoreCache;
+    const headers = options.headers || exports.DEFAULT_REQUEST_OPTIONS.headers;
+    const timeout = options.timeout || exports.DEFAULT_REQUEST_OPTIONS.timeout;
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('post', withQuery(url, queryParams));
+        Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
+        if (ignoreCache) {
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+        }
+        xhr.timeout = timeout;
+        xhr.onload = evt => {
+            resolve(parseXHRResult(xhr));
+        };
+        xhr.onerror = evt => {
+            resolve(errorResponse(xhr, 'Failed to make request.'));
+        };
+        xhr.ontimeout = evt => {
+            resolve(errorResponse(xhr, 'Request took longer than expected.'));
+        };
+        xhr.send(formdata);
+    });
+}
+exports.requestFormData = requestFormData;
+
+
+/***/ }),
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9547,7 +9654,7 @@ var Private;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9593,7 +9700,7 @@ function randomBytes (size, cb) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), __webpack_require__(15)))
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(1).Buffer
@@ -9680,7 +9787,7 @@ module.exports = Hash
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9697,7 +9804,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 __export(__webpack_require__(27));
-__export(__webpack_require__(48));
+__export(__webpack_require__(49));
 __export(__webpack_require__(159));
 __export(__webpack_require__(160));
 __export(__webpack_require__(161));
@@ -9716,117 +9823,10 @@ __export(__webpack_require__(78));
 __export(__webpack_require__(168));
 __export(__webpack_require__(79));
 __export(__webpack_require__(80));
-__export(__webpack_require__(49));
-__export(__webpack_require__(169));
 __export(__webpack_require__(50));
+__export(__webpack_require__(169));
+__export(__webpack_require__(51));
 __export(__webpack_require__(6));
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.DEFAULT_REQUEST_OPTIONS = {
-    ignoreCache: false,
-    headers: {
-        Accept: 'application/json, text/javascript, text/plain',
-    },
-    // default max duration for a request
-    timeout: 5000,
-};
-function queryParams(params = {}) {
-    return Object.keys(params)
-        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-        .join('&');
-}
-function withQuery(url, params = {}) {
-    const queryString = queryParams(params);
-    return queryString ? url + (url.indexOf('?') === -1 ? '?' : '&') + queryString : url;
-}
-function parseXHRResult(xhr) {
-    return {
-        ok: xhr.status >= 200 && xhr.status < 300,
-        status: xhr.status,
-        statusText: xhr.statusText,
-        headers: xhr.getAllResponseHeaders(),
-        data: xhr.responseText,
-        json: () => JSON.parse(xhr.responseText),
-        url: xhr.responseURL
-    };
-}
-function errorResponse(xhr, message = null) {
-    return {
-        ok: false,
-        status: xhr.status,
-        statusText: xhr.statusText,
-        headers: xhr.getAllResponseHeaders(),
-        data: message || xhr.statusText,
-        json: () => JSON.parse(message || xhr.statusText),
-        url: xhr.responseURL
-    };
-}
-function request(method, url, queryParams = {}, body = null, options = exports.DEFAULT_REQUEST_OPTIONS) {
-    const ignoreCache = options.ignoreCache || exports.DEFAULT_REQUEST_OPTIONS.ignoreCache;
-    const headers = options.headers || exports.DEFAULT_REQUEST_OPTIONS.headers;
-    const timeout = options.timeout || exports.DEFAULT_REQUEST_OPTIONS.timeout;
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open(method, withQuery(url, queryParams));
-        if (headers) {
-            Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
-        }
-        if (ignoreCache) {
-            xhr.setRequestHeader('Cache-Control', 'no-cache');
-        }
-        xhr.timeout = timeout;
-        xhr.onload = evt => {
-            resolve(parseXHRResult(xhr));
-        };
-        xhr.onerror = evt => {
-            resolve(errorResponse(xhr, 'Failed to make request.'));
-        };
-        xhr.ontimeout = evt => {
-            resolve(errorResponse(xhr, 'Request took longer than expected.'));
-        };
-        if (method === 'post' && body) {
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify(body));
-        }
-        else {
-            xhr.send();
-        }
-    });
-}
-exports.request = request;
-function requestFormData(url, formdata) {
-    let options = exports.DEFAULT_REQUEST_OPTIONS;
-    const ignoreCache = options.ignoreCache || exports.DEFAULT_REQUEST_OPTIONS.ignoreCache;
-    const headers = options.headers || exports.DEFAULT_REQUEST_OPTIONS.headers;
-    const timeout = options.timeout || exports.DEFAULT_REQUEST_OPTIONS.timeout;
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('post', withQuery(url, queryParams));
-        Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
-        if (ignoreCache) {
-            xhr.setRequestHeader('Cache-Control', 'no-cache');
-        }
-        xhr.timeout = timeout;
-        xhr.onload = evt => {
-            resolve(parseXHRResult(xhr));
-        };
-        xhr.onerror = evt => {
-            resolve(errorResponse(xhr, 'Failed to make request.'));
-        };
-        xhr.ontimeout = evt => {
-            resolve(errorResponse(xhr, 'Request took longer than expected.'));
-        };
-        xhr.send(formdata);
-    });
-}
-exports.requestFormData = requestFormData;
 
 
 /***/ }),
@@ -9836,8 +9836,8 @@ exports.requestFormData = requestFormData;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const widgets_1 = __webpack_require__(24);
-const request_1 = __webpack_require__(25);
+const widgets_1 = __webpack_require__(25);
+const request_1 = __webpack_require__(21);
 const index_1 = __webpack_require__(18);
 class PrimaryForm extends widgets_1.Widget {
     static createNode(clz) {
@@ -9848,12 +9848,21 @@ class PrimaryForm extends widgets_1.Widget {
         div.appendChild(form);
         return div;
     }
-    constructor(clz, type, detail) {
+    constructor(clz, type, primary, status) {
         super({ node: PrimaryForm.createNode(clz) });
         this.title.closable = false;
         this.title.label = index_1.toProperCase(clz);
-        request_1.request('get', index_1.apiurl() + 'config?type=' + type).then((res) => {
-            index_1.createConfigForm(this.node.querySelector('form'), type, res.json(), () => { detail.update(); });
+        this.type = type;
+        this.primary = primary;
+        this.status = status;
+        this.update();
+    }
+    update() {
+        request_1.request('get', index_1.apiurl() + 'config?type=' + this.type).then((res) => {
+            index_1.createConfigForm(this.node.querySelector('form'), this.type, res.json(), () => {
+                this.primary.update();
+                this.status.update();
+            });
         });
     }
 }
@@ -9863,29 +9872,38 @@ class PrimaryDetail extends widgets_1.Widget {
         let div = document.createElement('div');
         div.classList.add('details');
         div.classList.add(type + '-detail');
+        let form = document.createElement('form');
+        form.enctype = 'multipart/form-data';
+        div.appendChild(form);
         return div;
     }
-    constructor(type, id) {
+    constructor(type, id, primary, status) {
         super({ node: PrimaryDetail.createNode(type) });
         this.type = type;
         this.title.closable = true;
         this.request = index_1.apiurl() + this.type + '/details?id=' + id;
+        this.primary = primary;
+        this.status = status;
         this.update();
     }
     update() {
         request_1.request('get', this.request).then((res) => {
             let dat = res.json();
-            index_1.createDetail(dat, this.title, this.node);
+            index_1.createDetail(this.node.querySelector('form'), this.title, dat, () => {
+                this.primary.update();
+                this.status.update();
+            });
         });
     }
 }
 exports.PrimaryDetail = PrimaryDetail;
 class PrimaryTab extends widgets_1.DockPanel {
-    constructor(clz, type) {
+    constructor(clz, type, status) {
         super();
         this.mine = new widgets_1.BoxPanel();
         this.clz = clz;
         this.type = type;
+        this.status = status;
         this.setFlag(widgets_1.Widget.Flag.DisallowLayout);
         this.title.label = index_1.toProperCase(type);
         this.node.id = type;
@@ -9908,10 +9926,10 @@ class PrimaryTab extends widgets_1.DockPanel {
         });
     }
     controlView() {
-        return new PrimaryForm(this.clz, this.type, this);
+        return new PrimaryForm(this.clz, this.type, this, this.status);
     }
     detailView(id) {
-        let pd = new PrimaryDetail(this.type, id);
+        let pd = new PrimaryDetail(this.type, id, this, this.status);
         this.addWidget(pd);
         this.selectWidget(pd);
     }
@@ -10856,9 +10874,9 @@ function objectToString(o) {
 "use strict";
 
 var inherits = __webpack_require__(0)
-var MD5 = __webpack_require__(57)
-var RIPEMD160 = __webpack_require__(60)
-var sha = __webpack_require__(61)
+var MD5 = __webpack_require__(58)
+var RIPEMD160 = __webpack_require__(61)
+var sha = __webpack_require__(62)
 var Base = __webpack_require__(17)
 
 function Hash (hash) {
@@ -11017,7 +11035,7 @@ __export(__webpack_require__(155));
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var disposable_1 = __webpack_require__(46);
+var disposable_1 = __webpack_require__(47);
 /**
  * An object which manages a drag-drop operation.
  *
@@ -12776,7 +12794,7 @@ curve.edwards = __webpack_require__(227);
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(1).Buffer
-var MD5 = __webpack_require__(57)
+var MD5 = __webpack_require__(58)
 
 /* eslint-disable camelcase */
 function EVP_BytesToKey (password, salt, keyBits, ivLen) {
@@ -12829,7 +12847,7 @@ module.exports = EVP_BytesToKey
 /* WEBPACK VAR INJECTION */(function(Buffer) {var asn1 = __webpack_require__(251)
 var aesid = __webpack_require__(250)
 var fixProc = __webpack_require__(253)
-var ciphers = __webpack_require__(51)
+var ciphers = __webpack_require__(52)
 var compat = __webpack_require__(103)
 module.exports = parseKeys
 
@@ -13073,9 +13091,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
 var coreutils_1 = __webpack_require__(35);
-var disposable_1 = __webpack_require__(46);
+var disposable_1 = __webpack_require__(47);
 var domutils_1 = __webpack_require__(7);
-var keyboard_1 = __webpack_require__(47);
+var keyboard_1 = __webpack_require__(48);
 var signaling_1 = __webpack_require__(11);
 /**
  * An object which manages a collection of commands.
@@ -13953,6 +13971,49 @@ var Private;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+const index_1 = __webpack_require__(19);
+const modal = document.createElement('div');
+modal.classList.add('modal');
+function createModal(data, ok = true, cancel = true, ok_callback = () => { }, cancel_callback = () => { }) {
+    index_1.deleteAllChildren(modal);
+    for (let i = 0; i < data.length; i++) {
+        let dat = data[i];
+        modal.appendChild(index_1.buildGeneric(dat['type'], dat['value']));
+    }
+    document.body.appendChild(modal);
+    if (ok) {
+        let button = index_1.buildGeneric('button', 'OK');
+        button.onclick = () => {
+            ok_callback();
+            hideModal();
+        };
+        modal.appendChild(button);
+        button.focus();
+    }
+    if (cancel) {
+        let button = index_1.buildGeneric('button', 'Cancel');
+        button.onclick = () => {
+            cancel_callback();
+            hideModal();
+        };
+        modal.appendChild(button);
+    }
+    return modal;
+}
+exports.createModal = createModal;
+function hideModal() {
+    document.body.removeChild(modal);
+}
+exports.hideModal = hideModal;
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 /*-----------------------------------------------------------------------------
 | Copyright (c) 2014-2017, PhosphorJS Contributors
 |
@@ -14095,7 +14156,7 @@ exports.DisposableSet = DisposableSet;
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14340,7 +14401,7 @@ var Private;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14366,7 +14427,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
-var properties_1 = __webpack_require__(21);
+var properties_1 = __webpack_require__(22);
 var boxengine_1 = __webpack_require__(27);
 var layout_1 = __webpack_require__(16);
 var panellayout_1 = __webpack_require__(28);
@@ -14914,7 +14975,7 @@ var Private;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14943,7 +15004,7 @@ var dragdrop_1 = __webpack_require__(36);
 var messaging_1 = __webpack_require__(8);
 var signaling_1 = __webpack_require__(11);
 var virtualdom_1 = __webpack_require__(37);
-var title_1 = __webpack_require__(50);
+var title_1 = __webpack_require__(51);
 var widget_1 = __webpack_require__(6);
 /**
  * A widget which displays titles as a single row or column of tabs.
@@ -16149,7 +16210,7 @@ var Private;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16444,7 +16505,7 @@ exports.Title = Title;
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ciphers = __webpack_require__(180)
@@ -16463,7 +16524,7 @@ exports.listCiphers = exports.getCiphers = getCiphers
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var modeModules = {
@@ -16487,11 +16548,11 @@ module.exports = modes
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var bn = __webpack_require__(4);
-var randomBytes = __webpack_require__(22);
+var randomBytes = __webpack_require__(23);
 module.exports = crt;
 function blind(priv) {
   var r = getr(priv);
@@ -16534,7 +16595,7 @@ function getr(priv) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16548,7 +16609,7 @@ exports.EDE = __webpack_require__(221);
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -16856,7 +16917,7 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var hash = exports;
@@ -16877,7 +16938,7 @@ hash.ripemd160 = hash.ripemd.ripemd160;
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17030,7 +17091,7 @@ module.exports = MD5
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2).Buffer))
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17724,20 +17785,20 @@ Writable.prototype._destroy = function (err, cb) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15), __webpack_require__(44).setImmediate, __webpack_require__(14)))
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(110);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(58);
+exports.Writable = __webpack_require__(59);
 exports.Duplex = __webpack_require__(20);
 exports.Transform = __webpack_require__(111);
 exports.PassThrough = __webpack_require__(260);
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17907,7 +17968,7 @@ module.exports = RIPEMD160
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var exports = module.exports = function SHA (algorithm) {
@@ -17928,7 +17989,7 @@ exports.sha512 = __webpack_require__(115)
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -17954,11 +18015,11 @@ exports.sha512 = __webpack_require__(115)
 
 module.exports = Stream;
 
-var EE = __webpack_require__(55).EventEmitter;
+var EE = __webpack_require__(56).EventEmitter;
 var inherits = __webpack_require__(0);
 
 inherits(Stream, EE);
-Stream.Readable = __webpack_require__(59);
+Stream.Readable = __webpack_require__(60);
 Stream.Writable = __webpack_require__(264);
 Stream.Duplex = __webpack_require__(259);
 Stream.Transform = __webpack_require__(263);
@@ -18061,7 +18122,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18363,13 +18424,13 @@ function simpleEnd(buf) {
 }
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const request_1 = __webpack_require__(25);
+const request_1 = __webpack_require__(21);
 const index_1 = __webpack_require__(19);
 /*** autocomplete key/name pairs from server ***/
 function autocomplete(path, value, autocomplete) {
@@ -18418,7 +18479,7 @@ exports.buildAutocomplete = buildAutocomplete;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18434,13 +18495,13 @@ exports.deleteAllChildren = deleteAllChildren;
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const label_1 = __webpack_require__(69);
+const label_1 = __webpack_require__(70);
 /*** build a generic element ***/
 function buildGeneric(type, content, name) {
     switch (type) {
@@ -18496,7 +18557,7 @@ exports.buildGeneric = buildGeneric;
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18536,18 +18597,21 @@ exports.buildHorizontalTable = buildHorizontalTable;
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const select_1 = __webpack_require__(70);
-const textarea_1 = __webpack_require__(71);
+const select_1 = __webpack_require__(71);
+const textarea_1 = __webpack_require__(72);
 /*** build an input ***/
-function buildInput(type, name, placeholder, value, required = false, readonly = false, options = [], json = false) {
+function buildInput(type, name, placeholder, value, required = false, readonly = false, hidden = false, options = [], json = false) {
     if (!type) {
         type = 'text';
+    }
+    if (hidden) {
+        type = 'hidden';
     }
     let input = document.createElement('input');
     if (required) {
@@ -18558,6 +18622,7 @@ function buildInput(type, name, placeholder, value, required = false, readonly =
         input.disabled = true;
     }
     switch (type) {
+        case 'hidden': { }
         case 'text': {
             input.type = type;
             if (placeholder) {
@@ -18622,7 +18687,7 @@ exports.buildInput = buildInput;
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18638,7 +18703,7 @@ exports.buildLabel = buildLabel;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18680,7 +18745,7 @@ exports.buildSelect = buildSelect;
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18712,7 +18777,7 @@ exports.buildTextarea = buildTextarea;
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18748,48 +18813,6 @@ function hideLoader(minload = 200) {
     }, minload);
 }
 exports.hideLoader = hideLoader;
-
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = __webpack_require__(19);
-const modal = document.createElement('div');
-modal.classList.add('modal');
-function createModal(data, ok = true, cancel = true, ok_callback = () => { }, cancel_callback = () => { }) {
-    for (let i = 0; i < data.length; i++) {
-        let dat = data[i];
-        modal.appendChild(index_1.buildGeneric(dat['type'], dat['value']));
-    }
-    document.body.appendChild(modal);
-    if (ok) {
-        let button = index_1.buildGeneric('button', 'OK');
-        button.onclick = () => {
-            ok_callback();
-            hideModal();
-        };
-        modal.appendChild(button);
-        button.focus();
-    }
-    if (cancel) {
-        let button = index_1.buildGeneric('button', 'Cancel');
-        button.onclick = () => {
-            cancel_callback();
-            hideModal();
-        };
-        modal.appendChild(button);
-    }
-    return modal;
-}
-exports.createModal = createModal;
-function hideModal() {
-    document.body.removeChild(modal);
-}
-exports.hideModal = hideModal;
 
 
 /***/ }),
@@ -20497,7 +20520,7 @@ var algorithm_1 = __webpack_require__(3);
 var commands_1 = __webpack_require__(45);
 var coreutils_1 = __webpack_require__(35);
 var domutils_1 = __webpack_require__(7);
-var keyboard_1 = __webpack_require__(47);
+var keyboard_1 = __webpack_require__(48);
 var messaging_1 = __webpack_require__(8);
 var signaling_1 = __webpack_require__(11);
 var virtualdom_1 = __webpack_require__(37);
@@ -21993,7 +22016,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
-var properties_1 = __webpack_require__(21);
+var properties_1 = __webpack_require__(22);
 var boxengine_1 = __webpack_require__(27);
 var layout_1 = __webpack_require__(16);
 var panellayout_1 = __webpack_require__(28);
@@ -24111,7 +24134,7 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MD5 = __webpack_require__(57)
+var MD5 = __webpack_require__(58)
 
 module.exports = function (buffer) {
   return new MD5().update(buffer).digest()
@@ -24129,9 +24152,9 @@ var Legacy = __webpack_require__(196)
 var Base = __webpack_require__(17)
 var Buffer = __webpack_require__(1).Buffer
 var md5 = __webpack_require__(93)
-var RIPEMD160 = __webpack_require__(60)
+var RIPEMD160 = __webpack_require__(61)
 
-var sha = __webpack_require__(61)
+var sha = __webpack_require__(62)
 
 var ZEROS = Buffer.alloc(128)
 
@@ -24191,7 +24214,7 @@ module.exports = function createHmac (alg, key) {
 /* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var randomBytes = __webpack_require__(22);
+var randomBytes = __webpack_require__(23);
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
 findPrime.fermatTest = fermatTest;
@@ -24305,7 +24328,7 @@ function findPrime(bits, gen) {
 "use strict";
 
 var Buffer = __webpack_require__(1).Buffer
-var Transform = __webpack_require__(62).Transform
+var Transform = __webpack_require__(63).Transform
 var inherits = __webpack_require__(0)
 
 function throwIfNotStringOrBuffer (val, prefix) {
@@ -25167,8 +25190,8 @@ module.exports = function (password, salt, iterations, keylen) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var md5 = __webpack_require__(93)
-var rmd160 = __webpack_require__(60)
-var sha = __webpack_require__(61)
+var rmd160 = __webpack_require__(61)
+var sha = __webpack_require__(62)
 
 var checkParameters = __webpack_require__(105)
 var defaultEncoding = __webpack_require__(104)
@@ -25366,7 +25389,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = __webpack_require__(55).EventEmitter;
+var EE = __webpack_require__(56).EventEmitter;
 
 var EElistenerCount = function (emitter, type) {
   return emitter.listeners(type).length;
@@ -25496,7 +25519,7 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(63).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(64).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -25652,7 +25675,7 @@ Readable.prototype.isPaused = function () {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(63).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(64).StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -26650,7 +26673,7 @@ module.exports = {
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(55).EventEmitter;
+module.exports = __webpack_require__(56).EventEmitter;
 
 
 /***/ }),
@@ -26666,7 +26689,7 @@ module.exports = __webpack_require__(55).EventEmitter;
  */
 
 var inherits = __webpack_require__(0)
-var Hash = __webpack_require__(23)
+var Hash = __webpack_require__(24)
 var Buffer = __webpack_require__(1).Buffer
 
 var K = [
@@ -26799,7 +26822,7 @@ module.exports = Sha256
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(0)
-var Hash = __webpack_require__(23)
+var Hash = __webpack_require__(24)
 var Buffer = __webpack_require__(1).Buffer
 
 var K = [
@@ -27132,7 +27155,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 |----------------------------------------------------------------------------*/
 __webpack_require__(117); // polyfill Promise on IE
 const commands_1 = __webpack_require__(45);
-const widgets_1 = __webpack_require__(24);
+const widgets_1 = __webpack_require__(25);
 const index_1 = __webpack_require__(116);
 const index_2 = __webpack_require__(18);
 __webpack_require__(118);
@@ -27184,15 +27207,18 @@ function main() {
     let home = new widgets_1.SplitPanel();
     home.title.label = "Home";
     let overview = new index_1.Status();
+    let notebooks = new index_1.Notebooks(overview);
+    let jobs = new index_1.Jobs(overview);
+    let reports = new index_1.Reports(overview);
     home.addWidget(overview);
-    home.addWidget(new index_1.Browser());
+    home.addWidget(new index_1.Browser(notebooks, jobs, reports, overview));
     home.setRelativeSizes([.3, .7]);
     let main = new widgets_1.TabPanel();
     main.id = 'main';
     main.addWidget(home);
-    main.addWidget(new index_1.Notebooks());
-    main.addWidget(new index_1.Jobs());
-    main.addWidget(new index_1.Reports());
+    main.addWidget(notebooks);
+    main.addWidget(jobs);
+    main.addWidget(reports);
     window.onresize = () => { main.update(); };
     widgets_1.Widget.attach(header, document.body);
     widgets_1.Widget.attach(bar, document.body);
@@ -27210,7 +27236,7 @@ window.onload = main;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(18);
-const generic_1 = __webpack_require__(66);
+const generic_1 = __webpack_require__(67);
 function buildListTable(data, ondblclick = (id) => { }) {
     let table = document.createElement('table');
     let headerrow = document.createElement('tr');
@@ -27254,8 +27280,8 @@ exports.buildListTable = buildListTable;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(18);
-const input_1 = __webpack_require__(68);
-const autocomplete_1 = __webpack_require__(64);
+const input_1 = __webpack_require__(69);
+const autocomplete_1 = __webpack_require__(65);
 function buildVerticalTable(data, title, form, form_callback = (url) => { }) {
     let table = document.createElement('table');
     for (let i = 0; i < data.length; i++) {
@@ -27268,16 +27294,26 @@ function buildVerticalTable(data, title, form, form_callback = (url) => { }) {
             }
         }
         td1.textContent = index_1.toProperCase(data[i]['name']);
-        row.appendChild(td1);
+        if (!data[i]['hidden']) {
+            row.appendChild(td1);
+        }
         let type = data[i]['type'];
         if (type !== 'label') {
             switch (type) {
                 case 'submit': {
-                    let input = input_1.buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required']);
+                    let input = input_1.buildInput(type, name, data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly'], data[i]['hidden']);
                     td2.appendChild(input);
                     if (form && form_callback) {
+                        let url = data[i]['url'];
+                        // doesnt work right
+                        // input.setAttribute('formaction', url);
+                        // workaround
+                        // these better not be reordered!!
+                        input.onclick = () => {
+                            form.action = url;
+                        };
                         form.onsubmit = () => {
-                            return form_callback(data[i]['url']);
+                            return form_callback(form.action);
                         };
                     }
                     break;
@@ -27289,7 +27325,7 @@ function buildVerticalTable(data, title, form, form_callback = (url) => { }) {
                     break;
                 }
                 default: {
-                    let conts = input_1.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly'], data[i]['options'], (data[i]['type'] == 'json'));
+                    let conts = input_1.buildInput(data[i]['type'], data[i]['name'], data[i]['placeholder'], data[i]['value'], data[i]['required'], data[i]['readonly'], data[i]['hidden'], data[i]['options'], (data[i]['type'] == 'json'));
                     td2.appendChild(conts);
                 }
             }
@@ -27341,7 +27377,7 @@ exports.apiurl = apiurl;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(19);
-const loader_1 = __webpack_require__(72);
+const loader_1 = __webpack_require__(73);
 /*** create paginated table from data ***/
 function createPrimarySection(widget, clazz, data, paginate = (page) => { }) {
     let sec = widget.mine;
@@ -27396,13 +27432,26 @@ exports.createPrimarySection = createPrimarySection;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(19);
+const request_1 = __webpack_require__(21);
+const modal_1 = __webpack_require__(46);
 /*** create detail view from python json response to detail ***/
-function createDetail(data, title, node) {
-    index_1.deleteAllChildren(node);
-    let table = index_1.buildVerticalTable(data, title);
-    node.appendChild(table);
+function createDetail(sec, title, data, callback = () => { }) {
+    if (!sec) {
+        return;
+    }
+    sec.appendChild(index_1.buildVerticalTable(data, title, sec, (url) => {
+        let form = new FormData(sec);
+        request_1.requestFormData(url, form).then((res) => {
+            createResponseModal(res.json(), callback);
+        });
+        return false;
+    }));
 }
 exports.createDetail = createDetail;
+/*** create response modal from python json response to config ***/
+function createResponseModal(resp, callback = () => { }) {
+    modal_1.createModal(resp, true, false, callback);
+}
 
 
 /***/ }),
@@ -27413,8 +27462,8 @@ exports.createDetail = createDetail;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(19);
-const request_1 = __webpack_require__(25);
-const modal_1 = __webpack_require__(73);
+const request_1 = __webpack_require__(21);
+const modal_1 = __webpack_require__(46);
 /*** create config from python json ***/
 function createConfigForm(sec, clazz, data, callback = () => { }) {
     if (!sec) {
@@ -27443,8 +27492,8 @@ exports.createResponseModal = createResponseModal;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const horizontalTable_1 = __webpack_require__(67);
-const common_1 = __webpack_require__(65);
+const horizontalTable_1 = __webpack_require__(68);
+const common_1 = __webpack_require__(66);
 /*** create paginated table from data ***/
 function createStatusSection(sec, clazz, data) {
     let table = horizontalTable_1.buildHorizontalTable(data);
@@ -27461,11 +27510,11 @@ exports.createStatusSection = createStatusSection;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const widgets_1 = __webpack_require__(24);
+const widgets_1 = __webpack_require__(25);
 const index_1 = __webpack_require__(18);
 const common_1 = __webpack_require__(26);
 class Browser extends widgets_1.SplitPanel {
-    constructor() {
+    constructor(notebooks, jobs, reports, status) {
         super({ orientation: 'vertical', spacing: 0 });
         this.node.classList.add('browser');
         let searchpanel = new widgets_1.BoxPanel();
@@ -27517,7 +27566,15 @@ class Browser extends widgets_1.SplitPanel {
                 type = '';
             }
             index_1.showLoader();
-            resultspanel.addWidget(new common_1.PrimaryDetail(type, search.value));
+            if (type == 'notebooks') {
+                resultspanel.addWidget(new common_1.PrimaryDetail(type, search.value, notebooks, status));
+            }
+            else if (type == 'jobs') {
+                resultspanel.addWidget(new common_1.PrimaryDetail(type, search.value, jobs, status));
+            }
+            else if (type == 'reports') {
+                resultspanel.addWidget(new common_1.PrimaryDetail(type, search.value, reports, status));
+            }
             index_1.hideLoader();
         });
         holder.appendChild(search);
@@ -27539,7 +27596,7 @@ exports.Browser = Browser;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const widgets_1 = __webpack_require__(24);
+const widgets_1 = __webpack_require__(25);
 class Header extends widgets_1.Widget {
     static createNode() {
         let node = document.createElement('div');
@@ -27596,8 +27653,8 @@ exports.Header = Header;
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = __webpack_require__(26);
 class Jobs extends common_1.PrimaryTab {
-    constructor() {
-        super('scheduler', 'jobs');
+    constructor(status) {
+        super('scheduler', 'jobs', status);
     }
 }
 exports.Jobs = Jobs;
@@ -27612,8 +27669,8 @@ exports.Jobs = Jobs;
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = __webpack_require__(26);
 class Notebooks extends common_1.PrimaryTab {
-    constructor() {
-        super('uploader', 'notebooks');
+    constructor(status) {
+        super('uploader', 'notebooks', status);
     }
 }
 exports.Notebooks = Notebooks;
@@ -27628,8 +27685,8 @@ exports.Notebooks = Notebooks;
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = __webpack_require__(26);
 class Reports extends common_1.PrimaryTab {
-    constructor() {
-        super('configurator', 'reports');
+    constructor(status) {
+        super('configurator', 'reports', status);
     }
 }
 exports.Reports = Reports;
@@ -27642,8 +27699,8 @@ exports.Reports = Reports;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const widgets_1 = __webpack_require__(24);
-const request_1 = __webpack_require__(25);
+const widgets_1 = __webpack_require__(25);
+const request_1 = __webpack_require__(21);
 const index_1 = __webpack_require__(18);
 const index_2 = __webpack_require__(74);
 const index_3 = __webpack_require__(19);
@@ -27687,6 +27744,8 @@ class StatusBrowser extends widgets_1.TabPanel {
             });
         }, 10000);
     }
+    update() {
+    }
 }
 exports.StatusBrowser = StatusBrowser;
 class StatusOverview extends widgets_1.Widget {
@@ -27703,13 +27762,7 @@ class StatusOverview extends widgets_1.Widget {
         this.node.appendChild(this.nbs);
         this.node.appendChild(this.jbs);
         this.node.appendChild(this.rps);
-        request_1.request('get', index_1.apiurl() + 'status').then((res) => {
-            let data = res.json();
-            this.populateTop(data);
-            StatusOverview.createSubsection(this.nbs, 'notebooks', 'Notebooks', data);
-            StatusOverview.createSubsection(this.jbs, 'jobs', 'Jobs', data);
-            StatusOverview.createSubsection(this.rps, 'reports', 'Reports', data);
-        });
+        this.update();
     }
     static createNode() {
         let node = document.createElement('div');
@@ -27731,6 +27784,7 @@ class StatusOverview extends widgets_1.Widget {
     }
     static createSubsection(sec, clazz, title, data) {
         sec.classList.add('status-breakdown');
+        index_3.deleteAllChildren(sec);
         let sec_sp = document.createElement('span');
         sec_sp.classList.add('subtitle');
         sec_sp.classList.add(clazz);
@@ -27753,6 +27807,7 @@ class StatusOverview extends widgets_1.Widget {
     }
     populateTop(data) {
         this.top.classList.add('status-container');
+        index_3.deleteAllChildren(this.top);
         let nb = StatusOverview.createSubtitle('notebooks', data);
         let jb = StatusOverview.createSubtitle('jobs', data);
         let rp = StatusOverview.createSubtitle('reports', data);
@@ -27760,14 +27815,29 @@ class StatusOverview extends widgets_1.Widget {
         this.top.appendChild(jb);
         this.top.appendChild(rp);
     }
+    update() {
+        request_1.request('get', index_1.apiurl() + 'status').then((res) => {
+            let data = res.json();
+            this.populateTop(data);
+            StatusOverview.createSubsection(this.nbs, 'notebooks', 'Notebooks', data);
+            StatusOverview.createSubsection(this.jbs, 'jobs', 'Jobs', data);
+            StatusOverview.createSubsection(this.rps, 'reports', 'Reports', data);
+        });
+    }
 }
 exports.StatusOverview = StatusOverview;
 class Status extends widgets_1.SplitPanel {
     constructor() {
         super({ orientation: 'vertical' });
-        this.addWidget(new StatusOverview());
-        this.addWidget(new StatusBrowser());
+        this.overview = new StatusOverview();
+        this.browser = new StatusBrowser();
+        this.addWidget(this.overview);
+        this.addWidget(this.browser);
         this.setRelativeSizes([.5, .5]);
+    }
+    update() {
+        this.overview.update();
+        this.browser.update();
     }
 }
 exports.Status = Status;
@@ -31998,7 +32068,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 |
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
-var boxlayout_1 = __webpack_require__(48);
+var boxlayout_1 = __webpack_require__(49);
 var panel_1 = __webpack_require__(38);
 /**
  * A panel which arranges its widgets in a single row or column.
@@ -33257,7 +33327,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
-var disposable_1 = __webpack_require__(46);
+var disposable_1 = __webpack_require__(47);
 var domutils_1 = __webpack_require__(7);
 var menu_1 = __webpack_require__(77);
 /**
@@ -33484,10 +33554,10 @@ var coreutils_1 = __webpack_require__(35);
 var domutils_1 = __webpack_require__(7);
 var dragdrop_1 = __webpack_require__(36);
 var messaging_1 = __webpack_require__(8);
-var properties_1 = __webpack_require__(21);
+var properties_1 = __webpack_require__(22);
 var signaling_1 = __webpack_require__(11);
 var docklayout_1 = __webpack_require__(76);
-var tabbar_1 = __webpack_require__(49);
+var tabbar_1 = __webpack_require__(50);
 var widget_1 = __webpack_require__(6);
 /**
  * A widget which provides a flexible docking area for widgets.
@@ -34926,7 +34996,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
-var properties_1 = __webpack_require__(21);
+var properties_1 = __webpack_require__(22);
 var boxengine_1 = __webpack_require__(27);
 var layout_1 = __webpack_require__(16);
 var widget_1 = __webpack_require__(6);
@@ -35651,7 +35721,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 |----------------------------------------------------------------------------*/
 var algorithm_1 = __webpack_require__(3);
 var domutils_1 = __webpack_require__(7);
-var keyboard_1 = __webpack_require__(47);
+var keyboard_1 = __webpack_require__(48);
 var messaging_1 = __webpack_require__(8);
 var virtualdom_1 = __webpack_require__(37);
 var widget_1 = __webpack_require__(6);
@@ -37700,9 +37770,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var domutils_1 = __webpack_require__(7);
 var messaging_1 = __webpack_require__(8);
 var signaling_1 = __webpack_require__(11);
-var boxlayout_1 = __webpack_require__(48);
+var boxlayout_1 = __webpack_require__(49);
 var stackedpanel_1 = __webpack_require__(80);
-var tabbar_1 = __webpack_require__(49);
+var tabbar_1 = __webpack_require__(50);
 var widget_1 = __webpack_require__(6);
 /**
  * A widget which combines a `TabBar` and a `StackedPanel`.
@@ -39161,7 +39231,7 @@ function fromByteArray (uint8) {
 
 var AuthCipher = __webpack_require__(86)
 var Buffer = __webpack_require__(1).Buffer
-var MODES = __webpack_require__(52)
+var MODES = __webpack_require__(53)
 var StreamCipher = __webpack_require__(90)
 var Transform = __webpack_require__(17)
 var aes = __webpack_require__(39)
@@ -39289,7 +39359,7 @@ exports.createDecipheriv = createDecipheriv
 /* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MODES = __webpack_require__(52)
+var MODES = __webpack_require__(53)
 var AuthCipher = __webpack_require__(86)
 var Buffer = __webpack_require__(1).Buffer
 var StreamCipher = __webpack_require__(90)
@@ -39682,8 +39752,8 @@ exports.encrypt = function (self, chunk) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var DES = __webpack_require__(189)
-var aes = __webpack_require__(51)
-var aesModes = __webpack_require__(52)
+var aes = __webpack_require__(52)
+var aesModes = __webpack_require__(53)
 var desModes = __webpack_require__(190)
 var ebtk = __webpack_require__(41)
 
@@ -39755,7 +39825,7 @@ exports.listCiphers = exports.getCiphers = getCiphers
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var CipherBase = __webpack_require__(17)
-var des = __webpack_require__(54)
+var des = __webpack_require__(55)
 var inherits = __webpack_require__(0)
 
 var modes = {
@@ -39842,7 +39912,7 @@ module.exports = __webpack_require__(91)
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(33)
-var stream = __webpack_require__(62)
+var stream = __webpack_require__(63)
 var inherits = __webpack_require__(0)
 var sign = __webpack_require__(193)
 var verify = __webpack_require__(194)
@@ -39941,7 +40011,7 @@ module.exports = {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = __webpack_require__(94)
-var crt = __webpack_require__(53)
+var crt = __webpack_require__(54)
 var EC = __webpack_require__(9).ec
 var BN = __webpack_require__(4)
 var parseKeys = __webpack_require__(42)
@@ -40368,7 +40438,7 @@ module.exports = Hmac
 "use strict";
 
 
-exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(22)
+exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(23)
 exports.createHash = exports.Hash = __webpack_require__(33)
 exports.createHmac = exports.Hmac = __webpack_require__(94)
 
@@ -40687,7 +40757,7 @@ exports.i(__webpack_require__(215), "");
 exports.i(__webpack_require__(216), "");
 
 // module
-exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n\ntextarea.json {\n  min-height: 500px;\n}\n\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\nbody.dark a {\n  color: var(--dark-color);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody.light a {\n  color: var(--light-color);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\nbutton {\n  width: 100px;\n}\n\nbutton:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}\n\ndiv.details {\n  overflow-y: scroll;\n}\n\ndiv.details > table {\n  width: 500px;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 5px;\n}\n\ndiv.details > table > tr > td:nth-child(2) {\n  background-color: transparent !important;\n}\n\ndiv.details > table > tr > td > * {\n  min-width: 200px !important;\n  width: 250px;\n  margin-bottom:0px !important;\n}\n\ndiv.details > table > tr > td > textarea {\n  min-width: 250px !important;\n  min-height: 300px !important;\n  width:100%;\n}\n\ndiv.details > table > tr > td > input[type=submit] {\n  min-width: 200px !important;\n}\n\ndiv.details > table > tr > td > input[type=submit]:hover {\n  background-color: var(--highlight-blue);\n}\n\ndiv.details > table > tr > td {\n  border: none;\n  border-bottom: none !important;\n  margin-bottom:5px;\n}\n\n/****** Tables ******/\n.uploader, .scheduler, .configurator,\n.primary {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.primary > table {\n    height:95%;\n    text-align: left;\n}\n\n.primary form > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .primary > p span.page:hover {\n    color: white;\n}\n\nbody.light .primary > p span.page:hover {\n    color: #999;\n}\n\n.primary > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.primary > table > tr:first-child {\n    height: 20px;\n    max-height: 20px;\n}\n\n.primary > table > tr > th {\n    padding: 5px;\n}\n\n.primary > p {\n  margin-top:0px;\n  margin-bottom:0px;\n}\n\nbody.dark .primary > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light .primary > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n    border-right: 1px solid var(--light-border);\n}\n\n.primary > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .primary > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light .primary > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n    border-right: 1px solid var(--light-border);\n}\n\n/****** ******/\n\n\n/****** Forms ******/\n.p-DockPanel-widget > form  {\n    width: 500px;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top: 5px;\n}\n\n.p-DockPanel-widget > form {\n\n}\n\n.p-DockPanel-widget > form > table {\n  width:100%;\n}\n\n.p-DockPanel-widget > form > table > tr> td {\n    margin-bottom: 5px;\n}\n\n.p-DockPanel-widget > form > table > tr> td > * {\n    min-height:20px;\n    min-width: 250px !important;\n    width: 250px;\n\n    margin-bottom: 0px !important;\n    border: none !important;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=text] {\n}\n\n.p-DockPanel-widget > form > table > tr> td > textarea {\n  min-width: 250px !important;\n  min-height: 300px !important;\n  width:100%;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=submit] {\n    min-width: 200px !important;\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=checkbox] {\n    /*margin-left:10px;*/\n}\n\n.p-DockPanel-widget > form > table > tr> td > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n.notebooks .uploader form {\n    min-height: 275px;\n}\n\n.jobs .scheduler form {\n    min-height: 600px;\n}\n\n.reports .configurator form {\n    min-height: 350px;\n}\n/****** ******/\n", ""]);
+exports.push([module.i, "/*-----------------------------------------------------------------------------\n| Copyright (c) 2014-2017, PhosphorJS Contributors\n|\n| Distributed under the terms of the BSD 3-Clause License.\n|\n| The full license is in the file LICENSE, distributed with this software.\n|----------------------------------------------------------------------------*/\n\n\n/**********/\n/* common */\n/**********/\nbody {\n  display: flex;\n  flex-direction: column;\n  position: absolute;\n  font-family: 'Roboto';\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: 0;\n  padding: 0;\n  overflow: hidden;\n  font-family: Arial;\n}\n\n::-webkit-scrollbar {\n    width: 5px;\n    background: transparent;\n}\n::-webkit-scrollbar-thumb {\n    background: var(--highlight-blue);\n}\n\ntextarea.json {\n  min-height: 500px;\n}\n\n/**********/\n/* /common */\n/**********/\n\nbody.dark {\n  color: var(--dark-color);\n  background-color: var(--dark-bg-color2);\n}\nbody.dark a {\n  color: var(--dark-color);\n}\n\nbody.light {\n  color: var(--light-color);\n  background-color: var(--light-bg-color2);\n}\n\nbody.light a {\n  color: var(--light-color);\n}\n\nbody div.footer {\n  position: absolute;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  bottom: 10px;\n}\n\nbutton {\n  width: 100px;\n}\n\nbutton:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n#menuBar {\n  flex: 0 0 auto;\n  height: 45px;\n  margin-left: 85%;\n  display:flex;\n  justify-content: center;\n}\n\nbody.dark #menuBar {\n  background-color: var(--dark-bg-color2);\n  color: var(--dark-color);\n}\n\nbody.light #menuBar {\n  background-color: var(--light-bg-color2);\n  color: var(--light-color);\n}\n\n#main {\n  flex: 1 1 auto;\n  top: -45px;\n}\n\n\n#main > .p-TabBar > .p-TabBar-content {\n  margin-left: 30%;\n  margin-right: 30%;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--dark-border);\n}\n\nbody.light #main > .p-TabBar > .p-TabBar-content {\n  border-bottom: 1px solid var(--light-border);\n}\n\n.p-TabBar > .p-TabBar-content > .p-TabBar-tab {\n  display: flex;\n  align-items: center;\n  text-align: center;\n}\n\nbody.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,\nbody.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {\n  border-bottom:3px solid var(--highlight-blue);\n}\n\n#palette {\n  min-width: 300px;\n}\n\nbody.dark #palette {\n  border-right: 1px solid var(--dark-border);\n}\n\nbody.light #palette {\n  border-right: 1px solid var(--light-border);\n}\n\n\n#dock {\n  padding: 4px;\n}\n\nbody.dark #dock {\n  background-color: var(--dark-bg-color);\n}\n\nbody.light #dock {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark .p-SplitPanel {\n  background-color: var(--dark-bg-color);\n}\n\n\nbody.light .p-SplitPanel {\n  background-color: var(--light-bg-color);\n}\n\nbody.dark tr:hover > td {\n  background-color: var(--dark-bg-color2)\n}\n\nbody.light tr:hover > td {\n  background-color: var(--light-bg-color2)\n}\n\ndiv.details {\n  overflow-y: scroll;\n}\n\ndiv.details > table {\n  width: 500px;\n  margin-left: auto;\n  margin-right: auto;\n  margin-top: 5px;\n}\n\n\n/****** Tables ******/\n.uploader, .scheduler, .configurator,\n.primary {\n    display: flex;\n    flex-direction: column;\n    overflow-y: scroll;\n}\n\n.primary > table {\n    height:95%;\n    text-align: left;\n}\n\n.primary form > p {\n    height:2.5%;\n    margin: auto;\n    margin-top: 0;\n    margin-bottom: 0;\n}\n\nbody.dark .primary > p span.page:hover {\n    color: white;\n}\n\nbody.light .primary > p span.page:hover {\n    color: #999;\n}\n\n.primary > p span.page-active {\n    color: var(--highlight-orange);\n}\n\n\n.primary > table > tr:first-child {\n    height: 20px;\n    max-height: 20px;\n}\n\n.primary > table > tr > th {\n    padding: 5px;\n}\n\n.primary > p {\n  margin-top:0px;\n  margin-bottom:0px;\n}\n\nbody.dark .primary > table > tr > th {\n    border-bottom: 1px solid var(--dark-border);\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light .primary > table > tr > th {\n    border-bottom: 1px solid var(--light-border);\n    border-right: 1px solid var(--light-border);\n}\n\n.primary > table > tr > td {\n    padding: 5px;\n}\n\nbody.dark .primary > table > tr > td {\n    border-bottom: 1px solid var(--dark-border);\n    border-right: 1px solid var(--dark-border);\n}\n\nbody.light .primary > table > tr > td {\n    border-bottom: 1px solid var(--light-border);\n    border-right: 1px solid var(--light-border);\n}\n\n/****** ******/\n\n\n/****** Forms ******/\n.p-DockPanel-widget > form  {\n    width: 500px;\n    margin-left: auto;\n    margin-right: auto;\n    margin-top: 5px;\n}\n\n\nform > table {\n  width:100%;\n}\n\nform > table > tr> td > * {\n    min-height:20px;\n    min-width: 250px !important;\n    width: 250px;\n\n    margin-bottom: 0px !important;\n    border: none !important;\n}\n\nform > table > tr> td > textarea {\n  min-width: 250px !important;\n  min-height: 300px !important;\n  width:100%;\n}\n\nform > table > tr> td > select {\n    min-width: 256px !important;\n}\n\nform > table > tr> td > input[type=checkbox] {\n    /*margin-left:10px;*/\n}\n\n\nform > table > tr> td > input[type=submit] {\n    min-width: 200px !important;\n  width: 200px;\n}\n\nform > table > tr> td > input[type=submit]:hover {\n    color: white;\n    background-color: var(--highlight-blue);\n}\n\n.notebooks .uploader form {\n    min-height: 275px;\n}\n\n.jobs .scheduler form {\n    min-height: 600px;\n}\n\n.reports .configurator form {\n    min-height: 350px;\n}\n/****** ******/\n", ""]);
 
 // exports
 
@@ -40992,7 +41062,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
 var assert = __webpack_require__(10);
 var inherits = __webpack_require__(0);
 
-var des = __webpack_require__(54);
+var des = __webpack_require__(55);
 var utils = des.utils;
 var Cipher = des.Cipher;
 
@@ -41142,7 +41212,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
 var assert = __webpack_require__(10);
 var inherits = __webpack_require__(0);
 
-var des = __webpack_require__(54);
+var des = __webpack_require__(55);
 var Cipher = des.Cipher;
 var DES = des.DES;
 
@@ -41519,7 +41589,7 @@ var TEN = new BN(10);
 var THREE = new BN(3);
 var SEVEN = new BN(7);
 var primes = __webpack_require__(95);
-var randomBytes = __webpack_require__(22);
+var randomBytes = __webpack_require__(23);
 module.exports = DH;
 
 function setPublicKey(pub, enc) {
@@ -43646,7 +43716,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
 
 var curves = exports;
 
-var hash = __webpack_require__(56);
+var hash = __webpack_require__(57);
 var elliptic = __webpack_require__(9);
 
 var assert = elliptic.utils.assert;
@@ -44371,7 +44441,7 @@ Signature.prototype.toDER = function toDER(enc) {
 "use strict";
 
 
-var hash = __webpack_require__(56);
+var hash = __webpack_require__(57);
 var elliptic = __webpack_require__(9);
 var utils = elliptic.utils;
 var assert = utils.assert;
@@ -47158,7 +47228,7 @@ SHA384.prototype._digest = function digest(enc) {
 "use strict";
 
 
-var hash = __webpack_require__(56);
+var hash = __webpack_require__(57);
 var utils = __webpack_require__(102);
 var assert = __webpack_require__(10);
 
@@ -47615,7 +47685,7 @@ var findProc = /Proc-Type: 4,ENCRYPTED[\n\r]+DEK-Info: AES-((?:128)|(?:192)|(?:2
 var startRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----/m
 var fullRegex = /^-----BEGIN ((?:.* KEY)|CERTIFICATE)-----([0-9A-z\n\r\+\/\=]+)-----END \1-----$/m
 var evp = __webpack_require__(41)
-var ciphers = __webpack_require__(51)
+var ciphers = __webpack_require__(52)
 module.exports = function (okey, password) {
   var key = okey.toString()
   var match = key.match(findProc)
@@ -47773,7 +47843,7 @@ exports.publicDecrypt = function publicDecrypt(key, buf) {
 var mgf = __webpack_require__(107);
 var xor = __webpack_require__(109);
 var bn = __webpack_require__(4);
-var crt = __webpack_require__(53);
+var crt = __webpack_require__(54);
 var createHash = __webpack_require__(33);
 var withPublic = __webpack_require__(108);
 module.exports = function privateDecrypt(private_key, enc, reverse) {
@@ -47884,13 +47954,13 @@ function compare(a, b){
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(42);
-var randomBytes = __webpack_require__(22);
+var randomBytes = __webpack_require__(23);
 var createHash = __webpack_require__(33);
 var mgf = __webpack_require__(107);
 var xor = __webpack_require__(109);
 var bn = __webpack_require__(4);
 var withPublic = __webpack_require__(108);
-var crt = __webpack_require__(53);
+var crt = __webpack_require__(54);
 
 var constants = {
   RSA_PKCS1_OAEP_PADDING: 4,
@@ -47991,7 +48061,7 @@ function oldBrowser () {
   throw new Error('secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11')
 }
 var safeBuffer = __webpack_require__(1)
-var randombytes = __webpack_require__(22)
+var randombytes = __webpack_require__(23)
 var Buffer = safeBuffer.Buffer
 var kBufferMaxLength = safeBuffer.kMaxLength
 var crypto = global.crypto || global.msCrypto
@@ -48245,21 +48315,21 @@ if (util && util.inspect && util.inspect.custom) {
 /* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(59).PassThrough
+module.exports = __webpack_require__(60).PassThrough
 
 
 /***/ }),
 /* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(59).Transform
+module.exports = __webpack_require__(60).Transform
 
 
 /***/ }),
 /* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(58);
+module.exports = __webpack_require__(59);
 
 
 /***/ }),
@@ -48468,7 +48538,7 @@ module.exports = __webpack_require__(58);
  */
 
 var inherits = __webpack_require__(0)
-var Hash = __webpack_require__(23)
+var Hash = __webpack_require__(24)
 var Buffer = __webpack_require__(1).Buffer
 
 var K = [
@@ -48569,7 +48639,7 @@ module.exports = Sha
  */
 
 var inherits = __webpack_require__(0)
-var Hash = __webpack_require__(23)
+var Hash = __webpack_require__(24)
 var Buffer = __webpack_require__(1).Buffer
 
 var K = [
@@ -48674,7 +48744,7 @@ module.exports = Sha1
 
 var inherits = __webpack_require__(0)
 var Sha256 = __webpack_require__(114)
-var Hash = __webpack_require__(23)
+var Hash = __webpack_require__(24)
 var Buffer = __webpack_require__(1).Buffer
 
 var W = new Array(64)
@@ -48725,7 +48795,7 @@ module.exports = Sha224
 
 var inherits = __webpack_require__(0)
 var SHA512 = __webpack_require__(115)
-var Hash = __webpack_require__(23)
+var Hash = __webpack_require__(24)
 var Buffer = __webpack_require__(1).Buffer
 
 var W = new Array(160)

@@ -9,11 +9,16 @@ function buildInput(type?: string,
                     value?: string,
                     required = false,
                     readonly = false,
+                    hidden = false,
                     options = [],
                     json = false
                     ): HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement {
   if (!type ){
     type = 'text';
+  }
+
+  if(hidden){
+    type = 'hidden';
   }
 
   let input = document.createElement('input');
@@ -26,6 +31,7 @@ function buildInput(type?: string,
   }
 
   switch(type) {
+    case 'hidden': {}
     case 'text': {
       input.type = type;
       if(placeholder){

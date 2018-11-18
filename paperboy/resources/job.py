@@ -12,7 +12,11 @@ class JobResource(BaseResource):
 
     def on_post(self, req, resp):
         resp.content_type = 'application/json'
-        resp.body = json.dumps(self.db.jobs.store(req.context['user'], req.params, self.session, self.scheduler))
+        action = req.params.get('action')
+        if action == 'delete':
+            resp.body = json.dumps(self.db.jobs.delete(req.context['user'], req.params, self.session, self.scheduler))
+        else:
+            resp.body = json.dumps(self.db.jobs.store(req.context['user'], req.params, self.session, self.scheduler))
 
 
 class JobDetailResource(BaseResource):
