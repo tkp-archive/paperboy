@@ -27298,7 +27298,11 @@ function buildVerticalTable(data, title, form, form_callback = (url) => { }) {
             row.appendChild(td1);
         }
         let type = data[i]['type'];
+        let hidden = data[i]['hidden'];
         let name = data[i]['name'];
+        if (hidden) {
+            row.style.display = 'none';
+        }
         if (type !== 'label') {
             switch (type) {
                 case 'submit': {
@@ -40786,7 +40790,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "div.modal {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n}\n\ndiv.loader {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\ndiv.loader_icon {\n  border: 24px solid #333; \n  /*border: 16px solid #f3f3f3; */\n  /*border-top: 16px solid #3498db; */\n  border-right: 24px solid var(--highlight-blue);\n  border-left: 24px solid var(--highlight-blue);\n\n  border-radius: 50%;\n  animation: spin 2s linear infinite;\n\n  height:200px;\n  width:200px;\n}\n\n@keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n}\n", ""]);
+exports.push([module.i, "div.modal {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  color: white;\n}\n\ndiv.loader {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\ndiv.loader_icon {\n  border: 24px solid #333; \n  /*border: 16px solid #f3f3f3; */\n  /*border-top: 16px solid #3498db; */\n  border-right: 24px solid var(--highlight-blue);\n  border-left: 24px solid var(--highlight-blue);\n\n  border-radius: 50%;\n  animation: spin 2s linear infinite;\n\n  height:200px;\n  width:200px;\n}\n\n@keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n}\n", ""]);
 
 // exports
 

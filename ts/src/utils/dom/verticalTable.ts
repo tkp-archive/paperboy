@@ -21,7 +21,12 @@ function buildVerticalTable(data: any, title?: any, form?: HTMLFormElement, form
       }
 
       let type = data[i]['type'];
+      let hidden = data[i]['hidden'];
       let name = data[i]['name'];
+
+      if(hidden){
+        row.style.display = 'none';
+      }
 
       if(type !== 'label'){
         switch(type){
