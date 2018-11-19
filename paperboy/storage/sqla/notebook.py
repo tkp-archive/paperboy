@@ -88,5 +88,12 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         nb = session.query(NotebookSQL).filter(NotebookSQL.id == id).first()
         name = nb.name
         session.delete(nb)
+
+        # cascade handled in DB, need to cascade to airflow jobs
+        from .models.job import JobSQL
+        jobs = session.query(JobSQL).filter(JobSQL.notebookId == nb.id).all()
+        for job in jobs:
+            resp = self.db.jobs.delete(user, {'id': job.id}, session, *args, **kwargs)
+            print(resp)
         return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
                 {"name": "", "type": "p", "value": "Successfully deleted notebook: " + name, "required": False, "readonly": False, "hidden": False}]

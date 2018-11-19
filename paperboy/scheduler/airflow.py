@@ -40,15 +40,11 @@ class AirflowScheduler(BaseScheduler):
 
     def status(self, user, params, session, *args, **kwargs):
         type = params.get('type', '')
-        if not self.sql_conn:
+        try:
+            gen = AirflowScheduler.query(self.engine)
+        except Exception as e:
+            print(e)
             gen = AirflowScheduler.fakequery()
-            if type == 'jobs':
-                return gen['jobs']
-            elif type == 'reports':
-                return gen['reports']
-            else:
-                return gen
-        gen = AirflowScheduler.query(self.engine)
         if type == 'jobs':
             return gen['jobs']
         elif type == 'reports':
@@ -161,5 +157,9 @@ class AirflowScheduler(BaseScheduler):
             os.remove(file)
 
             # delete dag
-            cmd = ['airflow', 'delete_dag', dag, '-y']
-            subprocess.call(cmd)
+            # FIXME
+            try:
+                cmd = ['airflow', 'delete_dag', dag, '-y']
+                subprocess.call(cmd)
+            except Exception as e:
+                print(e)

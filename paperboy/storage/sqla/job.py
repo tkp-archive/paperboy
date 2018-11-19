@@ -87,11 +87,14 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
         scheduler.schedule(user, notebook_config, job_config, report_configs)
         return store
 
-    def delete(self, user, params, session, *args, **kwargs):
+    def delete(self, user, params, session, scheduler, *args, **kwargs):
         # TODO only if allowed
         id = justid(params.get('id'))
         jb = session.query(JobSQL).filter(JobSQL.id == id).first()
         name = jb.name
         session.delete(jb)
+
+        scheduler.unschedule(user, None, jb.to_config(self.config), [])
+
         return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
                 {"name": "", "type": "p", "value": "Successfully deleted job: " + name, "required": False, "readonly": False, "hidden": False}]
