@@ -7,7 +7,12 @@ import falcon
 import json
 import logging
 import os
+import subprocess
 from paperboy.server.deploy import FalconDeploy
+from paperboy.config.user import UserConfig
+from paperboy.config.notebook import NotebookConfig
+from paperboy.config.job import JobConfig
+from paperboy.config.report import ReportConfig
 from paperboy.config.scheduler import AirflowSchedulerConfig
 from paperboy.scheduler.airflow import AirflowScheduler
 from six.moves.urllib_parse import urljoin
@@ -81,13 +86,37 @@ class RemoteAirflowResource(object):
         resp.body = json.dumps({'status': 'ok'})
 
     def on_post(self, req, resp):
-        template = req.params['template']
         name = req.params['name']
-        with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
-            fp.write(template)
+        user = UserConfig.from_config(req.params['user'], self.config)
+        notebook = NotebookConfig.from_config(req.params['notebook'], self.config)
+        job = JobConfig.from_config(req.params['job'], self.config)
+        reports = [ReportConfig.from_config(r, self.config) for r in req.params['reports']]
 
-        resp.content_type = 'application/json'
-        resp.body = json.dumps({'status': 'ok'})
+        if reports:
+            # write or rewrite
+            template = AirflowScheduler.template(self.config, user, notebook, job, reports)
+            name = job.id + '.py'
+            with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
+                fp.write(template)
+
+            resp.content_type = 'application/json'
+            resp.body = json.dumps({'status': 'ok'})
+        else:
+            # delete
+            name = job.id + '.py'
+            file = os.path.join(self.config.scheduler.dagbag, name)
+            dag = 'DAG-' + job.id
+
+            # delete dag file
+            os.remove(file)
+
+            # delete dag
+            # FIXME
+            try:
+                cmd = ['airflow', 'delete_dag', dag, '-y']
+                subprocess.call(cmd)
+            except Exception as e:
+                print(e)
 
 
 class RemoteAirflowStatusResource(object):
@@ -98,22 +127,17 @@ class RemoteAirflowStatusResource(object):
         # TODO pull status args out of request
         engine = req.params.get('engine')
         type = req.params.get('type', '')
-        if not self.sql_conn:
-            gen = AirflowScheduler.fakequery(engine)
-            if type == 'jobs':
-                ret = gen['jobs']
-            elif type == 'reports':
-                ret = gen['reports']
-            else:
-                ret = gen
-        else:
+        try:
             gen = AirflowScheduler.query(engine)
-            if type == 'jobs':
-                ret = gen['jobs']
-            elif type == 'reports':
-                ret = gen['reports']
-            else:
-                ret = gen
+        except Exception as e:
+            print(e)
+            gen = AirflowScheduler.fakequery(engine)
+        if type == 'jobs':
+            ret = gen['jobs']
+        elif type == 'reports':
+            ret = gen['reports']
+        else:
+            ret = gen
 
         resp.content_type = 'application/json'
         resp.body = json.dumps(ret)
