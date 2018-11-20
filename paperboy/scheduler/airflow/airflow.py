@@ -7,7 +7,7 @@ import subprocess
 from base64 import b64encode
 from random import choice
 from sqlalchemy import create_engine
-from .base import BaseScheduler, TIMING_MAP
+from ..base import BaseScheduler, TIMING_MAP
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
     TEMPLATE = fp.read()
