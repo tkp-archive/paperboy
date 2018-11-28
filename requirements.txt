@@ -3,6 +3,7 @@ falcon-cors
 falcon_helpers
 falcon-multipart
 gunicorn
+gitpython
 jinja2
 nbconvert
 nbformat
@@ -10,3 +11,4 @@ nbstripout
 papermill
 PyJWT
 traitlets
+voila
