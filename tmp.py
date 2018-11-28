@@ -54,9 +54,10 @@ if __name__ == '__main__':
     with open(os.path.join(directory, 'Procfile'), 'w') as fp:
         fp.write('web: {} -m run.py'.format(sys.executable))
 
-    if requirements:
-        with open(os.path.join(directory, 'requirements.txt'), 'w'):
-            fp.write(requirements)
+    if not requirements:
+        requirements = '''voila'''
+    with open(os.path.join(directory, 'requirements.txt'), 'w'):
+        fp.write(requirements)
 
 
 def make_dokku_proj(directory, name, dokku_source):
