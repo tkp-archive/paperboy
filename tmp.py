@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     if not requirements:
         requirements = '''voila'''
-    with open(os.path.join(directory, 'requirements.txt'), 'w'):
+    with open(os.path.join(directory, 'requirements.txt'), 'w') as fp:
         fp.write(requirements)
 
 
