@@ -44,12 +44,12 @@ from voila.app import Voila
 
 def launch_voila():
     v = Voila()
-    v.notebook_path = os.path.dirname(__file__)
+    v.notebook_path = os.path.join(os.path.dirname(__file__), '{}')
     v.launch_instance()
 
 if __name__ == '__main__':
     launch_voila()
-''')
+'''.join(name))
 
     with open(os.path.join(directory, 'Procfile'), 'w') as fp:
         fp.write('web: {} -m run.py'.format(sys.executable))
