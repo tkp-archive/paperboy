@@ -11,14 +11,21 @@ DOKKU_SRC = 'dokku@host1.paine.nyc'
 
 def launch(notebook_string, name, dokku_source):
     directory = new_directory()
-    make_voila_proj(notebook_string, name, directory)
-    remote = make_dokku_proj(directory, name, dokku_source)
+    print(directory.name)
+    print('voila starting')
+    make_voila_proj(notebook_string, name, directory.name)
+    print('voila done')
+    print('dokku starting')
+    remote = make_dokku_proj(directory.name, name, dokku_source)
+    print('dokku done')
+    print('deploy starting')
     dokku_deploy(remote)
+    print('deploy done')
 
 
 def new_directory():
     try:
-        from tempdir import TemporaryDirectory
+        from tempfile import TemporaryDirectory
     except ImportError:
         from backports.tempfile import TemporaryDirectory
     return TemporaryDirectory()
@@ -54,7 +61,7 @@ def make_dokku_proj(directory, name, dokku_source):
     from git import Repo
     repo = Repo.init(directory)
 
-    track = [f for f in os.listdir('.') if f not in ('.git')]
+    track = [f for f in os.listdir(directory) if f not in ('.git')]
     repo.index.add(track)
     repo.index.commit('Readying repo for deploy')
     remote = repo.create_remote('dokku', url='{}:{}'.format(dokku_source, name))
