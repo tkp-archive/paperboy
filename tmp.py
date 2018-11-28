@@ -2,7 +2,7 @@ import os
 import os.path
 import sys
 
-with open('./examples/sample.ipynb', 'w') as fp:
+with open('./examples/sample.ipynb', 'r') as fp:
     NOTEBOOK = fp.read()
 
 NAME = 'test.job1'
