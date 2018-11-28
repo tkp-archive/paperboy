@@ -34,7 +34,7 @@ def new_directory():
 
 
 def make_voila_proj(notebook, name, directory, requirements=''):
-    with open(os.path.join(directory, name), 'w') as fp:
+    with open(os.path.join(directory, name + '.ipynb'), 'w') as fp:
         fp.write(notebook)
 
     with open(os.path.join(directory, 'run.py'), 'w') as fp:
@@ -44,7 +44,7 @@ from voila.app import Voila
 
 def launch_voila():
     v = Voila()
-    v.notebook_path = os.path.join(os.path.dirname(__file__), '{}')
+    v.notebook_path = os.path.join(os.path.dirname(__file__), '{}') + '.ipynb'
     v.launch_instance()
 
 if __name__ == '__main__':
