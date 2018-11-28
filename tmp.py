@@ -11,12 +11,12 @@ DOKKU_SRC = 'dokku@host1.paine.nyc'
 
 def launch(notebook_string, name, dokku_source):
     directory = new_directory()
-    print(directory.name)
+    print(directory)
     print('voila starting')
-    make_voila_proj(notebook_string, name, directory.name)
+    make_voila_proj(notebook_string, name, directory)
     print('voila done')
     print('dokku starting')
-    remote = make_dokku_proj(directory.name, name, dokku_source)
+    remote = make_dokku_proj(directory, name, dokku_source)
     print('dokku done')
     print('deploy starting')
     dokku_deploy(remote)
@@ -24,11 +24,13 @@ def launch(notebook_string, name, dokku_source):
 
 
 def new_directory():
-    try:
-        from tempfile import TemporaryDirectory
-    except ImportError:
-        from backports.tempfile import TemporaryDirectory
-    return TemporaryDirectory()
+    # try:
+    #     from tempfile import TemporaryDirectory
+    # except ImportError:
+    #     from backports.tempfile import TemporaryDirectory
+    # return TemporaryDirectory()
+    from tempfile import mkdtemp
+    return mkdtemp()
 
 
 def make_voila_proj(notebook, name, directory, requirements=''):
