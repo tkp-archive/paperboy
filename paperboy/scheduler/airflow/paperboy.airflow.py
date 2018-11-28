@@ -103,6 +103,7 @@ for rep in reports_json:
     # copy over notebook text (only store 1 copy in the job json)
     rep['meta']['notebook_text'] = job_json['meta']['notebook_text']
 
+    # type is "convert" for nbconversion jobs and "publish" for publish jobs
     type = rep['meta']['type']
 
     # Job -> Report -> Papermill -> NBConvert ->      ReportPost -\
@@ -126,6 +127,7 @@ for rep in reports_json:
 
     # The post-report operator, used for post-report
     # tasks such as sending the report in an email
+    # or pushing the deploy to dokku
     rp = ReportPostOperator(report=rep,
                             config=json.loads('{{output_config}}'),
                             task_id='ReportPost-{}'.format(rep['id']), dag=dag)

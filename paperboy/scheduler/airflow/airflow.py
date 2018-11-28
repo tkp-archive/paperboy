@@ -9,7 +9,7 @@ from random import choice
 from sqlalchemy import create_engine
 from ..base import BaseScheduler, TIMING_MAP
 
-with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.convert.airflow.py')), 'r') as fp:
+with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
     TEMPLATE = fp.read()
 
 QUERY = '''
