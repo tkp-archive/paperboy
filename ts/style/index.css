@@ -265,7 +265,7 @@ body.light .primary > table > tr > td {
 
 /****** Forms ******/
 .p-DockPanel-widget > form  {
-    width: 500px;
+    width: 40%;
     margin-left: auto;
     margin-right: auto;
     margin-top: 5px;
@@ -274,12 +274,27 @@ body.light .primary > table > tr > td {
 
 form > table {
   width:100%;
+  height: 100%;
+}
+
+form > table > tr > td {
+  min-height: 25px;
+}
+
+form > table > tr > td:nth-child(2) {
+  background-color: transparent !important;
+}
+
+form > table > tr> td:first-child {
+  width: 25%;
+  text-align: center;
 }
 
 form > table > tr> td > * {
-    min-height:20px;
+    min-height:35px;
     min-width: 250px !important;
     width: 250px;
+    height: 35px;
 
     margin-bottom: 0px !important;
     border: none !important;
@@ -311,14 +326,27 @@ form > table > tr> td > input[type=submit]:hover {
 }
 
 .notebooks .uploader form {
-    min-height: 275px;
+    height: 350px;
+}
+
+.notebooks-detail form {
+  height: 600px;
 }
 
 .jobs .scheduler form {
-    min-height: 600px;
+    height: 850px;
+}
+
+.jobs-detail form {
+  height: 450px;
+
 }
 
 .reports .configurator form {
-    min-height: 350px;
+    height: 700px;
+}
+
+.reports-detail form {
+  height: 750px;
 }
 /****** ******/

@@ -1,8 +1,18 @@
 import json
 from base64 import b64decode
+
+# Base Job Operators
 from paperboy.scheduler.airflow_operators import JobOperator, JobCleanupOperator
+
+# Base Report Operators
 from paperboy.scheduler.airflow_operators import ReportOperator, ReportPostOperator
+
+# Convert Operators
 from paperboy.scheduler.airflow_operators import PapermillOperator, NBConvertOperator
+
+# Publish operators
+from paperboy.scheduler.airflow_operators import VoilaOperator, DokkuOperator
+
 from airflow import DAG
 from datetime import timedelta, datetime
 
@@ -75,7 +85,6 @@ default_operator_args = {
 job_json = json.loads(b64decode({{job_json}}))
 reports_json = json.loads(b64decode({{report_json}}))
 
-
 ###################################
 # Create dag from job and reports #
 ###################################
@@ -94,31 +103,57 @@ for rep in reports_json:
     # copy over notebook text (only store 1 copy in the job json)
     rep['meta']['notebook_text'] = job_json['meta']['notebook_text']
 
+    type = rep['meta']['type']
+
+    # Job -> Report -> Papermill -> NBConvert ->      ReportPost -\
+    #   \--> Report -> Papermill -> Voila -> Dokku -> ReportPost --\
+    #    \-> Report -> Papermill -> NBConvert ->      ReportPost ----> Job Cleanup
+
     # Report operator, performs the required
     # steps prior to running the report
-    r = ReportOperator(report=rep, task_id='Report-{}'.format(rep['id']), dag=dag)
+    r = ReportOperator(report=rep,
+                       task_id='Report-{}'.format(rep['id']),
+                       dag=dag)
+    job.set_downstream(r)
 
     # Papermill operator, performs the report creation
     # using papermill and the report's individual
     # parameters and configuration
-    pp = PapermillOperator(report=rep, task_id='ReportPapermill-{}'.format(rep['id']), dag=dag)
-
-    # NBConvert operator, performs the NBConversion if
-    # required
-    nb = NBConvertOperator(report=rep, task_id='ReportNBConvert-{}'.format(rep['id']), dag=dag)
+    pp = PapermillOperator(report=rep,
+                           task_id='ReportPapermill-{}'.format(rep['id']),
+                           dag=dag)
+    r.set_downstream(pp)
 
     # The post-report operator, used for post-report
-    # tasks such as sending the report in an email,
-    # deploying the report to a webserver, etc
+    # tasks such as sending the report in an email
     rp = ReportPostOperator(report=rep,
                             config=json.loads('{{output_config}}'),
                             task_id='ReportPost-{}'.format(rep['id']), dag=dag)
-
-    # Job -> Report -> ReportPost -\
-    #   \--> Report -> ReportPost --\
-    #    \-> Report -> ReportPost ----> Job Cleanup
-    job.set_downstream(r)
-    r.set_downstream(pp)
-    pp.set_downstream(nb)
-    nb.set_downstream(rp)
     rp.set_downstream(cleanup)
+
+    if type == 'convert':
+        # NBConvert operator, performs the NBConversion if
+        # required
+        nb = NBConvertOperator(report=rep,
+                               task_id='ReportNBConvert-{}'.format(rep['id']),
+                               dag=dag)
+        pp.set_downstream(nb)
+        nb.set_downstream(rp)
+
+    elif type == 'publish':
+        # Assemble a Voila Job from papermilled notebook
+        v = VoilaOperator(report=rep,
+                          task_id='ReportVoila-{}'.format(rep['id']),
+                          dag=dag)
+        pp.set_downstream(v)
+
+        # Dokku deployment operator, performs the
+        # deploy to the dokku repo
+        d = DokkuOperator(report=rep,
+                          task_id='ReportDokku-{}'.format(rep['id']),
+                          dag=dag)
+        v.set_downstream(d)
+        d.set_downstream(rp)
+
+    else:
+        raise NotImplementedError()
