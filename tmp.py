@@ -1,8 +1,12 @@
 import os
 import os.path
 import sys
-# dokku_source = dokku@host1.paine.nyc
-# name -> report_name.jobid
+
+with open('./examples/sample.ipynb', 'w') as fp:
+    NOTEBOOK = fp.read()
+
+NAME = 'test.job1'
+DOKKU_SRC = 'dokku@host1.paine.nyc'
 
 
 def launch(notebook_string, name, dokku_source):
@@ -59,3 +63,6 @@ def make_dokku_proj(directory, name, dokku_source):
 
 def dokku_deploy(remote):
     remote.push(refspec='master:master')
+
+if __name__ == '__main__':
+    launch(NOTEBOOK, NAME, DOKKU_SRC)
