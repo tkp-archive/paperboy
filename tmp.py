@@ -45,8 +45,8 @@ from voila.app import Voila
 def launch_voila():
     v = Voila()
     v.notebook_path = os.path.join(os.path.dirname(__file__), '{}') + '.ipynb'
-    v.port = int(os.environ.get('PORT', 8866))
-    v.launch_instance()
+    v.port = int(os.environ.get('PORT', 5000))
+    v.start()
 
 if __name__ == '__main__':
     launch_voila()
