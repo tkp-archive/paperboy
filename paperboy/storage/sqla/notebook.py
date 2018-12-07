@@ -35,16 +35,27 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
     def store(self, user, params, session, *args, **kwargs):
         name = params.get('name')
         user_sql = session.query(UserSQL).get(int(user.id))
+
         if params.get('file') is not None:
             notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('file').file.read(), 4)))
         elif params.get('notebook'):
             notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('notebook'), 4)))
         else:
             raise NotImplementedError()
+
         privacy = params.get('privacy') or ''
         level = params.get('level') or ''
-        requirements = params.get('requirements') or ''
-        dockerfile = params.get('dockerfile') or ''
+
+        if params.get('requirements') is not None:
+            requirements = params.get('requirements').file.read()
+        else:
+            requirements = ''
+
+        if params.get('dockerfile'):
+            params.get('dockerfile').file.read()
+        else:
+            dockerfile = ''
+
         created = datetime.now()
         modified = datetime.now()
 

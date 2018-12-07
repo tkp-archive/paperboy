@@ -40,12 +40,17 @@ function buildGeneric(type: string, content?: string, name?: string): HTMLElemen
       return a;
     }
     case 'textfile': {
-      let a = document.createElement('a');
-      a.download = 'download.txt';
-      a.href = 'data:text/plain;' + content;
-      a.target = '_blank';
-      a.textContent = name || 'Download';
-      return a;
+      if(content){
+        let a = document.createElement('a');
+        a.download = 'download.txt';
+        a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+        a.target = '_blank';
+        a.textContent = name || 'Download';
+        return a;
+      }
+      let s = document.createElement('span');
+      s.textContent = 'none';
+      return s;
     }
     default: {
       return document.createElement('div');

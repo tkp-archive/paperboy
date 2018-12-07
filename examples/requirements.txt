@@ -1,0 +1,7 @@
+lantern
+matplotlib
+IPython
+pandas
+pyEX
+seaborn
+voila

@@ -12,8 +12,8 @@ class NotebookMetadataConfig(HasTraits):
     notebook = Unicode()
     privacy = Unicode()
     level = Unicode()
-    requirements = Unicode(allow_none=True)
-    dockerfile = Unicode(allow_none=True)
+    requirements = Unicode(allow_none=True, default_value='')
+    dockerfile = Unicode(allow_none=True, default_value='')
 
     jobs = Int()
     reports = Int()
@@ -94,10 +94,9 @@ class NotebookConfig(Base):
             FormEntry(name='level', type='select', value=self.meta.level, label='Level', options=_SERVICE_LEVELS, required=True),
             FormEntry(name='notebook', type='json', value=self.meta.notebook, placeholder='Notebook json...', required=True)
         ]
-        if self.meta.requirements:
-            f.entries.append(FormEntry(name='requirements', type='textarea', value=self.meta.requirements, label='requirements.txt', required=False))
-        if self.meta.dockerfile:
-            f.entries.append(FormEntry(name='dockerfile', type='textarea', value=self.meta.dockerfile, label='Dockerfile', required=False))
+
+        f.entries.append(FormEntry(name='requirements', type='textarea', value=self.meta.requirements, label='requirements.txt', required=False))
+        f.entries.append(FormEntry(name='dockerfile', type='textarea', value=self.meta.dockerfile, label='Dockerfile', required=False))
 
         f.entries.append(FormEntry(name='save', type='submit', value='save', url=urljoin(self.config.apiurl, 'notebooks?action=save')))
         f.entries.append(FormEntry(name='delete', type='submit', value='delete', url=urljoin(self.config.apiurl, 'notebooks?action=delete')))
@@ -111,19 +110,14 @@ class NotebookConfig(Base):
             DOMEntry(name='visibility', type='label', value=self.meta.privacy, label='Visibility'),
             DOMEntry(name='level', type='label', value=self.meta.level, label='Level'),
             DOMEntry(name='notebook', type='ipynb', value=self.meta.notebook, label='Notebook'),
-        ]
-        if self.meta.requirements:
-            f.entries.append(DOMEntry(name='requirements', type='textfile', value=self.meta.requirements, label='requirements.txt'))
-        if self.meta.dockerfile:
-            f.entries.append(DOMEntry(name='dockerfile', type='textfile', value=self.meta.dockerfile, label='Dockerfile'))
-
-        f.entries.extend([
+            DOMEntry(name='requirements', type='textfile', value=self.meta.requirements, label='requirements'),
+            DOMEntry(name='dockerfile', type='textfile', value=self.meta.dockerfile, label='Dockerfile'),
             DOMEntry(name='jobs', type='label', value=str(self.meta.jobs), label='Jobs'),
             DOMEntry(name='reports', type='label', value=str(self.meta.reports), label='Reports'),
             DOMEntry(name='created', type='label', value=self.meta.created.strftime('%m/%d/%Y %H:%M:%S'), label='Created'),
             DOMEntry(name='modified', type='label', value=self.meta.modified.strftime('%m/%d/%Y %H:%M:%S'), label='Modified'),
             DOMEntry(name='delete', type='button', value='delete', label='delete', url=urljoin(self.config.apiurl, 'notebooks?action=delete'))
-        ])
+        ]
         return f.to_json()
 
     def store(self):
