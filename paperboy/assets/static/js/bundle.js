@@ -9868,17 +9868,16 @@ class PrimaryForm extends widgets_1.Widget {
 }
 exports.PrimaryForm = PrimaryForm;
 class PrimaryDetail extends widgets_1.Widget {
-    static createNode(type) {
+    constructor(type, id, primary, status) {
+        //create dom elements
         let div = document.createElement('div');
         div.classList.add('details');
         div.classList.add(type + '-detail');
         let form = document.createElement('form');
         form.enctype = 'multipart/form-data';
         div.appendChild(form);
-        return div;
-    }
-    constructor(type, id, primary, status) {
-        super({ node: PrimaryDetail.createNode(type) });
+        super({ node: div });
+        this.form = form;
         this.type = type;
         this.title.closable = true;
         this.request = index_1.apiurl() + this.type + '/details?id=' + id;
@@ -9889,9 +9888,11 @@ class PrimaryDetail extends widgets_1.Widget {
     update() {
         request_1.request('get', this.request).then((res) => {
             let dat = res.json();
-            index_1.createDetail(this.node.querySelector('form'), this.title, dat, () => {
+            index_1.createDetail(this.form, this.title, dat, () => {
                 this.primary.update();
                 this.status.update();
+            }).then(() => {
+                this.close();
             });
         });
     }
@@ -13981,28 +13982,32 @@ function createModal(data, ok = true, cancel = true, ok_callback = () => { }, ca
         modal.appendChild(index_1.buildGeneric(dat['type'], dat['value']));
     }
     document.body.appendChild(modal);
-    if (ok) {
-        let button = index_1.buildGeneric('button', 'OK');
-        button.onclick = () => {
-            ok_callback();
-            hideModal();
-        };
-        modal.appendChild(button);
-        button.focus();
-    }
-    if (cancel) {
-        let button = index_1.buildGeneric('button', 'Cancel');
-        button.onclick = () => {
-            cancel_callback();
-            hideModal();
-        };
-        modal.appendChild(button);
-    }
-    return modal;
+    return new Promise((resolve) => {
+        if (ok) {
+            let button = index_1.buildGeneric('button', 'OK');
+            button.onclick = () => {
+                ok_callback();
+                resolve(hideModal());
+            };
+            modal.appendChild(button);
+            button.focus();
+        }
+        if (cancel) {
+            let button = index_1.buildGeneric('button', 'Cancel');
+            button.onclick = () => {
+                cancel_callback();
+                resolve(hideModal());
+            };
+            modal.appendChild(button);
+        }
+    });
 }
 exports.createModal = createModal;
 function hideModal() {
-    document.body.removeChild(modal);
+    return new Promise((resolve) => {
+        document.body.removeChild(modal);
+        resolve();
+    });
 }
 exports.hideModal = hideModal;
 
@@ -27441,21 +27446,24 @@ const request_1 = __webpack_require__(21);
 const modal_1 = __webpack_require__(46);
 /*** create detail view from python json response to detail ***/
 function createDetail(sec, title, data, callback = () => { }) {
-    if (!sec) {
-        return;
-    }
-    sec.appendChild(index_1.buildVerticalTable(data, title, sec, (url) => {
-        let form = new FormData(sec);
-        request_1.requestFormData(url, form).then((res) => {
-            createResponseModal(res.json(), callback);
-        });
-        return false;
-    }));
+    return new Promise((resolve) => {
+        sec.appendChild(index_1.buildVerticalTable(data, title, sec, (url) => {
+            let form = new FormData(sec);
+            request_1.requestFormData(url, form).then((res) => {
+                createResponseModal(res.json(), callback).then(() => {
+                    resolve();
+                });
+            });
+            return false;
+        }));
+    });
 }
 exports.createDetail = createDetail;
 /*** create response modal from python json response to config ***/
 function createResponseModal(resp, callback = () => { }) {
-    modal_1.createModal(resp, true, false, callback);
+    return new Promise((resolve) => {
+        modal_1.createModal(resp, true, false, callback).then(resolve);
+    });
 }
 
 

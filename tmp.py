@@ -3,17 +3,18 @@ import os.path
 
 with open('./examples/sample.ipynb', 'r') as fp:
     NOTEBOOK = fp.read()
+with open('./examples/requirements.txt', 'r') as fp:
+    REQUIREMENTS = fp.read()
 
 NAME = 'test-job1'
 DOKKU_SRC = 'dokku@host1.paine.nyc'
-APP_ROOT = 'app.paine.nyc'
 
 
 def launch(notebook_string, name, dokku_source):
     directory = new_directory()
     print(directory)
     print('voila starting')
-    make_voila_proj(notebook_string, name, directory)
+    make_voila_proj(notebook_string, name, directory, REQUIREMENTS)
     print('voila done')
     print('dokku starting')
     remote = make_dokku_proj(directory, name, dokku_source)
@@ -33,7 +34,7 @@ def new_directory():
     return mkdtemp()
 
 
-def make_voila_proj(notebook, name, directory, requirements=''):
+def make_voila_proj(notebook, name, directory, requirements):
     with open(os.path.join(directory, name + '.ipynb'), 'w') as fp:
         fp.write(notebook)
 
@@ -53,10 +54,8 @@ if __name__ == '__main__':
 '''.format(name))
 
     with open(os.path.join(directory, 'Procfile'), 'w') as fp:
-        fp.write('web: python3 -m run_job.py')
+        fp.write('web: python3 run_job.py')
 
-    if not requirements:
-        requirements = '''voila'''
     with open(os.path.join(directory, 'requirements.txt'), 'w') as fp:
         fp.write(requirements)
 
@@ -68,7 +67,7 @@ def make_dokku_proj(directory, name, dokku_source):
     track = [f for f in os.listdir(directory) if f not in ('.git')]
     repo.index.add(track)
     repo.index.commit('Readying repo for deploy')
-    remote = repo.create_remote('dokku', url='{}:{}.{}'.format(dokku_source, name, APP_ROOT))
+    remote = repo.create_remote('dokku', url='{}:{}'.format(dokku_source, name))
     return remote
 
 

@@ -46,18 +46,17 @@ class PrimaryForm extends Widget {
 
 export
 class PrimaryDetail extends Widget {
-    static createNode(type: string): HTMLElement {
+    constructor(type: string, id: string, primary: PrimaryTab, status: Status){
+        //create dom elements
         let div = document.createElement('div');
         div.classList.add('details');
         div.classList.add(type + '-detail');
         let form = document.createElement('form');
         form.enctype = 'multipart/form-data';
         div.appendChild(form);
-        return div;
-    }
 
-    constructor(type: string, id: string, primary: PrimaryTab, status: Status){
-        super({node: PrimaryDetail.createNode(type)});
+        super({node: div});
+        this.form = form;
         this.type = type;
         this.title.closable = true;
         this.request = apiurl() + this.type + '/details?id=' + id;
@@ -69,17 +68,20 @@ class PrimaryDetail extends Widget {
     update(): void {
         request('get', this.request).then((res: RequestResult) => {
             let dat = res.json() as any;
-            createDetail(this.node.querySelector('form'), this.title, dat, 
+            createDetail(this.form, this.title, dat, 
                 () => {
                     this.primary.update();
                     this.status.update();
                 }
-            );
+            ).then(() => {
+                this.close();
+            });
         });
     }
 
     type: string;
     request: string;
+    form: HTMLFormElement;
     primary: PrimaryTab;
     status: Status;
 }

@@ -8,7 +8,7 @@ function createModal(data: {[key:string]: string}[],
                      ok=true,
                      cancel=true,
                      ok_callback=()=>{},
-                     cancel_callback=()=>{}){
+                     cancel_callback=()=>{}): Promise<void> {
   deleteAllChildren(modal);
 
   for(let i=0; i<data.length; i++){
@@ -17,27 +17,32 @@ function createModal(data: {[key:string]: string}[],
   }
 
   document.body.appendChild(modal);
-  if(ok){
-    let button = buildGeneric('button', 'OK');
-    button.onclick = () => {
-      ok_callback();
-      hideModal();
+
+  return new Promise((resolve) => {
+    if(ok){
+      let button = buildGeneric('button', 'OK');
+      button.onclick = () => {
+        ok_callback();
+        resolve(hideModal());
+      }
+      modal.appendChild(button);
+      button.focus()
     }
-    modal.appendChild(button);
-    button.focus()
-  }
-  if(cancel){
-    let button = buildGeneric('button', 'Cancel');
-    button.onclick = () => {
-      cancel_callback();
-      hideModal();
+    if(cancel){
+      let button = buildGeneric('button', 'Cancel');
+      button.onclick = () => {
+        cancel_callback();
+        resolve(hideModal());
+      }
+      modal.appendChild(button);
     }
-    modal.appendChild(button);
-  }
-  return modal
+  });
 }
 
 export
-function hideModal(){
-    document.body.removeChild(modal);
+function hideModal(): Promise<void>{
+    return new Promise((resolve) => {
+      document.body.removeChild(modal);
+      resolve();
+    })
 }
