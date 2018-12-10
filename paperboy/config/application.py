@@ -143,6 +143,7 @@ class Paperboy(Application):
     def start(self):
         """Start the whole thing"""
         self.port = os.environ.get('PORT', self.port)
+
         options = {
             'bind': '0.0.0.0:{}'.format(self.port),
             'workers': self.workers
@@ -172,15 +173,18 @@ class Paperboy(Application):
             self.load_user_middleware = SQLUserMiddleware
 
         else:
+
             # Preconfigured storage backends
             if self.backend == 'git':
                 logging.critical('Using Git backend')
                 raise NotImplemented
 
-            elif self.backend == 'sqla':
+            # default to sqla
+            # elif self.backend == 'sqla':
+            else:
                 logging.critical('Using SQL backend')
 
-                self.storage.engine = create_engine(self.storage.sql_url, echo=False)
+                self.storage.engine = create_engine(os.environ.get('PAPERBOY_SQL_URL') or self.storage.sql_url, echo=False)
                 Base.metadata.create_all(self.storage.engine)
 
                 self.storage.sessionmaker = sessionmaker(bind=self.storage.engine)
