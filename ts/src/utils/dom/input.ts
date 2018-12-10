@@ -45,14 +45,6 @@ function buildInput(type?: string,
       }
       break;
     }
-    case 'file': {
-      input.type = type;
-      if(name){
-        input.name = name;
-      }
-      input.multiple = false;
-      break;
-    }
     case 'checkbox': {
       input.type = type;
       if(name){
@@ -87,7 +79,19 @@ function buildInput(type?: string,
     }
     case 'textarea': {}
     case 'json': {
-      return buildTextarea(name || '', placeholder, value, required, json);
+      if(value){
+        return buildTextarea(name || '', placeholder, value, required, json);
+      } else {
+        type = 'file';
+      }
+    }
+    case 'file': {
+      input.type = type;
+      if(name){
+        input.name = name;
+      }
+      input.multiple = false;
+      break;
     }
   }
   return input;

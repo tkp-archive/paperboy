@@ -43,8 +43,11 @@ function buildVerticalTable(data: any, title?: any, form?: HTMLFormElement, form
               input.onclick = ()=>{
                 form.action = url;
               }
-              form.onsubmit = () => {
-                return form_callback(form.action);
+              form.onsubmit = (e: Event) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form_callback(form.action);
+                return false;
               };
             }
             break

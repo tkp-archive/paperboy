@@ -9888,10 +9888,9 @@ class PrimaryDetail extends widgets_1.Widget {
     update() {
         request_1.request('get', this.request).then((res) => {
             let dat = res.json();
-            index_1.createDetail(this.form, this.title, dat, () => {
+            index_1.createDetail(this.form, this.title, dat).then(() => {
                 this.primary.update();
                 this.status.update();
-            }).then(() => {
                 this.close();
             });
         });
@@ -13975,7 +13974,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __webpack_require__(19);
 const modal = document.createElement('div');
 modal.classList.add('modal');
-function createModal(data, ok = true, cancel = true, ok_callback = () => { }, cancel_callback = () => { }) {
+function createModal(data, ok = true, cancel = true) {
     index_1.deleteAllChildren(modal);
     for (let i = 0; i < data.length; i++) {
         let dat = data[i];
@@ -13986,8 +13985,7 @@ function createModal(data, ok = true, cancel = true, ok_callback = () => { }, ca
         if (ok) {
             let button = index_1.buildGeneric('button', 'OK');
             button.onclick = () => {
-                ok_callback();
-                resolve(hideModal());
+                hideModal().then(() => { resolve(true); });
             };
             modal.appendChild(button);
             button.focus();
@@ -13995,8 +13993,7 @@ function createModal(data, ok = true, cancel = true, ok_callback = () => { }, ca
         if (cancel) {
             let button = index_1.buildGeneric('button', 'Cancel');
             button.onclick = () => {
-                cancel_callback();
-                resolve(hideModal());
+                hideModal().then(() => { resolve(false); });
             };
             modal.appendChild(button);
         }
@@ -18646,14 +18643,6 @@ function buildInput(type, name, placeholder, value, required = false, readonly =
             }
             break;
         }
-        case 'file': {
-            input.type = type;
-            if (name) {
-                input.name = name;
-            }
-            input.multiple = false;
-            break;
-        }
         case 'checkbox': {
             input.type = type;
             if (name) {
@@ -18688,7 +18677,20 @@ function buildInput(type, name, placeholder, value, required = false, readonly =
         }
         case 'textarea': { }
         case 'json': {
-            return textarea_1.buildTextarea(name || '', placeholder, value, required, json);
+            if (value) {
+                return textarea_1.buildTextarea(name || '', placeholder, value, required, json);
+            }
+            else {
+                type = 'file';
+            }
+        }
+        case 'file': {
+            input.type = type;
+            if (name) {
+                input.name = name;
+            }
+            input.multiple = false;
+            break;
         }
     }
     return input;
@@ -27327,8 +27329,11 @@ function buildVerticalTable(data, title, form, form_callback = (url) => { }) {
                         input.onclick = () => {
                             form.action = url;
                         };
-                        form.onsubmit = () => {
-                            return form_callback(form.action);
+                        form.onsubmit = (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            form_callback(form.action);
+                            return false;
                         };
                     }
                     break;
@@ -27450,24 +27455,44 @@ const index_1 = __webpack_require__(19);
 const request_1 = __webpack_require__(21);
 const modal_1 = __webpack_require__(46);
 /*** create detail view from python json response to detail ***/
-function createDetail(sec, title, data, callback = () => { }) {
+function createDetail(sec, title, data) {
     return new Promise((resolve) => {
         sec.appendChild(index_1.buildVerticalTable(data, title, sec, (url) => {
             let form = new FormData(sec);
-            request_1.requestFormData(url, form).then((res) => {
-                createResponseModal(res.json(), callback).then(() => {
-                    resolve();
-                });
+            createRequestModal().then((ok) => {
+                if (ok) {
+                    request_1.requestFormData(url, form).then((res) => {
+                        createResponseModal(res.json()).then(() => {
+                            resolve(true);
+                            return;
+                        });
+                    });
+                }
+                else {
+                    resolve(false);
+                }
             });
-            return false;
         }));
     });
 }
 exports.createDetail = createDetail;
 /*** create response modal from python json response to config ***/
-function createResponseModal(resp, callback = () => { }) {
+function createResponseModal(resp) {
     return new Promise((resolve) => {
-        modal_1.createModal(resp, true, false, callback).then(resolve);
+        modal_1.createModal(resp, true, false).then(resolve);
+    });
+}
+/*** create request modal to ask "are you sure"? ***/
+function createRequestModal() {
+    return new Promise((resolve) => {
+        modal_1.createModal([{ 'type': 'label', 'value': 'Are you sure?' }], true, true).then((ok) => {
+            if (ok) {
+                resolve(true);
+            }
+            else {
+                resolve(false);
+            }
+        });
     });
 }
 
@@ -27484,21 +27509,29 @@ const request_1 = __webpack_require__(21);
 const modal_1 = __webpack_require__(46);
 /*** create config from python json ***/
 function createConfigForm(sec, clazz, data, callback = () => { }) {
-    if (!sec) {
-        return;
-    }
-    sec.appendChild(index_1.buildVerticalTable(data, '', sec, (url) => {
-        let form = new FormData(sec);
-        request_1.requestFormData(url, form).then((res) => {
-            createResponseModal(res.json(), callback);
-        });
-        return false;
-    }));
+    return new Promise((resolve) => {
+        if (!sec) {
+            resolve(false);
+            return;
+        }
+        sec.appendChild(index_1.buildVerticalTable(data, '', sec, (url) => {
+            let form = new FormData(sec);
+            request_1.requestFormData(url, form).then((res) => {
+                createResponseModal(res.json()).then(() => {
+                    resolve(true);
+                });
+            });
+        }));
+    });
 }
 exports.createConfigForm = createConfigForm;
 /*** create response modal from python json response to config ***/
-function createResponseModal(resp, callback = () => { }) {
-    modal_1.createModal(resp, true, false, callback);
+function createResponseModal(resp) {
+    return new Promise((resolve) => {
+        modal_1.createModal(resp, true, false).then(() => {
+            resolve(true);
+        });
+    });
 }
 exports.createResponseModal = createResponseModal;
 
@@ -40803,7 +40836,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, "div.modal {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  color: white;\n}\n\ndiv.loader {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\ndiv.loader_icon {\n  border: 24px solid #333; \n  /*border: 16px solid #f3f3f3; */\n  /*border-top: 16px solid #3498db; */\n  border-right: 24px solid var(--highlight-blue);\n  border-left: 24px solid var(--highlight-blue);\n\n  border-radius: 50%;\n  animation: spin 2s linear infinite;\n\n  height:200px;\n  width:200px;\n}\n\n@keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n}\n", ""]);
+exports.push([module.i, "div.modal {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  color: white;\n}\n\ndiv.modal > * {\n  margin-bottom: 10px;\n}\n\ndiv.loader {\n  top: 45px;\n  z-index: 9;\n  position: absolute;\n  background-color: rgba(0, 0, 0, .9);\n  height:100%;\n  width:100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\ndiv.loader_icon {\n  border: 24px solid #333; \n  /*border: 16px solid #f3f3f3; */\n  /*border-top: 16px solid #3498db; */\n  border-right: 24px solid var(--highlight-blue);\n  border-left: 24px solid var(--highlight-blue);\n\n  border-radius: 50%;\n  animation: spin 2s linear infinite;\n\n  height:200px;\n  width:200px;\n}\n\n@keyframes spin {\n    0% { transform: rotate(0deg); }\n    100% { transform: rotate(360deg); }\n}\n", ""]);
 
 // exports
 

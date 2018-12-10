@@ -47,12 +47,19 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
         level = params.get('level') or ''
 
         if params.get('requirements') is not None:
-            requirements = params.get('requirements').file.read()
+            try:
+                requirements = params.get('requirements').file.read()
+            except AttributeError:
+                requirements = ''
         else:
             requirements = ''
 
         if params.get('dockerfile'):
-            params.get('dockerfile').file.read()
+            try:
+                params.get('dockerfile').file.read()
+            except AttributeError:
+                requirements = ''
+
         else:
             dockerfile = ''
 

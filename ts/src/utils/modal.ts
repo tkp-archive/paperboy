@@ -6,9 +6,7 @@ modal.classList.add('modal');
 export
 function createModal(data: {[key:string]: string}[],
                      ok=true,
-                     cancel=true,
-                     ok_callback=()=>{},
-                     cancel_callback=()=>{}): Promise<void> {
+                     cancel=true): Promise<boolean> {
   deleteAllChildren(modal);
 
   for(let i=0; i<data.length; i++){
@@ -22,8 +20,7 @@ function createModal(data: {[key:string]: string}[],
     if(ok){
       let button = buildGeneric('button', 'OK');
       button.onclick = () => {
-        ok_callback();
-        resolve(hideModal());
+        hideModal().then(() => {resolve(true);});
       }
       modal.appendChild(button);
       button.focus()
@@ -31,8 +28,7 @@ function createModal(data: {[key:string]: string}[],
     if(cancel){
       let button = buildGeneric('button', 'Cancel');
       button.onclick = () => {
-        cancel_callback();
-        resolve(hideModal());
+        hideModal().then(() => {resolve(false);});
       }
       modal.appendChild(button);
     }

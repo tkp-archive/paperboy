@@ -12,6 +12,10 @@ div.modal {
   color: white;
 }
 
+div.modal > * {
+  margin-bottom: 10px;
+}
+
 div.loader {
   top: 45px;
   z-index: 9;

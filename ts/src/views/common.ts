@@ -68,12 +68,9 @@ class PrimaryDetail extends Widget {
     update(): void {
         request('get', this.request).then((res: RequestResult) => {
             let dat = res.json() as any;
-            createDetail(this.form, this.title, dat, 
-                () => {
-                    this.primary.update();
-                    this.status.update();
-                }
-            ).then(() => {
+            createDetail(this.form, this.title, dat).then(() => {
+                this.primary.update();
+                this.status.update();
                 this.close();
             });
         });
