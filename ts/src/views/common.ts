@@ -3,7 +3,7 @@ import {
 } from '@phosphor/widgets';
 
 import {request, RequestResult} from '../utils/request';
-import {toProperCase, apiurl, createDetail, createConfigForm, createPrimarySection} from '../utils/index';
+import {toProperCase, apiurl, createDetail, createConfigForm, createPrimarySection, createErrorDialog} from '../utils/index';
 import {Status} from './status';
 
 export
@@ -29,12 +29,16 @@ class PrimaryForm extends Widget {
 
     update(): void {
         request('get', apiurl() + 'config?type=' + this.type).then((res: RequestResult) => {
-            createConfigForm(this.node.querySelector('form'), this.type, res.json(),
-                () => {
-                    this.primary.update();
-                    this.status.update();
-                }
-            );
+            if(res.ok){
+                createConfigForm(this.node.querySelector('form'), this.type, res.json(),
+                    () => {
+                        this.primary.update();
+                        this.status.update();
+                    }
+                );
+            } else {
+                createErrorDialog(res);
+            }
         });
     }
     clz: string;
@@ -67,12 +71,16 @@ class PrimaryDetail extends Widget {
 
     update(): void {
         request('get', this.request).then((res: RequestResult) => {
-            let dat = res.json() as any;
-            createDetail(this.form, this.title, dat).then(() => {
-                this.primary.update();
-                this.status.update();
-                this.close();
-            });
+            if(res.ok){
+                let dat = res.json() as any;
+                createDetail(this.form, this.title, dat).then(() => {
+                    this.primary.update();
+                    this.status.update();
+                    this.close();
+                });
+            } else {
+                createErrorDialog(res);
+            }
         });
     }
 
@@ -110,12 +118,15 @@ class PrimaryTab extends DockPanel {
 
     update(): void {
         request('get', this.request).then((res: RequestResult) => {
-
-            createPrimarySection(this, this.type, res.json(),
-                (page: number) => {
-                    this.request = apiurl() + this.type + '?page=' + page;
-                    this.update();
+            if(res.ok){
+                createPrimarySection(this, this.type, res.json(),
+                    (page: number) => {
+                        this.request = apiurl() + this.type + '?page=' + page;
+                        this.update();
                });
+            } else {
+                createErrorDialog(res);
+            }
         });
     }
 

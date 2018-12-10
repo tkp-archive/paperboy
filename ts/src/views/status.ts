@@ -3,8 +3,8 @@ import {
 } from '@phosphor/widgets';
 
 import {request, RequestResult} from '../utils/request';
-import {toProperCase, apiurl} from '../utils/index';
-import {createStatusSection} from '../utils/views/index';
+import {toProperCase, apiurl, createErrorDialog} from '../utils/index';
+import {createStatusSection, } from '../utils/views/index';
 import {deleteAllChildren} from '../utils/dom/index';
 
 
@@ -32,7 +32,11 @@ class StatusBrowser extends TabPanel {
             createStatusSection(this.jbs, 'jobs', res.json());
         });
         request('get', apiurl() + 'scheduler?type=reports').then((res: RequestResult) => {
-            createStatusSection(this.rps, 'reports', res.json());
+            if(res.ok){
+                createStatusSection(this.rps, 'reports', res.json());
+            } else {
+                createErrorDialog(res);
+            }
         });
 
         setInterval(() => {
@@ -147,11 +151,15 @@ class StatusOverview extends Widget {
 
     update(): void {
         request('get', apiurl() + 'status').then((res: RequestResult) => {
-            let data = res.json()
-            this.populateTop(data);
-            StatusOverview.createSubsection(this.nbs, 'notebooks', 'Notebooks', data);
-            StatusOverview.createSubsection(this.jbs, 'jobs', 'Jobs', data);
-            StatusOverview.createSubsection(this.rps, 'reports', 'Reports', data);
+            if(res.ok){
+                let data = res.json()
+                this.populateTop(data);
+                StatusOverview.createSubsection(this.nbs, 'notebooks', 'Notebooks', data);
+                StatusOverview.createSubsection(this.jbs, 'jobs', 'Jobs', data);
+                StatusOverview.createSubsection(this.rps, 'reports', 'Reports', data);
+            } else {
+                createErrorDialog(res);
+            }
         });
     }
 

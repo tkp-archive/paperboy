@@ -1,7 +1,7 @@
 import {buildVerticalTable} from '../dom/index';
 import {requestFormData, RequestResult} from '../request';
 import {createModal} from '../modal';
-
+import {createErrorDialog} from '../errors';
 
 /*** create detail view from python json response to detail ***/
 export
@@ -13,10 +13,14 @@ function createDetail(sec: HTMLFormElement, title: any, data: any) : Promise<boo
         createRequestModal().then((ok: boolean) => {
           if(ok){
             requestFormData(url, form).then((res: RequestResult) => {
-              createResponseModal(res.json()).then(() => {
-                resolve(true);
-                return
-              });
+              if(res.ok){
+                createResponseModal(res.json()).then(() => {
+                  resolve(true);
+                  return
+                });
+              } else {
+                createErrorDialog(res);
+              }
             });
           } else {
             resolve(false);
