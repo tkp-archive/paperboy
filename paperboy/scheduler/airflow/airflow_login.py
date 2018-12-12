@@ -25,13 +25,13 @@ the new module will override this one.
 """
 
 import flask_login
-from flask_login import login_required, current_user, logout_user  # noqa: F401
-
+from flask_login import login_required, current_user, logout_user
 from flask import url_for, redirect
+from airflow import settings
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from paperboy.storage.sqla.models.user import UserSQL
 
-from airflow import settings  # noqa: F401
-from airflow import models
-from airflow.utils.db import provide_session
 
 DEFAULT_USERNAME = 'anon'
 
@@ -69,22 +69,26 @@ class DefaultUser(object):
 
 
 @login_manager.user_loader
-@provide_session
-def load_user(userid, session=None):
-    user = session.query(models.User).filter(models.User.id == userid).first()
-    return DefaultUser(user)
+def load_user(userid):
+    engine = create_engine(settings.webserver.paperboy_sql, echo=False)
+    sm = sessionmaker(bind=engine)
+
+    with sm() as session:
+        user = session.query(UserSQL).filter(UserSQL.id == userid).first()
+        return DefaultUser(user)
 
 
-@provide_session
-def login(self, request, session=None):
-    user = session.query(models.User).filter(
-        models.User.username == DEFAULT_USERNAME).first()
-    if not user:
-        user = models.User(
-            username=DEFAULT_USERNAME,
-            is_superuser=True)
-    session.merge(user)
-    session.commit()
-    flask_login.login_user(DefaultUser(user))
-    session.commit()
+def login(self, request):
+    engine = create_engine(settings.webserver.paperboy_sql, echo=False)
+    sm = sessionmaker(bind=engine)
+
+    with sm() as session:
+        user = session.query(UserSQL).filter(UserSQL.name == DEFAULT_USERNAME).first()
+
+        if not user:
+            user = UserSQL(name=DEFAULT_USERNAME)
+        session.merge(user)
+        session.commit()
+        flask_login.login_user(DefaultUser(user))
+        session.commit()
     return redirect(request.args.get("next") or url_for("index"))
