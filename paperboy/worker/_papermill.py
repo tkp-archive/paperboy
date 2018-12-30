@@ -22,7 +22,7 @@ def run(nb_name, nb_text, parameters, hide_input):
         if isinstance(parameters, string_types):
             parameters = json.loads(parameters)
 
-        notebook_object = execute_notebook(in_file, out_file, parameters=parameters, report_mode=hide_input, start_timeout=600)
+        execute_notebook(in_file, out_file, parameters=parameters, report_mode=hide_input, start_timeout=600)
 
         with open(out_file, 'r') as fp:
             output_text = fp.read()

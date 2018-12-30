@@ -1,1 +1,1 @@
-from .airflow import AirflowScheduler
+from .airflow import AirflowScheduler  # noqa: F401

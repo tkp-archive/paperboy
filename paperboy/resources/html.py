@@ -3,7 +3,7 @@ import os
 import os.path
 import mimetypes
 import jinja2
-from functools import lru_cache
+# from functools import lru_cache
 from .base import BaseResource
 
 

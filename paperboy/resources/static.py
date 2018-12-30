@@ -2,7 +2,7 @@ import falcon
 import os
 import os.path
 import mimetypes
-from functools import lru_cache
+# from functools import lru_cache
 from .base import BaseResource
 
 

@@ -1,5 +1,3 @@
-import os
-import os.path
 import base64
 import emails
 from bs4 import BeautifulSoup

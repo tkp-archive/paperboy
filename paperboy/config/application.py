@@ -177,7 +177,7 @@ class Paperboy(Application):
             # Preconfigured storage backends
             if self.backend == 'git':
                 logging.critical('Using Git backend')
-                raise NotImplemented
+                raise NotImplementedError()
 
             # default to sqla
             # elif self.backend == 'sqla':
