@@ -9,7 +9,7 @@ env:
 
 install:
     - pip install -r requirements.txt
-    - pip install nose flake8 pylint codecov
+    - pip install nose2 flake8 pylint codecov
 
 script: make test
 

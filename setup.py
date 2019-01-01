@@ -30,6 +30,7 @@ setup(
     author_email='timothy.k.paine@gmail.com',
     license='BSD 3 Clause',
     install_requires=requires,
+    extras_require={'dev': requires + ['nose2', 'pylint', 'flake8']},
 
     classifiers=[
         'Development Status :: 3 - Alpha',
