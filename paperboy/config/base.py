@@ -2,7 +2,7 @@ from traitlets import HasTraits
 
 _INTERVAL_TYPES = ('minutely', '5 minutes', '10 minutes', '30 minutes', 'hourly', '2 hours', '3 hours', '6 hours', '12 hours', 'daily', 'weekly', 'monthly')
 # _REPORT_TYPES = ('convert', 'publish')  # Temporarily disable
-_REPORT_TYPES = ('convert')
+_REPORT_TYPES = ('convert',)
 _OUTPUT_TYPES = ('notebook', 'pdf', 'html', 'email', 'script')
 _PRIVACY_LEVELS = ('public', 'private')
 _SERVICE_LEVELS = ('production', 'research', 'development', 'personal')
