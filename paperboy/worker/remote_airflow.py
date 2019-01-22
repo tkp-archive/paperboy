@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import subprocess
+import logging
 from paperboy.server.deploy import FalconDeploy
 from paperboy.config.user import UserConfig
 from paperboy.config.notebook import NotebookConfig
@@ -16,6 +17,7 @@ from paperboy.config.report import ReportConfig
 from paperboy.config.scheduler import AirflowSchedulerConfig
 from paperboy.scheduler.airflow import AirflowScheduler
 from six.moves.urllib_parse import urljoin
+from sqlalchemy.exc import OperationalError
 from traitlets.config.application import Application
 from traitlets import Int, Unicode
 
@@ -116,7 +118,7 @@ class RemoteAirflowResource(object):
                 cmd = ['airflow', 'delete_dag', dag, '-y']
                 subprocess.call(cmd)
             except Exception as e:
-                print(e)
+                logging.error(e)
 
 
 class RemoteAirflowStatusResource(object):
@@ -129,8 +131,8 @@ class RemoteAirflowStatusResource(object):
         type = req.params.get('type', '')
         try:
             gen = AirflowScheduler.query(engine)
-        except Exception as e:
-            print(e)
+        except OperationalError:
+            logging.debug('Scheduler offline, using fake scheduler query')
             gen = AirflowScheduler.fakequery(engine)
         if type == 'jobs':
             ret = gen['jobs']

@@ -5,9 +5,11 @@ import os
 import os.path
 import jinja2
 import subprocess
+import logging
 from base64 import b64encode
 from random import choice
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 from ..base import BaseScheduler, TIMING_MAP
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
@@ -43,8 +45,8 @@ class AirflowScheduler(BaseScheduler):
         type = params.get('type', '')
         try:
             gen = AirflowScheduler.query(self.engine)
-        except Exception as e:
-            print(e)
+        except OperationalError:
+            logging.debug('Scheduler offline, using fake scheduler query')
             gen = AirflowScheduler.fakequery()
         if type == 'jobs':
             return gen['jobs']
