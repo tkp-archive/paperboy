@@ -8,7 +8,6 @@ import json
 import logging
 import os
 import subprocess
-import logging
 from paperboy.server.deploy import FalconDeploy
 from paperboy.config.user import UserConfig
 from paperboy.config.notebook import NotebookConfig
