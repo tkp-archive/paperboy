@@ -11,8 +11,8 @@ tests: clean ## Clean and Make unit tests
 	python3 -m nose2 -v tests --with-coverage --coverage=paperboy
 
 testjs: clean ## run the js tests for travis CI
-	npm install
-	npm run test
+	yarn
+	yarn test
 
 test: clean lint ## run the tests for travis CI
 	@ python3 -m nose2 -v tests --with-coverage --coverage=paperboy
@@ -39,8 +39,8 @@ clean: ## clean the repository
 	make -C ./docs clean || echo
 
 js:  ## build the js
-	npm install
-	npm run build
+	yarn
+	yarn build
 
 build:  ## build the repository
 	python3 setup.py build
