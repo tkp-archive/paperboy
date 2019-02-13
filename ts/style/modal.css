@@ -2,7 +2,6 @@ div.modal {
   top: 45px;
   z-index: 9;
   position: absolute;
-  background-color: rgba(0, 0, 0, .9);
   height:100%;
   width:100%;
   display: flex;
@@ -10,6 +9,14 @@ div.modal {
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+body.dark div.modal {
+  background-color: rgba(0, 0, 0, .9);
+}
+
+body.light div.modal {
+  background-color: rgba(0, 0, 0, .1);
 }
 
 div.modal > * {
@@ -20,7 +27,6 @@ div.loader {
   top: 45px;
   z-index: 9;
   position: absolute;
-  background-color: rgba(0, 0, 0, .9);
   height:100%;
   width:100%;
   display: flex;
@@ -28,8 +34,15 @@ div.loader {
   justify-content: center;
 }
 
+body.dark div.loader {
+  background-color: rgba(0, 0, 0, .9);
+}
+
+body.light div.loader {
+  background-color: rgba(0, 0, 0, .1);
+}
+
 div.loader_icon {
-  border: 24px solid #333; 
   /*border: 16px solid #f3f3f3; */
   /*border-top: 16px solid #3498db; */
   border-right: 24px solid var(--highlight-blue);
@@ -40,6 +53,16 @@ div.loader_icon {
 
   height:200px;
   width:200px;
+}
+
+body.dark div.loader_icon {
+  border-top: 24px solid #333; 
+  border-bottom: 24px solid #333; 
+}
+
+body.light div.loader_icon {
+  border-top: 24px solid #ccc; 
+  border-bottom: 24px solid #ccc; 
 }
 
 @keyframes spin {

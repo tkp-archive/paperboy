@@ -111,8 +111,8 @@ body.light #menuBar {
 
 
 #main > .p-TabBar > .p-TabBar-content {
-  margin-left: 30%;
-  margin-right: 30%;
+  margin-left: 20%;
+  margin-right: 20%;
 }
 
 body.dark #main > .p-TabBar > .p-TabBar-content {

@@ -4,7 +4,7 @@ import {
 
 import {request, RequestResult} from '../utils/request';
 import {toProperCase, apiurl, createErrorDialog} from '../utils/index';
-import {createStatusSection, } from '../utils/views/index';
+import {createStatusSection, } from '../utils/components/index';
 import {deleteAllChildren} from '../utils/dom/index';
 
 
@@ -180,6 +180,7 @@ class Status extends SplitPanel {
         this.addWidget(this.overview);
         this.addWidget(this.browser);
         this.setRelativeSizes([.5, .5]);
+        this.title.label = 'Status';
     }
 
     update(): void {

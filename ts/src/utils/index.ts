@@ -1,5 +1,5 @@
 export * from './dom/index';
-export * from './views/index';
+export * from './components/index';
 
 export * from './autocomplete';
 export * from './loader';

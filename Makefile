@@ -8,16 +8,17 @@ runsql:  ## run server with sql backend
 	python3 -m paperboy.server --backend='sqla' --auth='sqla'
 
 tests: clean ## Clean and Make unit tests
-	python3 -m nose2 -v tests --with-coverage --coverage=paperboy
+	python3 -m pytest tests --cov=paperboy
+
 
 testjs: clean ## run the js tests for travis CI
 	yarn
 	yarn test
 
 test: clean lint ## run the tests for travis CI
-	@ python3 -m nose2 -v tests --with-coverage --coverage=paperboy
-	npm install
-	npm run test
+	@ python3 -m pytest tests --cov=paperboy
+	yarn
+	yarn test
 
 test_av: clean ## run the tests for appveyor
 	C:\Python37-x64\python -m nose2 -v tests 

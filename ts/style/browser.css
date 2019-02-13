@@ -4,7 +4,6 @@ div.browser {
     flex-direction: row;
 }
 
-
 div.browser div.search-holder {
     height: 100%;
     width: 100%;
@@ -15,21 +14,20 @@ div.browser div.search-holder {
     justify-content: center;
 }
 
-
 div.browser div.search-holder > input {
     height: 25px;
-    width: 400px;
+    width: 65%;
     font-size: 25px;
 }
 
 div.browser div.search-holder > datalist {
     display: none;
+    width: 75%;
 }
 
 div.browser div.search-holder > button {
     height: 31px;
 }
-
 
 div.browser div.search-holder > input::-webkit-outer-spin-button,
 div.browser div.search-holder > input::-webkit-inner-spin-button {
