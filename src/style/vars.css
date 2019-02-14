@@ -2,8 +2,8 @@
     --dark-bg-color: #242526;
     --dark-bg-color2: #161616;
 
-    --light-bg-color: #ddd;
-    --light-bg-color2: #fff;
+    --light-bg-color: #fff;
+    --light-bg-color2: #ddd;
 
     --dark-bg-hover: #636363;
     --light-bg-hover: #636363;
@@ -12,7 +12,7 @@
     --light-color: #2b2b2b;
 
     --dark-color-disabled: rgba(255, 255, 255, 0.25);
-    --light-color-disabled: rgba(255, 255, 255, 0.25);
+    --light-color-disabled: #ddd;
 
     --dark-border: #666;
     --light-border: #666;

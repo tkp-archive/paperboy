@@ -24,7 +24,7 @@ class StatusBrowser extends TabPanel {
         this.addWidget(this.rps);
 
         this.setFlag(Widget.Flag.DisallowLayout);
-        this.title.closable = false;
+        this.title.closable = true;
         this.node.id = 'schedulerbrowser';
         this.node.classList.add('schedulerbrowser');
 

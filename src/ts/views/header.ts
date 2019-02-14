@@ -23,6 +23,9 @@ class Header extends Widget {
         /* icons */
         let light = document.createElement('div');
         light.id = 'lighticon';
+        light.classList.add('active-icon');
+        document.body.classList.add('light');
+
         light.onclick = () => {
             document.body.classList.remove('dark');
             document.body.classList.add('light');
@@ -32,8 +35,6 @@ class Header extends Widget {
 
         let dark = document.createElement('div');
         dark.id = 'darkicon';
-        dark.classList.add('active-icon');
-        document.body.classList.add('dark');
         dark.onclick = () => {
             document.body.classList.remove('light');
             document.body.classList.add('dark');

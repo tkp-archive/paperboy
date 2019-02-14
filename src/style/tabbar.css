@@ -8,8 +8,8 @@
 
 
 .p-TabBar {
-  min-height: 45px;
-  max-height: 45px;
+  min-height: 25px;
+  max-height: 25px;
 }
 
 
@@ -19,17 +19,8 @@
   align-items: flex-end;
 }
 
-body.dark .p-TabBar-content {
-  border-bottom: 1px solid var(--dark-border);
-}
-
-body.light .p-TabBar-content {
-  border-bottom: 1px solid var(--light-border);
-}
-
 .p-TabBar-tab {
   padding: 0px 10px;
-  border-bottom: none;
   font: 12px Helvetica, Arial, sans-serif;
   flex: 0 1 125px;
   min-height: 20px;
@@ -41,12 +32,12 @@ body.light .p-TabBar-content {
 
 body.dark .p-TabBar-tab {
   background: var(--dark-bg-color2);
-  border: 1px solid var(--dark-border);
+  border-right: 1px solid var(--dark-border);
 }
 
 body.light .p-TabBar-tab {
   background: var(--light-bg-color2);
-  border: 1px solid var(--light-border);
+  border-right: 1px solid var(--light-border);
 }
 
 body.dark .p-TabBar-tab:hover:not(.p-mod-current) {
@@ -63,13 +54,13 @@ body.light .p-TabBar-tab:hover:not(.p-mod-current) {
 
 
 .p-TabBar-tab {
-  min-height: 45px;
-  max-height: 45px;
+  min-height: 25px;
+  max-height: 25px;
 }
 
 .p-TabBar-tab.p-mod-current {
-  min-height: 45px;
-  max-height: 45px;
+  min-height: 25px;
+  max-height: 25px;
   transform: translateY(1px);
 }
 
@@ -128,3 +119,45 @@ body.dark .p-TabBar-tab.p-mod-drag-image {
 body.light .p-TabBar-tab.p-mod-drag-image {
   box-shadow: 1px 1px 2px var(--light-drop-shadow);
 }
+
+#menuBar {
+  flex: 0 0 auto;
+  height: 25px;
+  margin-left: 10%;
+  width:75%;
+  display:flex;
+  justify-content: center;
+}
+
+body.dark #menuBar {
+  background-color: var(--dark-bg-color2);
+  color: var(--dark-color);
+}
+
+body.light #menuBar {
+  background-color: var(--light-bg-color2);
+  color: var(--light-color);
+}
+
+#main > .p-TabBar > .p-TabBar-content {
+}
+
+body.dark #main > .p-TabBar > .p-TabBar-content {
+  border-bottom: 1px solid var(--dark-border);
+}
+
+body.light #main > .p-TabBar > .p-TabBar-content {
+  border-bottom: 1px solid var(--light-border);
+}
+
+.p-TabBar > .p-TabBar-content > .p-TabBar-tab {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+body.dark #main > .p-TabBar > .p-TabBar-content > .p-mod-current,
+body.light #main > .p-TabBar > .p-TabBar-content > .p-mod-current {
+  border-bottom:3px solid var(--highlight-blue);
+}
+

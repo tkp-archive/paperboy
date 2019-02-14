@@ -24,7 +24,6 @@ test_av: clean ## run the tests for appveyor
 	C:\Python37-x64\python -m nose2 -v tests 
 
 lint: ## run linter
-	pylint paperboy || echo
 	flake8 paperboy 
 
 annotate: ## MyPy type annotation check

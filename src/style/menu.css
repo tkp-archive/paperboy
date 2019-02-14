@@ -22,7 +22,7 @@ body.dark .p-Menu {
 body.light .p-Menu {
   background: var(--light-bg-color);
   color: var(--light-color);
-  border: 1px solid var(--light-bg-color);
+  border: 1px solid var(--light-bg-color2);
 }
 
 

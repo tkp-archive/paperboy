@@ -1,8 +1,8 @@
 div#appheader {
   display:flex;
   align-items: center;
-  height:45px;
-  width: 85%;
+  height:25px;
+  width: 100%;
   position: absolute;
 }
 
@@ -17,9 +17,9 @@ body.light div#appheader {
 }
 
 div#appheader > a {
-  height: 40px;
-  margin-left: 15px;
-  width:15%;
+  height: 20px;
+  margin-left: 5px;
+  width:10%;
   z-index:3;
 }
 
@@ -35,10 +35,11 @@ div#appheader > a > img {
 }
 
 #lighticon {
-  margin-left: 70%;
+  margin-left: 80%;
   z-index: 6;
   height: 25px;
-  width: 25px;
+  width: 4%;
+  max-width: 25px;
 }
 
 #lighticon:before {
@@ -51,7 +52,8 @@ div#appheader > a > img {
   margin-left: 10px;
   z-index: 6;
   height: 25px;
-  width: 25px;
+  width: 4%;
+  max-width: 25px;
 }
 
 #darkicon:before {

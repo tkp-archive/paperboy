@@ -1,5 +1,5 @@
 import {
-    Widget, DockPanel, BoxPanel
+    Widget, Panel, BoxPanel, DockPanel
 } from '@phosphor/widgets';
 
 import {request, RequestResult} from '../utils/request';
@@ -19,7 +19,7 @@ class PrimaryForm extends Widget {
 
     constructor(clz: string, type: string, primary: PrimaryTab, status: Status){
         super({node: PrimaryForm.createNode(clz)});
-        this.title.closable = false;
+        this.title.closable = true;
         this.title.label = toProperCase(clz);
         this.type = type;
         this.primary = primary;
@@ -63,6 +63,7 @@ class PrimaryDetail extends Widget {
         this.form = form;
         this.type = type;
         this.title.closable = true;
+
         this.request = apiurl() + this.type + '/details?id=' + id;
         this.primary = primary;
         this.status = status;
@@ -92,8 +93,8 @@ class PrimaryDetail extends Widget {
 }
 
 export
-class PrimaryTab extends DockPanel {
-    constructor(clz: string, type: string, status: Status){
+class PrimaryTab extends Panel {
+    constructor(clz: string, type: string, status: Status, parent: DockPanel){
         super();
         this.clz = clz;
         this.type = type;
@@ -101,19 +102,20 @@ class PrimaryTab extends DockPanel {
 
         this.setFlag(Widget.Flag.DisallowLayout);
         this.title.label = toProperCase(type);
+        this.title.closable = true;
+
         this.node.id = type;
         this.mine.node.classList.add('primary');
         this.node.classList.add(type);
 
-        this.mine.title.closable = false;
+        this.mine.title.closable = true;
         this.mine.title.label = this.title.label;
         this.request = apiurl() + type;
 
-        this.update();
+        this.parent = parent;
         this.control = this.controlView();
-
+        this.update();
         this.addWidget(this.mine);
-        this.addWidget(this.control, {mode: 'tab-after', ref: this.mine});
     }
 
     update(): void {
@@ -136,13 +138,15 @@ class PrimaryTab extends DockPanel {
 
     detailView(id: string): void {
         let pd = new PrimaryDetail(this.type, id, this, this.status);
-        this.addWidget(pd);
-        this.selectWidget(pd);
+        this.parent.addWidget(pd);
+        this.parent.selectWidget(pd);
     }
 
     clz: string;
     type: string;
     request: string;
+
+    parent: DockPanel;
     mine = new BoxPanel();
     control: PrimaryForm;
     status: Status;
