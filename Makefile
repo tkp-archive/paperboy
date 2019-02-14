@@ -8,7 +8,7 @@ runsql:  ## run server with sql backend
 	python3 -m paperboy.server --backend='sqla' --auth='sqla'
 
 tests: clean ## Clean and Make unit tests
-	python3 -m pytest tests --cov=paperboy
+	python3 -m pytest -v tests --cov=paperboy
 
 
 testjs: clean ## run the js tests for travis CI
@@ -16,7 +16,7 @@ testjs: clean ## run the js tests for travis CI
 	yarn test
 
 test: clean lint ## run the tests for travis CI
-	@ python3 -m pytest tests --cov=paperboy
+	@ python3 -m pytest -v tests --cov=paperboy
 	yarn
 	yarn test
 
