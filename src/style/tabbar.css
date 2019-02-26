@@ -40,6 +40,19 @@ body.light .p-TabBar-tab {
   border-right: 1px solid var(--light-border);
 }
 
+body.dark .p-TabBar-content {
+  background-color: var(--dark-bg-color2);
+}
+
+body.light .p-TabBar-content {
+  background-color: var(--light-bg-color2);
+}
+
+body.light .p-TabBar-tab {
+  background: var(--light-bg-color2);
+  border-right: 1px solid var(--light-border);
+}
+
 body.dark .p-TabBar-tab:hover:not(.p-mod-current) {
   background: var(--dark-bg-hover);
 }

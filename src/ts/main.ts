@@ -1,4 +1,4 @@
-import {DockPanel,  SplitPanel, MenuBar, Widget} from '@phosphor/widgets';
+import {DockPanel, MenuBar, Widget} from '@phosphor/widgets';
 
 import {Header, Status, Browser, Notebooks, Jobs, Reports} from './views/index';
 import {showLoader, hideLoader} from './utils/index';
@@ -19,20 +19,14 @@ function main(): void {
 
 
   /* home browser */
-  let home = new SplitPanel();
-  home.title.label = "Home";
-  home.title.closable = true;
-
-
   let status = new Status();
   let notebooks = new Notebooks(main, status);
   let jobs = new Jobs(main, status);
   let reports = new Reports(main, status);
-
   let browser = new Browser(notebooks, jobs, reports, status);
-  home.addWidget(browser);
-
-  main.addWidget(home);
+  browser.title.label = "Home";
+  browser.title.closable = true;
+  main.addWidget(browser);
   // main.addWidget(notebooks);
   // main.addWidget(jobs);
   // main.addWidget(reports);
@@ -44,7 +38,7 @@ function main(): void {
   bar.id = 'menuBar';
   buildMenus(bar, {
     main,
-    home,
+    home:browser,
     notebooks,
     jobs,
     reports,

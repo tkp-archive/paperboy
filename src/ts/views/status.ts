@@ -181,6 +181,7 @@ class Status extends SplitPanel {
         this.addWidget(this.browser);
         this.setRelativeSizes([.5, .5]);
         this.title.label = 'Status';
+        this.title.closable = true;
     }
 
     update(): void {
