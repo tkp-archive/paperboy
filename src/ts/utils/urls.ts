@@ -1,9 +1,9 @@
 export
-function baseurl(){
-  return (document as any).baseurl || '/';
+function baseurl() {
+  return (document as any).baseurl || "/";
 }
 
 export
-function apiurl(){
-  return (document as any).apiurl || '/api/v1/';
+function apiurl() {
+  return (document as any).apiurl || "/api/v1/";
 }

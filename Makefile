@@ -10,7 +10,6 @@ runsql:  ## run server with sql backend
 tests: clean ## Clean and Make unit tests
 	python3 -m pytest -v tests --cov=paperboy
 
-
 testjs: clean ## run the js tests for travis CI
 	yarn
 	yarn test
@@ -25,6 +24,7 @@ test_av: clean ## run the tests for appveyor
 
 lint: ## run linter
 	flake8 paperboy 
+	yarn lint
 
 annotate: ## MyPy type annotation check
 	mypy -s paperboy

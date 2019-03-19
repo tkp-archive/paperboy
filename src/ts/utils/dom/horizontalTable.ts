@@ -1,34 +1,37 @@
-import {toProperCase} from '../index';
+import {toProperCase} from "../index";
 
 export
 function buildHorizontalTable(data: any): HTMLTableElement {
-  let table = document.createElement('table');
-  let headerrow = document.createElement('tr');
-  let name = document.createElement('th');
-  name.textContent = 'Name';
+  const table = document.createElement("table");
+  const headerrow = document.createElement("tr");
+  const name = document.createElement("th");
+  name.textContent = "Name";
   headerrow.appendChild(name);
   table.appendChild(headerrow);
 
   let first = true;
-  for(let i=0; i<data.length; i++){
-    let dat = data[i];
-    let row = document.createElement('tr');
-    let v = document.createElement('td');
-    v.textContent = dat['name'];
+  // tslint:disable-next-line: prefer-for-of
+  for (let i = 0; i < data.length; i++) {
+    const dat = data[i];
+    const row = document.createElement("tr");
+    const v = document.createElement("td");
+    v.textContent = dat.name;
     row.appendChild(v);
 
-    for(let k of Object.keys(dat['meta'])){
-      if(first){
-        let name = document.createElement('th');
+    for (const k of Object.keys(dat.meta)) {
+      if (first) {
+        // tslint:disable-next-line: no-shadowed-variable
+        const name = document.createElement("th");
         name.textContent = toProperCase(k);
         headerrow.appendChild(name);
       }
-      let v = document.createElement('td');
-      v.textContent = dat['meta'][k];
+      // tslint:disable-next-line: no-shadowed-variable
+      const v = document.createElement("td");
+      v.textContent = dat.meta[k];
       row.appendChild(v);
     }
     table.appendChild(row);
     first = false;
   }
-  return table;    
+  return table;
 }

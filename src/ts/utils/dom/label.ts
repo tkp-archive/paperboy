@@ -1,8 +1,8 @@
 
 /*** build a label ***/
-export 
+export
 function buildLabel(text: string): HTMLLabelElement {
-  let label = document.createElement('label');
+  const label = document.createElement("label");
   label.textContent = text;
   return label;
 }

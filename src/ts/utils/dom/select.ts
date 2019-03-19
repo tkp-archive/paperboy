@@ -1,11 +1,10 @@
 /*** require select ***/
-let default_none = document.createElement('option');
-default_none.selected = false;
-default_none.disabled = true;
-default_none.hidden = false;
-default_none.style.display = 'none';
-default_none.value = '';
-
+const defaultNone = document.createElement("option");
+defaultNone.selected = false;
+defaultNone.disabled = true;
+defaultNone.hidden = false;
+defaultNone.style.display = "none";
+defaultNone.value = "";
 
 /*** build a select ***/
 export
@@ -14,28 +13,29 @@ function buildSelect(name: string,
                      def?: string,
                      required = false,
                      readonly = false): HTMLSelectElement {
-  let select = document.createElement('select');
+  const select = document.createElement("select");
   select.name = name;
-  if(required){
+  if (required) {
     select.required = required;
   }
-  if(readonly){
+  if (readonly) {
     select.disabled = true;
   }
 
-  select.appendChild(default_none);
-  for(let i=0; i<list.length; i++) {
-    let x = list[i];
-    let option = document.createElement('option');
-    option.value = x
+  select.appendChild(defaultNone);
+  // tslint:disable-next-line: prefer-for-of
+  for (let i = 0; i < list.length; i++) {
+    const x = list[i];
+    const option = document.createElement("option");
+    option.value = x;
     option.textContent = x;
     select.appendChild(option);
 
-    if (def && x === def){
+    if (def && x === def) {
       option.selected = true;
     }
   }
-  select.style.marginBottom = '15px';
-  select.style.minHeight = '25px';
+  select.style.marginBottom = "15px";
+  select.style.minHeight = "25px";
   return select;
 }

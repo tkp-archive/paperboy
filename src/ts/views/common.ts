@@ -1,23 +1,32 @@
 import {
-    Widget, Panel, BoxPanel, DockPanel
-} from '@phosphor/widgets';
+    BoxPanel, DockPanel, Panel, Widget,
+} from "@phosphor/widgets";
 
-import {request, RequestResult} from '../utils/request';
-import {toProperCase, apiurl, createDetail, createConfigForm, createPrimarySection, createErrorDialog} from '../utils/index';
-import {Status} from './status';
+import {apiurl,
+        createConfigForm,
+        createDetail,
+        createErrorDialog,
+        createPrimarySection,
+        toProperCase} from "../utils/index";
+import {IRequestResult, request} from "../utils/request";
+import {Status} from "./status";
 
 export
 class PrimaryForm extends Widget {
-    static createNode(clz: string): HTMLElement {
-        let div = document.createElement('div');
+    public static createNode(clz: string): HTMLElement {
+        const div = document.createElement("div");
         div.classList.add(clz);
-        let form = document.createElement('form');
-        form.enctype = 'multipart/form-data';
+        const form = document.createElement("form");
+        form.enctype = "multipart/form-data";
         div.appendChild(form);
         return div;
     }
+    public clz: string;
+    public type: string;
+    public primary: PrimaryTab;
+    public status: Status;
 
-    constructor(clz: string, type: string, primary: PrimaryTab, status: Status){
+    constructor(clz: string, type: string, primary: PrimaryTab, status: Status) {
         super({node: PrimaryForm.createNode(clz)});
         this.title.closable = true;
         this.title.label = toProperCase(clz);
@@ -27,36 +36,38 @@ class PrimaryForm extends Widget {
         this.update();
     }
 
-    update(): void {
-        request('get', apiurl() + 'config?type=' + this.type).then((res: RequestResult) => {
-            if(res.ok){
-                createConfigForm(this.node.querySelector('form'), this.type, res.json(),
+    public update(): void {
+        request("get", apiurl() + "config?type=" + this.type).then((res: IRequestResult) => {
+            if (res.ok) {
+                createConfigForm(this.node.querySelector("form"), this.type, res.json(),
                     () => {
                         this.primary.update();
                         this.status.update();
-                    }
+                    },
                 );
             } else {
                 createErrorDialog(res);
             }
         });
     }
-    clz: string;
-    type: string;
-    primary: PrimaryTab;
-    status: Status;
 }
 
-
+// tslint:disable-next-line: max-classes-per-file
 export
 class PrimaryDetail extends Widget {
-    constructor(type: string, id: string, primary: PrimaryTab, status: Status){
-        //create dom elements
-        let div = document.createElement('div');
-        div.classList.add('details');
-        div.classList.add(type + '-detail');
-        let form = document.createElement('form');
-        form.enctype = 'multipart/form-data';
+
+    public type: string;
+    public request: string;
+    public form: HTMLFormElement;
+    public primary: PrimaryTab;
+    public status: Status;
+    constructor(type: string, id: string, primary: PrimaryTab, status: Status) {
+        // create dom elements
+        const div = document.createElement("div");
+        div.classList.add("details");
+        div.classList.add(type + "-detail");
+        const form = document.createElement("form");
+        form.enctype = "multipart/form-data";
         div.appendChild(form);
 
         super({node: div});
@@ -64,16 +75,16 @@ class PrimaryDetail extends Widget {
         this.type = type;
         this.title.closable = true;
 
-        this.request = apiurl() + this.type + '/details?id=' + id;
+        this.request = apiurl() + this.type + "/details?id=" + id;
         this.primary = primary;
         this.status = status;
         this.update();
     }
 
-    update(): void {
-        request('get', this.request).then((res: RequestResult) => {
-            if(res.ok){
-                let dat = res.json() as any;
+    public update(): void {
+        request("get", this.request).then((res: IRequestResult) => {
+            if (res.ok) {
+                const dat = res.json() as any;
                 createDetail(this.form, this.title, dat).then(() => {
                     this.primary.update();
                     this.status.update();
@@ -84,17 +95,21 @@ class PrimaryDetail extends Widget {
             }
         });
     }
-
-    type: string;
-    request: string;
-    form: HTMLFormElement;
-    primary: PrimaryTab;
-    status: Status;
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export
 class PrimaryTab extends Panel {
-    constructor(clz: string, type: string, status: Status, parent: DockPanel){
+
+    public clz: string;
+    public type: string;
+    public request: string;
+
+    public parent: DockPanel;
+    public mine = new BoxPanel();
+    public control: PrimaryForm;
+    public status: Status;
+    constructor(clz: string, type: string, status: Status, parent: DockPanel) {
         super();
         this.clz = clz;
         this.type = type;
@@ -105,7 +120,7 @@ class PrimaryTab extends Panel {
         this.title.closable = true;
 
         this.node.id = type;
-        this.mine.node.classList.add('primary');
+        this.mine.node.classList.add("primary");
         this.node.classList.add(type);
 
         this.mine.title.closable = true;
@@ -118,12 +133,12 @@ class PrimaryTab extends Panel {
         this.addWidget(this.mine);
     }
 
-    update(): void {
-        request('get', this.request).then((res: RequestResult) => {
-            if(res.ok){
+    public update(): void {
+        request("get", this.request).then((res: IRequestResult) => {
+            if (res.ok) {
                 createPrimarySection(this, this.type, res.json(),
                     (page: number) => {
-                        this.request = apiurl() + this.type + '?page=' + page;
+                        this.request = apiurl() + this.type + "?page=" + page;
                         this.update();
                });
             } else {
@@ -132,22 +147,13 @@ class PrimaryTab extends Panel {
         });
     }
 
-    controlView(): PrimaryForm {
+    public controlView(): PrimaryForm {
         return new PrimaryForm(this.clz, this.type, this, this.status);
     }
 
-    detailView(id: string): void {
-        let pd = new PrimaryDetail(this.type, id, this, this.status);
+    public detailView(id: string): void {
+        const pd = new PrimaryDetail(this.type, id, this, this.status);
         this.parent.addWidget(pd);
         this.parent.selectWidget(pd);
     }
-
-    clz: string;
-    type: string;
-    request: string;
-
-    parent: DockPanel;
-    mine = new BoxPanel();
-    control: PrimaryForm;
-    status: Status;
 }

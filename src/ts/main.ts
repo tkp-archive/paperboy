@@ -1,29 +1,28 @@
-import {DockPanel, MenuBar, Widget} from '@phosphor/widgets';
+import {DockPanel, MenuBar, Widget} from "@phosphor/widgets";
 
-import {Header, Status, Browser, Notebooks, Jobs, Reports} from './views/index';
-import {showLoader, hideLoader} from './utils/index';
-import {buildMenus} from './menu';
-import '../src/style/index.css';
-
+import "../src/style/index.css";
+import {buildMenus} from "./menu";
+import {hideLoader, showLoader} from "./utils/index";
+import {Browser, Header, Jobs, Notebooks, Reports, Status} from "./views/index";
 
 export
 function main(): void {
   showLoader();
 
   /* Title bar */
-  let header = new Header();
+  const header = new Header();
 
   /* main layout */
-  let main = new DockPanel();
-  main.id = 'main';
-
+  // tslint:disable-next-line: no-shadowed-variable
+  const main = new DockPanel();
+  main.id = "main";
 
   /* home browser */
-  let status = new Status();
-  let notebooks = new Notebooks(main, status);
-  let jobs = new Jobs(main, status);
-  let reports = new Reports(main, status);
-  let browser = new Browser(notebooks, jobs, reports, status);
+  const status = new Status();
+  const notebooks = new Notebooks(main, status);
+  const jobs = new Jobs(main, status);
+  const reports = new Reports(main, status);
+  const browser = new Browser(notebooks, jobs, reports, status);
   browser.title.label = "Home";
   browser.title.closable = true;
   main.addWidget(browser);
@@ -32,29 +31,25 @@ function main(): void {
   // main.addWidget(reports);
   // main.addWidget(overview);
 
-
   /* File bar */
-  let bar = new MenuBar();
-  bar.id = 'menuBar';
+  const bar = new MenuBar();
+  bar.id = "menuBar";
   buildMenus(bar, {
-    main,
-    home:browser,
-    notebooks,
+    home: browser,
     jobs,
+    main,
+    notebooks,
     reports,
     status,
   });
 
   window.onresize = () => { main.update(); };
 
-
   Widget.attach(header, document.body);
   Widget.attach(bar, document.body);
   Widget.attach(main, document.body);
 
-
   hideLoader(1000);
 }
-
 
 window.onload = main;

@@ -1,22 +1,22 @@
-import {buildVerticalTable} from '../dom/index';
-import {requestFormData, RequestResult} from '../request';
-import {createModal} from '../modal';
-import {createErrorDialog} from '../errors';
+import {buildVerticalTable} from "../dom/index";
+import {createErrorDialog} from "../errors";
+import {createModal} from "../modal";
+import {IRequestResult, requestFormData} from "../request";
 
 /*** create detail view from python json response to detail ***/
 export
-function createDetail(sec: HTMLFormElement, title: any, data: any) : Promise<boolean> {
+function createDetail(sec: HTMLFormElement, title: any, data: any): Promise<boolean> {
   return new Promise((resolve) => {
     sec.appendChild(
       buildVerticalTable(data, title, sec, (url: string) => {
-        let form = new FormData(sec);
+        const form = new FormData(sec);
         createRequestModal().then((ok: boolean) => {
-          if(ok){
-            requestFormData(url, form).then((res: RequestResult) => {
-              if(res.ok){
+          if (ok) {
+            requestFormData(url, form).then((res: IRequestResult) => {
+              if (res.ok) {
                 createResponseModal(res.json()).then(() => {
                   resolve(true);
-                  return
+                  return;
                 });
               } else {
                 createErrorDialog(res);
@@ -26,7 +26,7 @@ function createDetail(sec: HTMLFormElement, title: any, data: any) : Promise<boo
             resolve(false);
           }
         });
-      }));     
+      }));
   });
 }
 
@@ -40,9 +40,9 @@ function createResponseModal(resp: [{[key: string]: string}]): Promise<boolean> 
 /*** create request modal to ask "are you sure"? ***/
 function createRequestModal(): Promise<boolean> {
   return new Promise((resolve) => {
-    createModal([{'type': 'label', 'value': 'Are you sure?'}], true, true).then((ok: boolean)=> {
-      if(ok){
-        resolve(true);  
+    createModal([{type: "label", value: "Are you sure?"}], true, true).then((ok: boolean) => {
+      if (ok) {
+        resolve(true);
       } else {
         resolve(false);
       }

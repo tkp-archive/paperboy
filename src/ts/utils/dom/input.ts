@@ -1,5 +1,5 @@
-import {buildSelect} from './select';
-import {buildTextarea} from './textarea';
+import {buildSelect} from "./select";
+import {buildTextarea} from "./textarea";
 
 /*** build an input ***/
 export
@@ -11,83 +11,85 @@ function buildInput(type?: string,
                     readonly = false,
                     hidden = false,
                     options = [],
-                    json = false
+                    json = false,
                     ): HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement {
-  if (!type ){
-    type = 'text';
+  if (!type ) {
+    type = "text";
   }
 
-  if(hidden){
-    type = 'hidden';
+  if (hidden) {
+    type = "hidden";
   }
 
-  let input = document.createElement('input');
-  if(required){
+  const input = document.createElement("input");
+  if (required) {
     input.required = true;
   }
-  if(readonly){
+  if (readonly) {
     input.readOnly = true;
-    input.style.filter = 'opacity(.5)';
+    input.style.filter = "opacity(.5)";
   }
 
-  switch(type) {
-    case 'hidden': {}
-    case 'text': {
+  switch (type) {
+    // tslint:disable-next-line: no-empty
+    case "hidden": {}
+    case "text": {
       input.type = type;
-      if(placeholder){
+      if (placeholder) {
         input.placeholder = placeholder;
       }
-      if(value){
+      if (value) {
         input.value = value;
       }
-      if(name){
+      if (name) {
         input.name = name;
       }
       break;
     }
-    case 'checkbox': {
+    case "checkbox": {
       input.type = type;
-      if(name){
+      if (name) {
         input.name = name;
       }
-      if(value){
+      if (value) {
         input.checked = true;
       }
       break;
     }
-    case 'datetime': {
-      input.type = 'datetime-local';
-      if(name){
+    case "datetime": {
+      input.type = "datetime-local";
+      if (name) {
         input.name = name;
       }
-      let d = new Date();
-      input.value = d.toISOString().slice(0,16);
-      break;        
+      const d = new Date();
+      input.value = d.toISOString().slice(0, 16);
+      break;
     }
-    case 'submit': {
+    case "submit": {
       input.type = type;
-      if(value){
+      if (value) {
         input.value = value;
       }
-      if(name){
+      if (name) {
         input.name = name;
       }
       break;
     }
-    case 'select': {
-      return buildSelect(name || '', options, value, required, readonly);
+    case "select": {
+      return buildSelect(name || "", options, value, required, readonly);
     }
-    case 'textarea': {}
-    case 'json': {
-      if(value){
-        return buildTextarea(name || '', placeholder, value, required, json);
+    // tslint:disable-next-line: no-empty
+    case "textarea": {}
+    case "json": {
+      if (value) {
+        return buildTextarea(name || "", placeholder, value, required, json);
       } else {
-        type = 'file';
+        type = "file";
       }
     }
-    case 'file': {
+    case "file": {
       input.type = type;
-      if(name){
+      if (name) {
         input.name = name;
       }
       input.multiple = false;
