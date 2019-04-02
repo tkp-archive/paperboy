@@ -25,7 +25,7 @@ Overview
 
 |Build Status|
 |https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true|
-|Waffle.io| |Coverage| |Docs| |Site|
+|Coverage| |Docs| |Site|
 
 Paperboy is a production-grade application for scheduling reports. It
 has a flexible architecture and extensible APIs, and can integrate into
@@ -113,8 +113,6 @@ Airflow Integration
 .. |Build Status| image:: https://travis-ci.org/timkpaine/paperboy.svg?branch=master
    :target: https://travis-ci.org/timkpaine/paperboy
 .. |https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true| image:: https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true
-.. |Waffle.io| image:: https://badge.waffle.io/timkpaine/paperboy.png?label=ready&title=Ready
-   :target: https://waffle.io/timkpaine/paperboy?utm_source=badge
 .. |Coverage| image:: https://codecov.io/gh/timkpaine/paperboy/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/timkpaine/paperboy
 .. |Docs| image:: https://img.shields.io/readthedocs/paperboy.svg
