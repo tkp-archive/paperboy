@@ -40,12 +40,14 @@ class AirflowScheduler(BaseScheduler):
 
         if self.sql_conn:
             self.engine = create_engine(self.sql_conn)
+        else:
+            self.engine = None
 
     def status(self, user, params, session, *args, **kwargs):
         type = params.get('type', '')
-        try:
+        if self.engine:
             gen = AirflowScheduler.query(self.engine)
-        except OperationalError:
+        else:
             logging.debug('Scheduler offline, using fake scheduler query')
             gen = AirflowScheduler.fakequery()
         if type == 'jobs':
