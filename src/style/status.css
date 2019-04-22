@@ -1,7 +1,7 @@
 div.status {
     display: flex;
     flex-direction: column;
-    font-size: 10px;
+    font-size: 15px;
     padding-left: 15px;
     overflow-y: scroll;
     min-height:325px;
@@ -16,7 +16,6 @@ body.light div.status {
 }
 
 div.status-container {
-    max-height:40px;
     display:flex;
     flex-direction: row;
     margin-bottom:5px;
@@ -25,23 +24,28 @@ div.status-container {
 div.status-breakdown {
     display: flex;
     flex-direction: column;
+    padding-top:15px;
+}
+
+div.status-breakdown table {
+    width:50%;
 }
 
 div.status-breakdown td {
-    width: 50%;
+    width:50%;
 }
 
 div.status-breakdown td.status-data {
-    width: 50%;
+    width:50%;
 }
 
 div.status span.number {
-    font-size: 20px;
+    font-size: 35px;
     width:100%;
 }
 
 div.status span.subtitle {
-    font-size: 15px;
+    font-size: 25px;
     width:100%;
 }
 

@@ -5,6 +5,8 @@ from .html import read
 
 
 class LoginResource(BaseResource):
+    '''Falcon resource for user authentication'''
+
     auth_required = False
 
     def __init__(self, *args, **kwargs):

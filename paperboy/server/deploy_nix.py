@@ -3,8 +3,14 @@ from gunicorn.six import iteritems
 
 
 class FalconGunicorn(gunicorn.app.base.BaseApplication):
+    '''Utility to deploy falcon.API on gunicorn'''
 
     def __init__(self, app, options=None):
+        '''Constructor
+        Args:
+            app (falcon.API): a routed falcon API
+            options (dict): a set of options for gunicorn (e.g. workers, port, etc)
+        '''
         self.options = options or {}
         self.application = app
         super(FalconGunicorn, self).__init__()

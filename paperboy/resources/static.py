@@ -16,6 +16,8 @@ def read(file):
 
 
 class StaticResource(BaseResource):
+    '''Falcon resource to service CSS/JS/image/font files'''
+
     auth_required = False
 
     def __init__(self, *args, **kwargs):

@@ -175,12 +175,12 @@ class Status extends SplitPanel {
     public overview: StatusOverview;
     public browser: StatusBrowser;
     constructor() {
-        super({ orientation: "vertical"});
+        super({ orientation: "horizontal"});
         this.overview = new StatusOverview();
         this.browser = new StatusBrowser();
         this.addWidget(this.overview);
         this.addWidget(this.browser);
-        this.setRelativeSizes([.5, .5]);
+        this.setRelativeSizes([.4, .6]);
         this.title.label = "Status";
         this.title.closable = true;
     }

@@ -17,6 +17,7 @@ def read(file):
 
 
 class HTMLResource(BaseResource):
+    '''Falcon resource to service HTML files templated with jinja2'''
     def __init__(self, *args, **kwargs):
         super(HTMLResource, self).__init__(*args, **kwargs)
 
