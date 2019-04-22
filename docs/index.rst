@@ -18,6 +18,7 @@ A web frontend for scheduling Jupyter Notebooks as reports
 
    installation
    quickstart
+   api
 
 
 Overview
