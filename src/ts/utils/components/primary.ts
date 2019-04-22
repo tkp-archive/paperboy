@@ -12,8 +12,8 @@ function createPrimarySection(widget: PrimaryTab,
   const sec = widget.mine;
   deleteAllChildren(sec.node);
 
-  let table_holder = document.createElement('div');
-  table_holder.classList.add('table-holder');
+  const tableHolder = document.createElement("div");
+  tableHolder.classList.add("table-holder");
 
   const page = data.page;
   const pages = data.pages;
@@ -31,11 +31,10 @@ function createPrimarySection(widget: PrimaryTab,
     });
     // only add table if it has data
 
-    table_holder.appendChild(table);
+    tableHolder.appendChild(table);
   }
 
-  sec.node.appendChild(table_holder);
-
+  sec.node.appendChild(tableHolder);
 
   const p1 = document.createElement("p");
   p1.textContent = "Showing " + start + " to " + end + " of " + total;

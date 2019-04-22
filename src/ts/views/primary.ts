@@ -158,6 +158,7 @@ class PrimaryTab extends Panel {
     }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export
 class Notebooks extends PrimaryTab {
     constructor(home: DockPanel, status: Status) {
