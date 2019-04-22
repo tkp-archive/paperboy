@@ -1,9 +1,8 @@
 import {DockPanel, MenuBar, Widget} from "@phosphor/widgets";
 
 import "../src/style/index.css";
-import {buildMenus} from "./menu";
 import {hideLoader, showLoader} from "./utils/index";
-import {Browser, Header, Jobs, Notebooks, Reports, Status} from "./views/index";
+import {Browser, buildMenus, Header, Jobs, Notebooks, Reports, Status} from "./views/index";
 
 export
 function main(): void {
@@ -26,10 +25,6 @@ function main(): void {
   browser.title.label = "Home";
   browser.title.closable = true;
   main.addWidget(browser);
-  // main.addWidget(notebooks);
-  // main.addWidget(jobs);
-  // main.addWidget(reports);
-  // main.addWidget(overview);
 
   /* File bar */
   const bar = new MenuBar();

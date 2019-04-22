@@ -1,4 +1,4 @@
-import {buildAutocomplete} from "../autocomplete";
+import {buildAutocomplete} from "../components/index";
 import {toProperCase} from "../index";
 import {buildInput} from "./input";
 

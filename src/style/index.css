@@ -36,6 +36,7 @@ body {
 
 ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
@@ -152,7 +153,12 @@ div.details > table {
     overflow-y: scroll;
 }
 
-.primary > table {
+.primary > div.table-holder {
+  width: 100%;
+  overflow:scroll;
+}
+
+.primary > div.table-holder > table {
     height:95%;
     text-align: left;
 }

@@ -1,6 +1,6 @@
 import {buildVerticalTable} from "../dom/index";
-import {createModal} from "../modal";
 import {IRequestResult, requestFormData} from "../request";
+import {createModal} from "./modal";
 
 /*** create config from python json ***/
 export

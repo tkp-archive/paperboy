@@ -1,7 +1,7 @@
 import {buildVerticalTable} from "../dom/index";
-import {createErrorDialog} from "../errors";
-import {createModal} from "../modal";
 import {IRequestResult, requestFormData} from "../request";
+import {createErrorDialog} from "./errors";
+import {createModal} from "./modal";
 
 /*** create detail view from python json response to detail ***/
 export

@@ -1,5 +1,5 @@
-import {deleteAllChildren} from "./dom/index";
-import {IRequestResult, request} from "./request";
+import {deleteAllChildren} from "../dom/index";
+import {IRequestResult, request} from "../request";
 
 /*** autocomplete key/name pairs from server ***/
 export

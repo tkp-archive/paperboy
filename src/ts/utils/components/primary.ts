@@ -1,6 +1,6 @@
 import {PrimaryTab} from "../../views/index";
 import {buildListTable, deleteAllChildren} from "../dom/index";
-import {hideLoader, showLoader} from "../loader";
+import {hideLoader, showLoader} from "./loader";
 
 /*** create paginated table from data ***/
 export
@@ -11,6 +11,10 @@ function createPrimarySection(widget: PrimaryTab,
                               paginate= (page: number) => {}): void {
   const sec = widget.mine;
   deleteAllChildren(sec.node);
+
+  let table_holder = document.createElement('div');
+  table_holder.classList.add('table-holder');
+
   const page = data.page;
   const pages = data.pages;
   // let count = data['count'];
@@ -27,8 +31,11 @@ function createPrimarySection(widget: PrimaryTab,
     });
     // only add table if it has data
 
-    sec.node.appendChild(table);
+    table_holder.appendChild(table);
   }
+
+  sec.node.appendChild(table_holder);
+
 
   const p1 = document.createElement("p");
   p1.textContent = "Showing " + start + " to " + end + " of " + total;

@@ -1,4 +1,4 @@
-import {buildGeneric, deleteAllChildren} from "./dom/index";
+import {buildGeneric, deleteAllChildren} from "../dom/index";
 
 const modal = document.createElement("div");
 modal.classList.add("modal");

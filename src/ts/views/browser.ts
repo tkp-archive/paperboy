@@ -1,7 +1,7 @@
 import {BoxPanel, DockPanel, SplitPanel} from "@phosphor/widgets";
 
 import {apiurl, autocomplete, deleteAllChildren, hideLoader, showLoader} from "../utils/index";
-import {PrimaryDetail, PrimaryTab} from "./common";
+import {PrimaryDetail, PrimaryTab} from "./primary";
 import {Status} from "./status";
 
 export

@@ -157,3 +157,26 @@ class PrimaryTab extends Panel {
         this.parent.selectWidget(pd);
     }
 }
+
+export
+class Notebooks extends PrimaryTab {
+    constructor(home: DockPanel, status: Status) {
+        super("uploader", "notebooks", status, home);
+    }
+}
+
+// tslint:disable-next-line: max-classes-per-file
+export
+class Jobs extends PrimaryTab {
+    constructor(home: DockPanel, status: Status) {
+        super("scheduler", "jobs", status, home);
+    }
+}
+
+// tslint:disable-next-line: max-classes-per-file
+export
+class Reports extends PrimaryTab {
+    constructor(home: DockPanel, status: Status) {
+        super("configurator", "reports", status, home);
+    }
+}
