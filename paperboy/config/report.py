@@ -29,6 +29,7 @@ def _type_to_template(output, strip_code):
 
 
 class ReportMetadataConfig(HasTraits):
+    '''Paperboy configuration object representing a Report (metadata component)'''
     notebook = Instance(NotebookConfig)
     job = Instance(JobConfig)
 
@@ -48,6 +49,7 @@ class ReportMetadataConfig(HasTraits):
     modified = Instance(datetime)
 
     def to_json(self, include_notebook=False):
+        '''Convert ReportMetadata to a JSON'''
         ret = {}
         ret = {}
         ret['notebook'] = self.notebook.name
@@ -76,6 +78,7 @@ class ReportMetadataConfig(HasTraits):
 
     @staticmethod
     def from_json(jsn):
+        '''Create ReportMetadata from a JSON'''
         ret = ReportMetadataConfig()
         for k, v in jsn.items():
             if k in ('created', 'modified', 'run'):
@@ -86,11 +89,13 @@ class ReportMetadataConfig(HasTraits):
 
 
 class ReportConfig(Base):
+    '''Paperboy configuration object representing a Report'''
     name = Unicode()
     id = Unicode()
     meta = Instance(ReportMetadataConfig)
 
     def to_json(self, include_notebook=False):
+        '''Convert Report to a JSON'''
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
@@ -98,6 +103,7 @@ class ReportConfig(Base):
         return ret
 
     def form(self):
+        '''Generate Form template for client from a Report object'''
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', placeholder='Name for Report...', required=True),
@@ -114,6 +120,7 @@ class ReportConfig(Base):
 
     @staticmethod
     def from_json(jsn, config):
+        '''Create Report from a JSON'''
         ret = ReportConfig(config)
         ret.name = jsn['name']
         ret.id = jsn['id']
@@ -123,6 +130,7 @@ class ReportConfig(Base):
         return ret
 
     def edit(self):
+        '''Generate Edit template for client from a Report object'''
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Report...', required=True),
@@ -141,6 +149,7 @@ class ReportConfig(Base):
         return f.to_json()
 
     def entry(self):
+        '''Generate ListTable entry for client from a Report object'''
         f = Response()
         f.entries = [
             DOMEntry(name='name', type='label', value=self.name, label='Name'),
@@ -160,6 +169,7 @@ class ReportConfig(Base):
         return f.to_json()
 
     def store(self):
+        '''Generate response modal for client when saving a Report object'''
         ret = Response()
         ret.entries = [
             DOMEntry(type='h2', value='Success!'),

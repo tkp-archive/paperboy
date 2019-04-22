@@ -7,6 +7,7 @@ from .notebook import NotebookConfig
 
 
 class JobMetadataConfig(HasTraits):
+    '''Paperboy configuration object representing a Job (metadata component)'''
     notebook = Instance(NotebookConfig)
     username = Unicode()
     userid = Unicode()
@@ -26,6 +27,7 @@ class JobMetadataConfig(HasTraits):
     modified = Instance(datetime)
 
     def to_json(self, include_notebook=False):
+        '''Convert JobMetadata to a JSON'''
         ret = {}
         ret['notebook'] = self.notebook.name
         if include_notebook:
@@ -40,6 +42,7 @@ class JobMetadataConfig(HasTraits):
 
     @staticmethod
     def from_json(jsn):
+        '''Create JobMetadata from a JSON'''
         ret = JobMetadataConfig()
         for k, v in jsn.items():
             if k in ('created', 'modified'):
@@ -50,11 +53,13 @@ class JobMetadataConfig(HasTraits):
 
 
 class JobConfig(Base):
+    '''Paperboy configuration object representing a Job'''
     name = Unicode()
     id = Unicode()
     meta = Instance(JobMetadataConfig)
 
     def to_json(self, include_notebook=False):
+        '''Convert Job to a JSON'''
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
@@ -62,6 +67,7 @@ class JobConfig(Base):
         return ret
 
     def form(self):
+        '''Generate Form template for client from a Job object'''
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', label='Name', value=self.name, placeholder='Name for Job...', required=True),
@@ -82,6 +88,7 @@ class JobConfig(Base):
 
     @staticmethod
     def from_json(jsn, config):
+        '''Create Job from a JSON'''
         ret = JobConfig(config)
         ret.name = jsn['name']
         ret.id = jsn['id']
@@ -90,6 +97,7 @@ class JobConfig(Base):
         return ret
 
     def edit(self):
+        '''Generate Edit template for client from a Job object'''
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, label='Name', placeholder='Name for Job...', required=True),
@@ -106,6 +114,7 @@ class JobConfig(Base):
         return f.to_json()
 
     def entry(self):
+        '''Generate ListTable entry for client from a Job object'''
         f = Response()
         f.entries = [
             DOMEntry(name='name', type='label', value=self.name, label='Name'),
@@ -121,6 +130,7 @@ class JobConfig(Base):
         return f.to_json()
 
     def store(self):
+        '''Generate response modal for client when saving a Job object'''
         ret = Response()
         ret.entries = [
             DOMEntry(type='h2', value='Success!'),

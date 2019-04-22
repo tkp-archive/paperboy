@@ -8,6 +8,14 @@ from ..storage import StorageEngine, StorageError
 
 
 def FalconAPI(config):
+    '''Create falcon.API application from Paperboy traitlets application
+
+    Args:
+        config (paperboy.config.application.Paperboy): traitlets configuration for application
+
+    Returns:
+        falcon.API: the routed falcon api to launch with gunicorn/waitress
+    '''
     def from_base(url):
         return urljoin(config.baseurl, url)
 

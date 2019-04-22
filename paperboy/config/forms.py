@@ -6,6 +6,7 @@ _FORM_IMPLEMENTED = ('file', 'text', 'select', 'label', 'submit', 'datetime', 'a
 
 
 class FormEntry(HasTraits):
+    '''Form template entry to be rendered on the client'''
     name = Unicode(allow_none=False)
     type = Unicode(default_value='text')
 
@@ -25,6 +26,7 @@ class FormEntry(HasTraits):
     hidden = Bool(default_value=False)
 
     def to_json(self):
+        '''Convert form entry to JSON'''
         ret = {}
         ret['name'] = self.name
         ret['type'] = self.type
@@ -47,6 +49,7 @@ class FormEntry(HasTraits):
 
 
 class DOMEntry(HasTraits):
+    '''DOM node template to be rendered on the client'''
     name = Unicode(allow_none=False)
     type = Unicode(default_value='p')
 
@@ -91,6 +94,7 @@ class DOMEntry(HasTraits):
 
 
 class Response(HasTraits):
+    '''Response modal template for client'''
     entries = List()
 
     def to_json(self):
@@ -101,6 +105,7 @@ class Response(HasTraits):
 
 
 class ListResult(HasTraits):
+    '''List result metadata for pagination'''
     page = Int(default_value=1)
     pages = Int(default_value=1)
     count = Int(default_value=1)

@@ -6,6 +6,7 @@ from .base import Base, _SERVICE_LEVELS, _PRIVACY_LEVELS
 
 
 class NotebookMetadataConfig(HasTraits):
+    '''Paperboy configuration object representing a Notebook (metadata component)'''
     username = Unicode()
     userid = Unicode()
 
@@ -22,6 +23,7 @@ class NotebookMetadataConfig(HasTraits):
     modified = Instance(datetime)
 
     def to_json(self, include_notebook=False):
+        '''Convert NotebookMetadata to a JSON'''
         ret = {}
         ret['username'] = self.username
         # ret['userid'] = self.userid
@@ -37,6 +39,7 @@ class NotebookMetadataConfig(HasTraits):
 
     @staticmethod
     def from_json(jsn):
+        '''Create NotebookMetadata from a JSON'''
         ret = NotebookMetadataConfig()
         for k, v in jsn.items():
             if k in ('created', 'modified'):
@@ -47,11 +50,13 @@ class NotebookMetadataConfig(HasTraits):
 
 
 class NotebookConfig(Base):
+    '''Paperboy configuration object representing a Notebook'''
     name = Unicode()
     id = Unicode()
     meta = Instance(NotebookMetadataConfig)
 
     def to_json(self, include_notebook=False):
+        '''Convert Notebook to a JSON'''
         ret = {}
         ret['name'] = self.name
         ret['id'] = self.id
@@ -59,6 +64,7 @@ class NotebookConfig(Base):
         return ret
 
     def form(self):
+        '''Generate Form template for client from a Notebook object'''
         f = Response()
         f.entries = [
             FormEntry(name='file', type='file', label='File', required=True),
@@ -74,6 +80,7 @@ class NotebookConfig(Base):
 
     @staticmethod
     def from_json(jsn, config):
+        '''Create Notebook from a JSON'''
         ret = NotebookConfig(config)
         ret.name = jsn.pop('name')
         ret.id = jsn.pop('id')
@@ -86,6 +93,7 @@ class NotebookConfig(Base):
         return ret
 
     def edit(self):
+        '''Generate Edit template for client from a Notebook object'''
         f = Response()
         f.entries = [
             FormEntry(name='name', type='text', value=self.name, placeholder='Name for Job...', required=True),
@@ -103,6 +111,7 @@ class NotebookConfig(Base):
         return f.to_json()
 
     def entry(self):
+        '''Generate ListTable entry for client from a Notebook object'''
         f = Response()
         f.entries = [
             DOMEntry(name='name', type='label', value=self.name, label='Name'),
@@ -121,6 +130,7 @@ class NotebookConfig(Base):
         return f.to_json()
 
     def store(self):
+        '''Generate response modal for client when saving a Notebook object'''
         ret = Response()
         ret.entries = [
             DOMEntry(type='p', value='Success!'),
