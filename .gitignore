@@ -105,6 +105,10 @@ venv.bak/
 
 node_modules
 package-lock.json
-
+yarn.lock
 .DS_Store
 .autoversion
+logfile
+db
+dask-worker-space/
+coverage/
