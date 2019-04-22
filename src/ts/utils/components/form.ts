@@ -2,7 +2,13 @@ import {buildVerticalTable} from "../dom/index";
 import {IRequestResult, requestFormData} from "../request";
 import {createModal} from "./modal";
 
-/*** create config from python json ***/
+/**
+ * Helper function to build a configuration editor into a vertical table
+ * @param sec form to put the config in
+ * @param clazz unused
+ * @param data JSON data to populate the form with
+ * @param callback callback on form submission (save/cancel)
+ */
 export
 function createConfigForm(sec: HTMLFormElement | null,
                           clazz: string,
@@ -26,7 +32,10 @@ return new Promise((resolve) => {
   });
 }
 
-/*** create response modal from python json response to config ***/
+/**
+ * Helper function to create a modal response from submission of the above form
+ * @param resp JSON data for response
+ */
 export
 function createResponseModal(resp: [{[key: string]: string}]): Promise<boolean> {
   return new Promise((resolve) => {

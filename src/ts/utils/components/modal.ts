@@ -1,8 +1,17 @@
 import {buildGeneric, deleteAllChildren} from "../dom/index";
 
+/**
+ * Only do this once to make sure its a singleton
+ */
 const modal = document.createElement("div");
 modal.classList.add("modal");
 
+/**
+ * Create the modal by clearing the previous modal and repopulate
+ * @param data JSON data to put into the modal
+ * @param ok show ok button?
+ * @param cancel show cancel button?
+ */
 export
 function createModal(data: Array<{[key: string]: string}>,
                      ok= true,
@@ -36,6 +45,9 @@ function createModal(data: Array<{[key: string]: string}>,
   });
 }
 
+/**
+ * helper function to hide the global modal
+ */
 export
 function hideModal(): Promise<void> {
     return new Promise((resolve) => {

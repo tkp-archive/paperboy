@@ -1,7 +1,18 @@
 import {buildSelect} from "./select";
 import {buildTextarea} from "./textarea";
 
-/*** build an input ***/
+/**
+ * Helper function to build a generic input type
+ * @param type type of input, in <text, file, select, submit, etc..>
+ * @param name name of field for form submission
+ * @param placeholder text placeholder for field
+ * @param value initial/const value for field
+ * @param required is field required in form?
+ * @param readonly is field readonly in form?
+ * @param hidden is field hidden in form?
+ * @param options select input has a fixed set of choices
+ * @param json textarea can be unstructured or json
+ */
 export
 function buildInput(type?: string,
                     name?: string,

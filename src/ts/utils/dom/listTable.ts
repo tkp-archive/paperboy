@@ -1,6 +1,13 @@
 import {toProperCase} from "../index";
 import {buildGeneric} from "./generic";
 
+/**
+ * Helper function to build a variant of the Horizontal table.
+ *
+ * Used in the primary browsers.
+ * @param data JSON data to fill in the table
+ * @param ondblclick callback function when a row is double-clicked (e.g. display detail view for row)
+ */
 export
 function buildListTable(data: any,
                         // tslint:disable-next-line: no-empty

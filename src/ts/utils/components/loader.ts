@@ -1,5 +1,9 @@
 export const loader = makeLoader();
 
+/**
+ * helper function to create global modal with a spinner in it
+ * Note: this is designed to be a singleton
+ */
 export
 function makeLoader(): HTMLDivElement {
   // tslint:disable-next-line: no-shadowed-variable
@@ -12,6 +16,10 @@ function makeLoader(): HTMLDivElement {
   return loader;
 }
 
+/**
+ * helper function to show global modal with spinner in it
+ * @param closeOnClick should we close the modal if the user clicks (for debug)
+ */
 export
 function showLoader(closeOnClick = false) {
   loader.style.display = "flex";
@@ -26,6 +34,10 @@ function showLoader(closeOnClick = false) {
   document.body.appendChild(loader);
 }
 
+/**
+ * Hide the global modal with spinner in it
+ * @param minload hide after minload milliseconds
+ */
 export
 function hideLoader(minload= 200) {
   setTimeout(() => {

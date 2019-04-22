@@ -1,5 +1,6 @@
 // tslint:disable: object-literal-sort-keys
 
+/* Main commands, icons, and labels */
 export
 const COMMANDS = {
   // general

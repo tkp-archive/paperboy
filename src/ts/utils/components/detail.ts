@@ -3,7 +3,12 @@ import {IRequestResult, requestFormData} from "../request";
 import {createErrorDialog} from "./errors";
 import {createModal} from "./modal";
 
-/*** create detail view from python json response to detail ***/
+/**
+ * Helper function to create a detail view of an entry
+ * @param sec Phosphor widget in which to populate the results
+ * @param title title to give to table
+ * @param data JSON data representing the details
+ */
 export
 function createDetail(sec: HTMLFormElement, title: any, data: any): Promise<boolean> {
   return new Promise((resolve) => {
@@ -30,14 +35,21 @@ function createDetail(sec: HTMLFormElement, title: any, data: any): Promise<bool
   });
 }
 
-/*** create response modal from python json response to config ***/
+/**
+ * Helper function to create a global modal representing a response from the server
+ * (e.g. for successful form submission, error, etc)
+ * @param resp JSON response from server
+ */
 function createResponseModal(resp: [{[key: string]: string}]): Promise<boolean> {
   return new Promise((resolve) => {
     createModal(resp, true, false).then(resolve);
   });
 }
 
-/*** create request modal to ask "are you sure"? ***/
+/**
+ * Helper function to create a form confirmation modal prior to form submission
+ * (e.g. "Are you sure you want to save?")
+ */
 function createRequestModal(): Promise<boolean> {
   return new Promise((resolve) => {
     createModal([{type: "label", value: "Are you sure?"}], true, true).then((ok: boolean) => {

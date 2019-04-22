@@ -6,7 +6,14 @@ defaultNone.hidden = false;
 defaultNone.style.display = "none";
 defaultNone.value = "";
 
-/*** build a select ***/
+/**
+ * Helper function to build a select input element
+ * @param name name of select node for form
+ * @param list list of options to use for select
+ * @param def default option for select
+ * @param required is entry required for form submission?
+ * @param readonly is entry readonly?
+ */
 export
 function buildSelect(name: string,
                      list: string[],

@@ -2,7 +2,13 @@ import {PrimaryTab} from "../../views/index";
 import {buildListTable, deleteAllChildren} from "../dom/index";
 import {hideLoader, showLoader} from "./loader";
 
-/*** create paginated table from data ***/
+/**
+ * Create a primary section, which is a browser of all the available data
+ * @param widget PhosphorWidget to hold the primary data
+ * @param clazz class of the widget
+ * @param data JSON data from server with the data
+ * @param paginate helper function to paginate the data (if applicable)
+ */
 export
 function createPrimarySection(widget: PrimaryTab,
                               clazz: string,

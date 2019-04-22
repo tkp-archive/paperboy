@@ -2,6 +2,14 @@ import {buildAutocomplete} from "../components/index";
 import {toProperCase} from "../index";
 import {buildInput} from "./input";
 
+/**
+ * Helper function to build a vertical table, where keys are in the first column
+ * and values can be put in the second column (used in the edit and create views)
+ * @param data JSON data to fill into table
+ * @param title title of table
+ * @param form form node in which to put the table
+ * @param formCallback callback to call if table includes a submit type and it is clicked
+ */
 export
 function buildVerticalTable(data: any,
                             title?: any,

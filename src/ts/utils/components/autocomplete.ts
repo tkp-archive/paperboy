@@ -1,7 +1,13 @@
 import {deleteAllChildren} from "../dom/index";
 import {IRequestResult, request} from "../request";
 
-/*** autocomplete key/name pairs from server ***/
+/**
+ * Helper function to autocomplete against a server endpoint and
+ * fill in a HTMLDataList
+ * @param path path to query server with partial entry
+ * @param value value representing the partial entry to autocomplete
+ * @param autocomplete HTMLDataListEleemnt to fill in with results
+ */
 export
 // tslint:disable-next-line: no-shadowed-variable
 function autocomplete(path: string, value: string, autocomplete: HTMLDataListElement) {
@@ -20,7 +26,12 @@ function autocomplete(path: string, value: string, autocomplete: HTMLDataListEle
     });
 }
 
-/*** build an autocomplete ***/
+/**
+ * Build an autocomplete searchbox
+ * @param name name of dom node
+ * @param url url to hit for reqults
+ * @param required is an entry required for the autocomplete input?
+ */
 export
 function buildAutocomplete(name: string, url: string, required= false): [HTMLInputElement, HTMLDataListElement] {
   const search = document.createElement("input");

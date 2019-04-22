@@ -1,5 +1,12 @@
 import {toProperCase} from "../index";
 
+/**
+ * Build a generic html table where data is displayed with
+ * keys in the top row and items in the rows beneath.
+ *
+ * Used in the status viewer.
+ * @param data JSON data to fill into table
+ */
 export
 function buildHorizontalTable(data: any): HTMLTableElement {
   const table = document.createElement("table");

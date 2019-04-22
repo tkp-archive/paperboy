@@ -1,5 +1,12 @@
 
-/*** build a textarea ***/
+/**
+ * Helper function to build an unstructured or json textarea
+ * @param name name of node
+ * @param placeholder text placeholder for node
+ * @param value default value for node
+ * @param required is node required for form submission?
+ * @param json should text be json formatted?
+ */
 export
 function buildTextarea(name?: string,
                        placeholder?: string,
