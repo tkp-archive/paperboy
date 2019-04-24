@@ -76,7 +76,7 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
 
 # Installation from source
 
-Paperboy requires Python and [Node.js](https://nodejs.org), which can be installed from `conda-forge`.
+Paperboy requires Python and [Node.js](https://nodejs.org), which can be installed from `conda-forge` if `conda` is available.
 
 Clone the repository and run following commands to install and launch the
 application:
