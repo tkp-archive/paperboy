@@ -34,7 +34,7 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
 - Upload notebook
 - Configure job
     - start time
-    - interval 
+    - interval
     - papermill parameters to autoconfigure reports
     - if autoconfiguring reports from papermill:
         - run or publish
@@ -72,3 +72,21 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_cleanup.png)
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_out.png)
 ![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/reports_demo.png)
+
+
+# Installation from source
+
+Paperboy requires Python and [Node.js](https://nodejs.org), which can be installed from `conda-forge` if `conda` is available.
+
+Clone the repository and run following commands to install and launch the
+application:
+
+- npm install
+- npm run build
+- pip install -e .
+- python -m paperboy
+
+Visit http://0.0.0.0:8080 in a browser to view the application.
+
+The default authentication backend requires the registration of a username that
+can be used on subsequent launches.

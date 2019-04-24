@@ -112,3 +112,5 @@ logfile
 db
 dask-worker-space/
 coverage/
+paperboy.db
+paperboy/assets/static/bundle.js
