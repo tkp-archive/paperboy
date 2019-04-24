@@ -88,5 +88,5 @@ application:
 
 Visit http://0.0.0.0:8080 in a browser to view the application.
 
-The default authentication setup requires the registration of a username that
+The default authentication backend requires the registration of a username that
 can be used on subsequent launches.
