@@ -55,25 +55,6 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
         - script
     - strip or keep code
 
-## Storage Arch
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/arch.png)
-
-## Parameters demo
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/demo.gif)
-
-## Airflow Integration
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/notebook.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/job.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/reports.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_init.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_papermill.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_nbconvert.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_cleanup.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/dag_out.png)
-![](https://raw.githubusercontent.com/timkpaine/paperboy/master/docs/img/reports_demo.png)
-
-
 # Installation from source
 
 Paperboy requires Python and [Node.js](https://nodejs.org), which can be installed from `conda-forge` if `conda` is available.
