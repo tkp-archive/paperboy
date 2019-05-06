@@ -18,6 +18,7 @@ A web frontend for scheduling Jupyter Notebooks as reports
 
    installation
    quickstart
+   architecture
    api
 
 
@@ -95,21 +96,24 @@ Process Flow
 
    -  strip or keep code
 
-Storage Arch
-------------
 
-|image7|
+Installation from source
+--------------------------
 
-Parameters demo
----------------
+Paperboy requires Python and [Node.js](https://nodejs.org), which can be installed from `conda-forge` if `conda` is available.
 
-|image8|
+Clone the repository and run following commands to install and launch the
+application:
 
-Airflow Integration
--------------------
+- npm install
+- npm run build
+- pip install -e .
+- python -m paperboy
 
-|image9| |image10| |image11| |image12| |image13| |image14| |image15|
-|image16| |image17| |image18|
+Visit http://0.0.0.0:8080 in a browser to view the application.
+
+The default authentication backend requires the registration of a username that
+can be used on subsequent launches.
 
 .. |Build Status| image:: https://travis-ci.org/timkpaine/paperboy.svg?branch=master
    :target: https://travis-ci.org/timkpaine/paperboy
@@ -121,16 +125,3 @@ Airflow Integration
 .. |Site| image:: https://img.shields.io/badge/Site--grey.svg?colorB=FFFFFF
    :target: https://paperboy-jp.herokuapp.com/
 .. |image6| image:: ./img/ss.png
-.. |image7| image:: ./img/arch.png
-.. |image8| image:: ./img/demo.gif
-.. |image9| image:: ./img/notebook.png
-.. |image10| image:: ./img/job.png
-.. |image11| image:: ./img/reports.png
-.. |image12| image:: ./img/dag.png
-.. |image13| image:: ./img/dag_init.png
-.. |image14| image:: ./img/dag_papermill.png
-.. |image15| image:: ./img/dag_nbconvert.png
-.. |image16| image:: ./img/dag_cleanup.png
-.. |image17| image:: ./img/dag_out.png
-.. |image18| image:: ./img/reports_demo.png
-
