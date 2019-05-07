@@ -24,15 +24,19 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
                 'script': base.filter(ReportSQL.output == 'script').count()}
 
     def form(self):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._form(ReportConfig)
 
     def search(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._search(ReportSQL, 'Report', user, params, session, *args, **kwargs)
 
     def list(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._list(ReportSQL, 'reports', user, params, session, *args, **kwargs)
 
     def detail(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._detail(ReportSQL, user, params, session, *args, **kwargs)
 
     def store(self, user, params, session, *args, **kwargs):

@@ -3,6 +3,7 @@ from .base import BaseScheduler
 
 
 class RemoteScheduler(BaseScheduler):
+    '''Proxy methods to a remote worker instance'''
     def __init__(self, *args, **kwargs):
         super(RemoteScheduler, self).__init__(*args, **kwargs)
 

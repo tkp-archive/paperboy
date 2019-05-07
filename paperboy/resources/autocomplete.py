@@ -8,6 +8,10 @@ class AutocompleteResource(BaseResource):
         super(AutocompleteResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
+        '''Get autocompletion.
+
+        This method calls the .search() method on the storage managers users/notebooks/jobs/reports attribute
+        '''
         resp.content_type = 'application/json'
 
         params = {}

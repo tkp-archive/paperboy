@@ -7,6 +7,7 @@ from .models.report import ReportSQL
 
 
 def main(sql_url):
+    '''Create dummy notebook data for sqlalchemy'''
     engine = create_engine(sql_url, echo=False)
     with engine.session() as session:
         user = UserSQL(name='test')

@@ -21,15 +21,19 @@ class NotebookSQLStorage(BaseSQLStorageMixin, NotebookStorage):
                 'private': base.filter(NotebookSQL.privacy == 'private').count()}
 
     def form(self):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._form(NotebookConfig)
 
     def search(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._search(NotebookSQL, 'Notebook', user, params, session, *args, **kwargs)
 
     def list(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._list(NotebookSQL, 'notebooks', user, params, session, *args, **kwargs)
 
     def detail(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._detail(NotebookSQL, user, params, session, *args, **kwargs)
 
     def store(self, user, params, session, *args, **kwargs):

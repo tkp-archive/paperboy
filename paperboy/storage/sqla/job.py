@@ -20,15 +20,19 @@ class JobSQLStorage(BaseSQLStorageMixin, JobStorage):
                 'personal': base.filter(JobSQL.level == 'personal').count()}
 
     def form(self):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._form(JobConfig)
 
     def search(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._search(JobSQL, 'Job', user, params, session, *args, **kwargs)
 
     def list(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._list(JobSQL, 'jobs', user, params, session, *args, **kwargs)
 
     def detail(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._detail(JobSQL, user, params, session, *args, **kwargs)
 
     def store(self, user, params, session, scheduler, *args, **kwargs):

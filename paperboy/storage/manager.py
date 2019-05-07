@@ -3,10 +3,15 @@ import uuid
 
 
 class StorageEngine(object):
+    '''Unified interface into storage classes of a backend'''
+
+    ################################
+    # These attributes must be set #
     users = property(lambda self: self._user_storage)
     notebooks = property(lambda self: self._notebook_storage)
     jobs = property(lambda self: self._job_storage)
     reports = property(lambda self: self._report_storage)
+    ################################
 
     def __init__(self, user_storage, notebook_storage, job_storage, report_storage):
         # resources get with self.db
