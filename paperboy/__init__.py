@@ -1,4 +1,4 @@
-__all__ = ['client', 'config', 'middleware', 'output', 'resources', 'scheduler', 'server', 'storage', 'worker']
+__all__ = ['config', 'middleware', 'output', 'resources', 'scheduler', 'server', 'storage', 'worker']
 
 from . import config  # noqa: F401
 from . import output  # noqa: F401
