@@ -9,6 +9,18 @@ except ImportError:
 
 
 def run(nb_name, nb_text, to='html', template='', hide_input=False):
+    '''Helper function to run nbconvert, used by airflow
+
+    Args:
+        nb_name (string): Name of notebook
+        nb_text (string): nbformat json of text of notebook to convert
+        to (string): what to convert to, options dictated by nbconvert
+        template (string): path to template to use
+        hide_input (boolean): hide code
+    Returns:
+        string: text/binary output of nbconvert
+    '''
+
     with TemporaryDirectory() as tempdir:
         in_file = os.path.join(tempdir, '{}.ipynb'.format(nb_name))
         out_file = os.path.join(tempdir, '{}_out'.format(nb_name))

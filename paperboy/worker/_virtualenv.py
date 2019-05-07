@@ -6,6 +6,14 @@ from venv import create
 
 
 def create_virtualenv(requirements_txt, directory):
+    '''Helper function to create a virtualenv from a requirements.txt file
+
+    Args:
+        requirements_txt (string): text of requirements.txt to use to build virtualenv
+        directory (string): directory directory of created base virtualenv
+    Returns:
+        None
+    '''
     create(directory, with_pip=True)
 
     source = os.path.join(directory, 'bin', 'activate')

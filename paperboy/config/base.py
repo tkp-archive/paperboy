@@ -9,7 +9,7 @@ _SERVICE_LEVELS = ('production', 'research', 'development', 'personal')
 
 
 class Base(HasTraits):
-    '''Base HasTraits abstract base class for all paperboy configureables'''
+    '''Base HasTraits abstract base class for all paperboy configureables (User, Notebook, Job, and Report)'''
 
     def __init__(self, config, *args, **kwargs):
         super(Base, self).__init__(*args, **kwargs)

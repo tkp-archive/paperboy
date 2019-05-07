@@ -22,6 +22,7 @@ from traitlets import Int, Unicode
 
 
 class RemoteAirflow(Application):
+    '''Helper to proxy methods through to a remote airflow application.'''
     name = 'remoteairflow'
     description = 'remoteairflow'
 

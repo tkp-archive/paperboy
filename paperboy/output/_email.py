@@ -14,19 +14,23 @@ def make_email(name,
                subject='',
                header='',
                footer=''):
-    '''
-        path        : path to notebook
-        model       : notebook itself (in case deployment strips outputs or
-                      notebook not available except through ContentsManager)
-        from_       : address to send the email from
-        type        : type to convert notebook to
-        template    : template to use when converting notebook
-        code        : include input cells in notebook
-        subject     : subject of email
-        header      : header to inject
-        footer      : footer to inject
-        also_attach : also attach pdf/html/both
-        postprocessor : run postprocessor on soup
+    '''Helper method to convert jupyter notebook into an email
+
+    Args:
+        path (str): path to notebook
+        model (str): notebook itself (in case deployment strips outputs or
+                     notebook not available except through ContentsManager)
+        from_ (str): address to send the email from
+        type (str): type to convert notebook to
+        template (str): template to use when converting notebook
+        code (boolean): include input cells in notebook
+        subject (str): subject of email
+        header (str): html header to inject
+        footer (str): html footer to inject
+        also_attach (str): also attach pdf/html/both
+        postprocessor (function): run postprocessor on soup
+    Returns:
+        emails.html: HTML Email to send
     '''
     if type == 'email':
         type_to = 'html'
@@ -111,13 +115,14 @@ def make_email(name,
 
 
 def email(message, to, username, password, domain, host, port):
-    '''
-        to          : who to send notebook to
-        username    : email account username
-        password    : email account password
-        domain      : email account provider
-        host        : smtp host
-        port        : smtp port
+    '''Email a given message using smtp server details
+    Args:
+        to (str): who to send notebook to
+        username (str): email account username
+        password (str): email account password
+        domain (str): email account provider
+        host (str): smtp host
+        port (str): smtp port
     '''
     r = message.send(to=to,
                      smtp={'host': host,
@@ -132,10 +137,12 @@ def email(message, to, username, password, domain, host, port):
 
 
 class EmailOutput(BaseOutput):
+    '''Email output type'''
     def __init__(self, config, *args, **kwargs):
         self.config = config
 
     def write(self, report, output, *args, **kwargs):
+        '''write a given notebook as an email'''
         task_id = kwargs.get('task_id', '')
 
         name = task_id + '_' + datetime.now().strftime('%m-%d-%Y_%H-%M-%S')

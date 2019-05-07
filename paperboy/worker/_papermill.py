@@ -10,7 +10,14 @@ except ImportError:
 
 
 def run(nb_name, nb_text, parameters, hide_input):
-    '''Run the notebook and return the text'''
+    '''Run the notebook and return the text
+
+    Args:
+        nb_name (string): Name of notebook
+        nb_text (string): nbformat json of text of notebook to convert
+        paramters (string): json parameters to use for papermill
+        hide_input (boolean): hide code
+    '''
     with TemporaryDirectory() as tempdir:
 
         in_file = os.path.join(tempdir, '{}.ipynb'.format(nb_name))

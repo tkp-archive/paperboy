@@ -11,12 +11,15 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
         super(UserSQLStorage, self).__init__(*args, **kwargs)
 
     def status(self, *args, **kwargs):
+        '''Not used'''
         return {}
 
     def form(self):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._form(UserConfig)
 
     def search(self, user, params, session, *args, **kwargs):
+        '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._search(UserSQL, 'User', user, params, session, *args, **kwargs)
 
     def login(self, user, params, session, *args, **kwargs):
@@ -30,6 +33,7 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
             return token
 
     def list(self, user, params, session, *args, **kwargs):
+        '''Not used'''
         return {}
 
     def detail(self, user, params, session, *args, **kwargs):
