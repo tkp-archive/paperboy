@@ -9,6 +9,7 @@ from .base import BaseResource
 
 # @lru_cache(20)
 def read(file):
+    '''read a file from local disk'''
     path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'assets', 'templates', file))
     if not os.path.exists(path):
         return None
@@ -22,6 +23,7 @@ class HTMLResource(BaseResource):
         super(HTMLResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
+        '''Get templatized html and render'''
         if req.path == '' or req.path == '/':
             path = 'index.html'
         else:

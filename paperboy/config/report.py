@@ -13,6 +13,7 @@ TEMPLATE_BASEPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'
 
 
 def _type_to_template(output, strip_code):
+    '''select correct nbconvert template for type'''
     if output in ('pdf', 'html'):
         ret = output
         if output == 'pdf':

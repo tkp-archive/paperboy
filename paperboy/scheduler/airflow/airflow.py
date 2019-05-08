@@ -29,6 +29,7 @@ LIMIT 20;
 
 class AirflowScheduler(BaseScheduler):
     def __init__(self, *args, **kwargs):
+        '''Create a new airflow scheduler, connecting to the airflow instances configuration'''
         super(AirflowScheduler, self).__init__(*args, **kwargs)
         cp = configparser.ConfigParser()
         cp.read(self.config.scheduler.config)
@@ -43,6 +44,7 @@ class AirflowScheduler(BaseScheduler):
             self.engine = None
 
     def status(self, user, params, session, *args, **kwargs):
+        '''Get status of job/report DAGs'''
         type = params.get('type', '')
         if self.engine:
             gen = AirflowScheduler.query(self.engine)
@@ -58,6 +60,7 @@ class AirflowScheduler(BaseScheduler):
 
     @staticmethod
     def query(engine):
+        '''Get status of job/report DAGs from airflow\'s database'''
         ret = {'jobs': [], 'reports': []}
         with engine.begin() as conn:
             res = conn.execute(QUERY)
@@ -96,6 +99,7 @@ class AirflowScheduler(BaseScheduler):
 
     @staticmethod
     def fakequery():
+        '''If airflow not present, fake the results for now so the UI looks ok'''
         ret = {'jobs': [], 'reports': []}
         for i in range(10):
             ret['jobs'].append(
@@ -121,6 +125,7 @@ class AirflowScheduler(BaseScheduler):
 
     @staticmethod
     def template(config, user, notebook, job, reports, *args, **kwargs):
+        '''jinja templatize airflow DAG for paperboy (paperboy.airflow.py)'''
         owner = user.name
         start_date = job.meta.start_time.strftime('%m/%d/%Y %H:%M:%S')
         email = 'test@test.com'
@@ -140,6 +145,7 @@ class AirflowScheduler(BaseScheduler):
         return tpl
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):
+        '''Schedule a DAG for `job` composed of `reports` to be run on airflow'''
         template = AirflowScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
         name = job.id + '.py'
         with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
@@ -147,6 +153,8 @@ class AirflowScheduler(BaseScheduler):
         return template
 
     def unschedule(self, user, notebook, job, reports, *args, **kwargs):
+        '''Remove the DAG for `user` and `notebook` composed of `job` running `reports` from
+            airflow 2 parts, remove the dag from disk and delete the dag from airflow's database using the CLI'''
         if reports:
             # reschedule
             return self.schedule(user, notebook, job, reports, *args, **kwargs)

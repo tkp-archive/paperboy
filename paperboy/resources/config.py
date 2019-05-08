@@ -9,6 +9,7 @@ class ConfigResource(BaseResource):
         super(ConfigResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
+        '''Get configuration page to create a new notebook/job/report'''
         resp.content_type = 'application/json'
         type = req.params.get('type', None)
         if type is None:
