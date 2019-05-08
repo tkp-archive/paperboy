@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 #
+# FIXME: this code should be used to configure airflow
+# as the login authority for paperboy. It is not yet
+# complete.
+#
+#
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information

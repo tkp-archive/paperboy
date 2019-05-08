@@ -3,6 +3,7 @@ from ..storage.sqla import UserSQLStorage, NotebookSQLStorage, JobSQLStorage, Re
 
 
 class StorageConfig(HasTraits):
+    '''Base config for storage backend'''
     type = Unicode()
     user_storage = None
     notebook_storage = None
@@ -11,6 +12,7 @@ class StorageConfig(HasTraits):
 
 
 class SQLAStorageConfig(StorageConfig):
+    '''Config for SQL Alchemy storage'''
     type = 'SQLA'
     sql_url = Unicode(default_value='sqlite:///paperboy.db', help="SQL Alchemy url").tag(config=True)
     engine = None

@@ -7,6 +7,7 @@ class StatusResource(BaseResource):
         super(StatusResource, self).__init__(*args, **kwargs)
 
     def on_get(self, req, resp):
+        '''get status report for notebooks/jobs/reports or all'''
         type = req.params.get('type', '')
         if type == 'notebooks':
             resp.body = json.dumps(self.db.notebooks.status(req.context['user'], req.params, self.session))

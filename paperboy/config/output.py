@@ -6,11 +6,13 @@ from ..utils import class_to_name, name_to_class
 
 
 class OutputConfig(HasTraits):
+    '''Base class for configuring output'''
     type = Unicode()
     pass
 
 
 class LocalOutputConfig(OutputConfig):
+    '''Output report to local filesystem'''
     type = 'local'
     dir = Unicode(default_value=os.path.expanduser('~/Downloads'))
     clazz = LocalOutput

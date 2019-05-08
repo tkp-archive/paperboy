@@ -1,3 +1,12 @@
+# This is the jinja2 templatized DAG that generates
+# the job operator. It has the following form as an
+# example:
+#
+#    Job -> Report -> Papermill -> NBConvert ->      ReportPost -\
+#      \--> Report -> Papermill -> Voila -> Dokku -> ReportPost --\
+#       \-> Report -> Papermill -> NBConvert ->      ReportPost ----> Job Cleanup
+#
+
 import json
 from base64 import b64decode
 
@@ -105,10 +114,6 @@ for rep in reports_json:
 
     # type is "convert" for nbconversion jobs and "publish" for publish jobs
     type = rep['meta']['type']
-
-    # Job -> Report -> Papermill -> NBConvert ->      ReportPost -\
-    #   \--> Report -> Papermill -> Voila -> Dokku -> ReportPost --\
-    #    \-> Report -> Papermill -> NBConvert ->      ReportPost ----> Job Cleanup
 
     # Report operator, performs the required
     # steps prior to running the report
