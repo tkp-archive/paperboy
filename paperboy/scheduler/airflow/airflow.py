@@ -148,6 +148,7 @@ class AirflowScheduler(BaseScheduler):
         '''Schedule a DAG for `job` composed of `reports` to be run on airflow'''
         template = AirflowScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
         name = job.id + '.py'
+        os.makedirs(self.config.scheduler.dagbag, exist_ok=True)
         with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
             fp.write(template)
         return template

@@ -101,9 +101,8 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
             parameters_inline = params.get('parameters_inline') or ''
             parameters = params.get('parameters')
 
-            if not parameters_inline:
-                if parameters is not None:
-                    report_params = parameters.file.read().decode('utf-8')
+            if not parameters_inline and parameters:
+                report_params = parameters.file.read().decode('utf-8')
             else:
                 report_params = parameters_inline
             if not report_params:
