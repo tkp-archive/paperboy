@@ -23,7 +23,7 @@ Paperboy is a production-grade application for scheduling reports. It has a flex
 - [PhosphorJS](https://phosphorjs.github.io) for the frontend
 - Support for Python [Virtualenvs](https://virtualenv.pypa.io/en/stable/) via `requirements.txt` or custom [Docker](https://www.docker.com) images via `Dockerfile`s on a per-notebook level
 - Traitlets parameterization of storage and scheduler classes for easy integration with custom storage backends and custom schedulers
-- Single click notebook deployment with Voila and Dokku
+- Single click notebook deployment with [Voila](https://github.com/QuantStack/voila) and [Dokku](https://github.com/dokku/dokku)
 
 
 
