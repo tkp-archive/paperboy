@@ -7,6 +7,9 @@ runnoauth:  ## run server without auth
 runsql:  ## run server with sql backend
 	python3 -m paperboy.server --backend='sqla' --auth='sqla'
 
+runmongo:  ## run server with MongoDB backend
+	python3 -m paperboy.server --backend='mongo' --auth='none'
+
 tests: clean ## Clean and Make unit tests
 	python3 -m pytest -v tests --cov=paperboy
 

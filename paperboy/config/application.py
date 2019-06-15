@@ -20,7 +20,7 @@ from .notebook import NotebookConfig
 from .job import JobConfig
 from .report import ReportConfig
 from .scheduler import AirflowSchedulerConfig
-from .storage import SQLAStorageConfig
+from .storage import StorageConfig, SQLAStorageConfig, MongoStorageConfig
 from .output import LocalOutputConfig
 
 # no auth
@@ -31,7 +31,6 @@ from ..middleware import CORSMiddleware, MultipartMiddleware
 
 # sql
 from ..storage.sqla import Base
-from ..storage.sqla import UserSQLStorage, NotebookSQLStorage, JobSQLStorage, ReportSQLStorage
 from ..middleware import SQLAlchemySessionMiddleware, SQLUserMiddleware, SQLAuthRequiredMiddleware
 
 
@@ -102,13 +101,13 @@ class Paperboy(Application):
     #        Predefined Configurations       #
     #
     ##########################################
-    backend = Unicode(default_value='dummy', help="Backend set to use, options are {sqla, custom}").tag(config=True)
+    backend = Unicode(default_value='dummy', help="Backend set to use, options are {sqla, mongo, custom}").tag(config=True)
     auth = Unicode(default_value='dummy', help="Authentication backend set to use, options are {none, sqla, custom}").tag(config=True)
     secret = Unicode()
 
     @validate('backend')
     def _validate_backend(self, proposed):
-        if proposed['value'] not in ('custom', 'dummy', 'git', 'sqla',):
+        if proposed['value'] not in ('custom', 'dummy', 'mongo', 'git', 'sqla',):
             raise TraitError('backend not recognized: %s'.format(proposed['value']))
         return proposed['value']
 
@@ -122,22 +121,24 @@ class Paperboy(Application):
     ###########
     # Storage #
     ###########
-    # FIXME doesnt allow default_value yet
-    storage = SQLAStorageConfig()
+    storage = Instance(klass=StorageConfig)
     sql_dev = Bool(default_value=False)
+
+    sql_url = Unicode(default_value='sqlite:///:memory:')
+    mongo_url = Unicode(default_value='mongodb://localhost:27017/')
     ###########
 
     #############
     # Scheduler #
     #############
     # FIXME doesnt allow default_value yet
-    scheduler = AirflowSchedulerConfig()
+    scheduler = Instance(klass=AirflowSchedulerConfig, args=(), kwargs={})
     #############
 
     ##################
     # Output         #
     ##################
-    output = LocalOutputConfig()
+    output = Instance(klass=LocalOutputConfig, args=(), kwargs={})
     ##################
 
     def start(self):
@@ -155,6 +156,7 @@ class Paperboy(Application):
             self.sql_url = 'sqlite:///:memory:'
             logging.critical('Using SQL in memory backend')
 
+            self.storage = SQLAStorageConfig()
             self.storage.engine = create_engine(self.storage.sql_url, echo=False)
             Base.metadata.create_all(self.storage.engine)
 
@@ -162,10 +164,6 @@ class Paperboy(Application):
             self.backend = 'sqla'
             self.auth = 'sqla'
             self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.storage.sessionmaker)]
-            self.storage.notebook_storage = NotebookSQLStorage
-            self.storage.job_storage = JobSQLStorage
-            self.storage.report_storage = ReportSQLStorage
-            self.storage.user_storage = UserSQLStorage
             self.storage.sql_user = True
 
             logging.critical('Using SQL auth')
@@ -173,30 +171,33 @@ class Paperboy(Application):
             self.load_user_middleware = SQLUserMiddleware
 
         else:
-
-            # Preconfigured storage backends
+            ##################################
+            # Preconfigured storage backends #
+            ##################################
             if self.backend == 'git':
                 logging.critical('Using Git backend')
                 raise NotImplementedError()
 
             # default to sqla
-            # elif self.backend == 'sqla':
+            elif self.backend == 'mongo':
+                logging.critical('Using MongoDB backend')
+                self.storage = MongoStorageConfig()
+
             else:
                 logging.critical('Using SQL backend')
-
+                self.storage = SQLAStorageConfig()
                 self.storage.engine = create_engine(os.environ.get('PAPERBOY_SQL_URL') or self.storage.sql_url, echo=False)
                 Base.metadata.create_all(self.storage.engine)
 
                 self.storage.sessionmaker = sessionmaker(bind=self.storage.engine)
                 self.extra_middleware = self.extra_middleware + [SQLAlchemySessionMiddleware(self.storage.sessionmaker)]
-                self.storage.notebook_storage = NotebookSQLStorage
-                self.storage.job_storage = JobSQLStorage
-                self.storage.report_storage = ReportSQLStorage
-                self.storage.user_storage = UserSQLStorage
                 self.storage.sql_user = True
                 self.auth = 'sqla'
+            ##################################
 
-            # Preconfigured auth backends
+            ###############################
+            # Preconfigured auth backends #
+            ###############################
             if self.auth == 'none':
                 logging.critical('Using No auth')
                 self.auth_required_middleware = NoAuthRequiredMiddleware
@@ -206,6 +207,7 @@ class Paperboy(Application):
                 logging.critical('Using SQL auth')
                 self.auth_required_middleware = SQLAuthRequiredMiddleware
                 self.load_user_middleware = SQLUserMiddleware
+            ###############################
 
         FalconDeploy(FalconAPI(self), options).run()
 
@@ -226,6 +228,7 @@ class Paperboy(Application):
         'backend': 'Paperboy.backend',
         'auth': 'Paperboy.auth',
         'sql_url': 'Paperboy.storage.sql_url',
+        'mongo_url': 'Paperboy.storage.mongo_url',
     }
 
     def _login_redirect(config, *args, **kwargs):

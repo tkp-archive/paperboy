@@ -7,8 +7,8 @@ class NoUserMiddleware(object):
 
     def process_request(self, req, resp):
         '''inject anonymous user into every context'''
-        from paperboy.config import User
-        req.context['user'] = User(self.config, id='1', name='anon')
+        from paperboy.config import UserConfig
+        req.context['user'] = UserConfig(self.config, id='1', name='anon')
 
 
 class NoAuthRequiredMiddleware(object):
