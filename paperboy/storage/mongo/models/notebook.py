@@ -1,4 +1,4 @@
-from mongoengine import IntField, StringField, ReferenceField, DateTimeField, ListField
+from mongoengine import StringField, ReferenceField, DateTimeField, ListField
 from paperboy.config import NotebookConfig, NotebookMetadataConfig
 from .base import Base
 from .user import UserMongo
@@ -6,7 +6,7 @@ from .user import UserMongo
 
 class NotebookMongo(Base):
     __tablename__ = 'notebooks'
-    id = IntField(required=True)
+    id = StringField(required=True)
     name = StringField()
 
     user = ReferenceField(UserMongo)

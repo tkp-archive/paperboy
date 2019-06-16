@@ -13,8 +13,8 @@ from .models.report import ReportMongo
 
 class ReportMongoStorage(BaseMongoStorageMixin, ReportStorage):
     def status(self, user, params, session, *args, **kwargs):
-        base = session.query(ReportMongo) \
-            .filter(ReportMongo.userId == int(user.id))
+        user = UserMongo.objects(id=user.id).first()
+        base = ReportMongo.objects(user=user)
 
         return {'total': base.count(),
                 'notebook': base.filter(ReportMongo.output == 'notebook').count(),

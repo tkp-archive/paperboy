@@ -3,7 +3,7 @@ import logging
 from datetime import datetime
 from paperboy.config import NotebookConfig
 from paperboy.storage import NotebookStorage
-from sqlalchemy import or_
+from mongoengine.queryset.visitor import Q
 from .base import BaseMongoStorageMixin, justid
 from .models.user import UserMongo
 from .models.notebook import NotebookMongo
@@ -12,10 +12,8 @@ from ..utils import strip_outputs
 
 class NotebookMongoStorage(BaseMongoStorageMixin, NotebookStorage):
     def status(self, user, params, session, *args, **kwargs):
-        base = session.query(NotebookMongo) \
-            .filter(or_(NotebookMongo.userId.like((user.id)),
-                        (hasattr(NotebookMongo, 'privacy') and NotebookMongo.privacy == 'public')))
-
+        user = UserMongo.objects(id=user.id).first()
+        base = NotebookMongo.objects(Q(user=user) | Q(privacy='public'))
         return {'total': base.count(),
                 'public': base.filter(NotebookMongo.level == 'public').count(),
                 'private': base.filter(NotebookMongo.privacy == 'private').count()}
@@ -38,7 +36,7 @@ class NotebookMongoStorage(BaseMongoStorageMixin, NotebookStorage):
 
     def store(self, user, params, session, *args, **kwargs):
         name = params.get('name')
-        user_sql = session.query(UserMongo).get(int(user.id))
+        user_sql = UserMongo.objects(user=user)
 
         if params.get('file') is not None:
             notebook = nbformat.writes(strip_outputs(nbformat.reads(params.get('file').file.read(), 4)))
@@ -73,7 +71,7 @@ class NotebookMongoStorage(BaseMongoStorageMixin, NotebookStorage):
         id = params.get('id')
         if id:
             id = justid(id)
-            nb = session.query(NotebookMongo).filter(NotebookMongo.id == id).first()
+            nb = NotebookMongo.objects(id=id).first()
             nb.name = name
             nb.notebook = notebook
             nb.privacy = privacy
@@ -84,15 +82,15 @@ class NotebookMongoStorage(BaseMongoStorageMixin, NotebookStorage):
 
         else:
             nb = NotebookMongo(name=name,
-                             userId=int(user.id),
-                             user=user_sql,
-                             notebook=notebook,
-                             privacy=privacy,
-                             level=level,
-                             requirements=requirements,
-                             dockerfile=dockerfile,
-                             created=created,
-                             modified=modified)
+                               userId=int(user.id),
+                               user=user_sql,
+                               notebook=notebook,
+                               privacy=privacy,
+                               level=level,
+                               requirements=requirements,
+                               dockerfile=dockerfile,
+                               created=created,
+                               modified=modified)
 
         session.add(nb)
 
@@ -107,13 +105,13 @@ class NotebookMongoStorage(BaseMongoStorageMixin, NotebookStorage):
     def delete(self, user, params, session, *args, **kwargs):
         # TODO only if allowed
         id = justid(params.get('id'))
-        nb = session.query(NotebookMongo).filter(NotebookMongo.id == id).first()
+        nb = NotebookMongo.objects(id=id).first()
         name = nb.name
         session.delete(nb)
 
         # cascade handled in DB, need to cascade to airflow jobs
         from .models.job import JobMongo
-        jobs = session.query(JobMongo).filter(JobMongo.notebookId == nb.id).all()
+        jobs = JobMongo.objects(notebook=nb).all()
         for job in jobs:
             resp = self.db.jobs.delete(user, {'id': job.id}, session, *args, **kwargs)
             print(resp)

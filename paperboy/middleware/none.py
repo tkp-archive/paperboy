@@ -1,3 +1,5 @@
+from bson.objectid import ObjectId
+
 
 class NoUserMiddleware(object):
     '''Dummy user authentication middleware'''
@@ -8,7 +10,12 @@ class NoUserMiddleware(object):
     def process_request(self, req, resp):
         '''inject anonymous user into every context'''
         from paperboy.config import UserConfig
-        req.context['user'] = UserConfig(self.config, id='1', name='anon')
+
+        if self.config.backend == 'mongo':
+            # must be valid id
+            req.context['user'] = UserConfig(self.config, id=str(ObjectId()), name='anon')
+        else:
+            req.context['user'] = UserConfig(self.config, id='1', name='anon')
         req.context['token'] = 'anon'
 
 

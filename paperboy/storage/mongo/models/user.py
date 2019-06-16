@@ -1,10 +1,10 @@
-from mongoengine import ListField, IntField, StringField, ReferenceField
+from mongoengine import ListField, StringField, ReferenceField
 from .base import Base
 
 
 class UserMongo(Base):
     __tablename__ = 'users'
-    id = IntField(required=True)
+    id = StringField(required=True)
     name = StringField()
     password = StringField()
 

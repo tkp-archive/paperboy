@@ -1,14 +1,14 @@
-from mongoengine import IntField, StringField, ReferenceField, DateTimeField, ListField
+from mongoengine import StringField, ReferenceField, DateTimeField, ListField, CASCADE
 from paperboy.config import JobConfig, JobMetadataConfig
 from .base import Base
 from .user import UserMongo
 
 
 class JobMongo(Base):
-    id = IntField(required=True)
+    id = StringField(required=True)
     name = StringField()
-    user = ReferenceField(UserMongo)
-    notebook = ReferenceField('NotebookMongo')
+    user = ReferenceField(UserMongo, reverse_delete_rule=CASCADE)
+    notebook = ReferenceField('NotebookMongo', reverse_delete_rule=CASCADE)
     reports = ListField(ReferenceField('ReportMongo'))
 
     start_time = DateTimeField()

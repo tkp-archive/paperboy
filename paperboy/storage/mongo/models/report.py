@@ -1,4 +1,4 @@
-from mongoengine import BooleanField, IntField, StringField, ReferenceField, DateTimeField
+from mongoengine import BooleanField, StringField, ReferenceField, DateTimeField, CASCADE
 from paperboy.config import ReportConfig, ReportMetadataConfig
 from .base import Base
 from .user import UserMongo
@@ -6,12 +6,12 @@ from .user import UserMongo
 
 class ReportMongo(Base):
     __tablename__ = 'reports'
-    id = IntField(required=True)
+    id = StringField(required=True)
     name = StringField()
 
     user = ReferenceField(UserMongo)
-    notebook = ReferenceField('NotebookMongo')
-    job = ReferenceField('JobMongo')
+    notebook = ReferenceField('NotebookMongo', reverse_delete_rule=CASCADE)
+    job = ReferenceField('JobMongo', reverse_delete_rule=CASCADE)
 
     parameters = StringField()
     type = StringField()

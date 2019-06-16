@@ -10,9 +10,8 @@ from .models.job import JobMongo
 
 class JobMongoStorage(BaseMongoStorageMixin, JobStorage):
     def status(self, user, params, session, *args, **kwargs):
-        base = session.query(JobMongo) \
-            .filter(JobMongo.userId == int(user.id))
-
+        user = UserMongo.objects(id=user.id).first()
+        base = JobMongo.objects(user=user)
         return {'total': base.count(),
                 'production': base.filter(JobMongo.level == 'production').count(),
                 'research': base.filter(JobMongo.level == 'research').count(),

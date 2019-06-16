@@ -1,3 +1,4 @@
+from mongoengine import connect
 from pymongo import MongoClient
 
 
@@ -11,6 +12,10 @@ class MongoSessionMiddleware(object):
 
     def process_resource(self, req, resp, resource, params):
         '''initialize SQL Alchemy session and put into resource's `session` variable'''
+        # Hook in ORM
+        connect(self.db_name, host=self.db_url)
+
+        # provide pymongo client if needed
         resource.session = MongoClient(self.db_url)[self.db_name]
 
     def process_response(self, req, resp, resource, req_succeeded):

@@ -26,11 +26,7 @@ class UserMongoStorage(BaseMongoStorageMixin, UserStorage):
         '''username/password -> user/token'''
         username = params.get('username')
         password = params.get('password') or ''
-        users = list(session['users'].find(dict(name=username, password=password)))
-        if len(users) > 0:
-            user = users[0]
-        else:
-            return ''
+        user = UserMongo.objects(name=username, password=password).first()
 
         if user:
             token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
@@ -53,19 +49,15 @@ class UserMongoStorage(BaseMongoStorageMixin, UserStorage):
         password = params.get('password') or ''
         user = UserMongo(name=username, password=password)
 
-        session.add(user)  # may raise exception
-
-        # generate id
-        session.flush()
-        session.refresh(user)
+        user.save()
 
         token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
         logging.critical("Storing user {} {} {}".format(username, token, user.id))
         return token
 
     def delete(self, user, params, session, *args, **kwargs):
-        user = session.query(UserMongo).filter(UserMongo.id == user.id).first()
+        user = UserMongo.objects(id=user.id).first()
         name = user.name
-        session.delete(user)
+        user.delete()
         return [{"name": "", "type": "p", "value": "Success!", "required": False, "readonly": False, "hidden": False},
                 {"name": "", "type": "p", "value": "Successfully deleted user: " + name, "required": False, "readonly": False, "hidden": False}]
