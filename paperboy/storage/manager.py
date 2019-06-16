@@ -1,5 +1,4 @@
 import falcon
-import uuid
 
 
 class StorageEngine(object):
@@ -25,13 +24,6 @@ class StorageEngine(object):
         self._notebook_storage.db = self
         self._job_storage.db = self
         self._report_storage.db = self
-
-    def get_things(self, marker, limit):
-        return [{'id': str(uuid.uuid4()), 'color': 'green'}]
-
-    def add_thing(self, thing):
-        thing['id'] = str(uuid.uuid4())
-        return thing
 
 
 class StorageError(Exception):

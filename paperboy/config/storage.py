@@ -29,7 +29,7 @@ class SQLAStorageConfig(StorageConfig):
 class MongoStorageConfig(StorageConfig):
     '''Config for SQL Alchemy storage'''
     type = 'Mongo'
-    mongo_url = Unicode(default_value='sqlite:///paperboy.db', help="SQL Alchemy url").tag(config=True)
+    mongo_url = Unicode(default_value='mongodb://localhost:27017/', help="MongoDB url").tag(config=True)
     db_name = Unicode(default_value='paperboy')
 
     user_storage = Type(klass=UserMongoStorage)

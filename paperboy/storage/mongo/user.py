@@ -26,7 +26,11 @@ class UserMongoStorage(BaseMongoStorageMixin, UserStorage):
         '''username/password -> user/token'''
         username = params.get('username')
         password = params.get('password') or ''
-        user = session.query(UserMongo).filter_by(name=username, password=password).first()
+        users = list(session['users'].find(dict(name=username, password=password)))
+        if len(users) > 0:
+            user = users[0]
+        else:
+            return ''
 
         if user:
             token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')

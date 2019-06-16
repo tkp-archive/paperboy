@@ -32,6 +32,7 @@ from ..middleware import CORSMiddleware, MultipartMiddleware
 # sql
 from ..storage.sqla import Base
 from ..middleware import SQLAlchemySessionMiddleware, SQLUserMiddleware, SQLAuthRequiredMiddleware
+from ..middleware import MongoSessionMiddleware
 
 
 class Paperboy(Application):
@@ -182,7 +183,7 @@ class Paperboy(Application):
             elif self.backend == 'mongo':
                 logging.critical('Using MongoDB backend')
                 self.storage = MongoStorageConfig()
-
+                self.extra_middleware = self.extra_middleware + [MongoSessionMiddleware(self.storage.mongo_url, self.storage.db_name)]
             else:
                 logging.critical('Using SQL backend')
                 self.storage = SQLAStorageConfig()

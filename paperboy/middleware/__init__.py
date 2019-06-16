@@ -13,3 +13,6 @@ from .none import NoUserMiddleware, NoAuthRequiredMiddleware  # noqa: F401
 
 # SQL
 from .sqla import SQLUserMiddleware, SQLAuthRequiredMiddleware, SQLAlchemySessionMiddleware  # noqa: F401
+
+# Mongo
+from .mongo import MongoSessionMiddleware

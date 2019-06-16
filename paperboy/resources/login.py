@@ -26,8 +26,12 @@ class LoginResource(BaseResource):
 
     def on_post(self, req, resp):
         '''Log user in using authentication backend'''
-        token = self.db.users.login(None, req.params, self.session)
-        user = self.db.users.detail(token, req.params, self.session)
+        if not req.context.get('user'):
+            token = self.db.users.login(None, req.params, self.session)
+            user = self.db.users.detail(token, req.params, self.session)
+        else:
+            user = req.context['user']
+            token = req.context['token']
 
         if token and user:
             # setup token and set auth cookie
