@@ -22,10 +22,10 @@ LIMIT 20;
 '''
 
 
-class AirflowScheduler(BaseScheduler):
+class LuigiScheduler(BaseScheduler):
     def __init__(self, *args, **kwargs):
         '''Create a new airflow scheduler, connecting to the airflow instances configuration'''
-        super(AirflowScheduler, self).__init__(*args, **kwargs)
+        super(LuigiScheduler, self).__init__(*args, **kwargs)
         cp = configparser.ConfigParser()
         cp.read(self.config.scheduler.config)
         try:
@@ -42,10 +42,10 @@ class AirflowScheduler(BaseScheduler):
         '''Get status of job/report DAGs'''
         type = params.get('type', '')
         if self.engine:
-            gen = AirflowScheduler.query(self.engine)
+            gen = LuigiScheduler.query(self.engine)
         else:
             logging.debug('Scheduler offline, using fake scheduler query')
-            gen = AirflowScheduler.fakequery()
+            gen = LuigiScheduler.fakequery()
         if type == 'jobs':
             return gen['jobs']
         elif type == 'reports':
