@@ -3,6 +3,13 @@ from luigi.parameter import Parameter, DateIntervalParameter, DateParameter
 
 
 class BaseTask(Task):
+    def __init__(self, requires, *args, **kwargs):
+        super(BaseTask, self).__init__(*args, **kwargs)
+        self.requires = requires
+
+    def requires(self):
+        return self.requires
+
     scheduler_interval = DateIntervalParameter()
     start_date = DateParameter()
     owner = Parameter()

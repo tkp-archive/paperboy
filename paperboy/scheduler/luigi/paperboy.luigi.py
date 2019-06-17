@@ -22,12 +22,18 @@ from paperboy.scheduler.luigi_tasks import PapermillTask, NBConvertTask
 # Publish operators
 from paperboy.scheduler.luigi_tasks import VoilaTask, DokkuTask
 
+from datetime import datetime
 
 ###################################
 # Inline job and reports as b64 json  #
 ###################################
 job_json = json.loads(b64decode({{job_json}}))
 reports_json = json.loads(b64decode({{report_json}}))
+
+interval = "{{interval}}"
+start_date = datetime.strptime('{{start_date}}', '%m/%d/%Y %H:%M:%S')
+owner = "{{owner}}"
+email = "{{email}}"
 
 ###################################
 # Create dag from job and reports #
@@ -37,7 +43,11 @@ reports_json = json.loads(b64decode({{report_json}}))
 # setting up env/image
 job = JobTask(job=job_json,
               task_id='Job-{}'.format(job_json['id']),
-              requires=[])
+              requires=[],
+              owner=owner,
+              start_date=start_date,
+              interval=interval,
+              email=email)
 
 cleanup_requires = []
 
@@ -52,33 +62,53 @@ for rep in reports_json:
     # steps prior to running the report
     r = ReportTask(report=rep,
                    task_id='Report-{}'.format(rep['id']),
-                   requires=[job])
+                   requires=[job],
+                   owner=owner,
+                   start_date=start_date,
+                   interval=interval,
+                   email=email)
 
     # Papermill task, performs the report creation
     # using papermill and the report's individual
     # parameters and configuration
     pp = PapermillTask(report=rep,
                        task_id='ReportPapermill-{}'.format(rep['id']),
-                       requires=[r])
+                       requires=[r],
+                       owner=owner,
+                       start_date=start_date,
+                       interval=interval,
+                       email=email)
 
     if type == 'convert':
         # NBConvert task, performs the NBConversion if
         # required
         nb = NBConvertTask(report=rep,
                            task_id='ReportNBConvert-{}'.format(rep['id']),
-                           requires=[pp])
+                           requires=[pp],
+                           owner=owner,
+                           start_date=start_date,
+                           interval=interval,
+                           email=email)
 
     elif type == 'publish':
         # Dokku deployment task, performs the
         # deploy to the dokku repo
         d = DokkuTask(report=rep,
                       task_id='ReportDokku-{}'.format(rep['id']),
-                      requires=[pp])
+                      requires=[pp],
+                      owner=owner,
+                      start_date=start_date,
+                      interval=interval,
+                      email=email)
 
         # Assemble a Voila Job from papermilled notebook
         nb = VoilaTask(report=rep,
                        task_id='ReportVoila-{}'.format(rep['id']),
-                       requires=[d])
+                       requires=[d],
+                       owner=owner,
+                       start_date=start_date,
+                       interval=interval,
+                       email=email)
 
     else:
         raise NotImplementedError()
@@ -90,9 +120,17 @@ for rep in reports_json:
 rp = ReportPostTask(report=rep,
                     config=json.loads('{{output_config}}'),
                     task_id='ReportPost-{}'.format(rep['id']),
-                    requires=cleanup_requires)
+                    requires=cleanup_requires,
+                    owner=owner,
+                    start_date=start_date,
+                    interval=interval,
+                    email=email)
 
 # The cleanup task, run after all reports are finished
 cleanup = JobCleanupTask(job=job_json,
                          task_id='JobCleanup-{}'.format(job_json['id']),
-                         requires=[rp])
+                         requires=[rp],
+                         owner=owner,
+                         start_date=start_date,
+                         interval=interval,
+                         email=email)

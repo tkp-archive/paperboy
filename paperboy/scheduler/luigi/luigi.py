@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import configparser
 import json
 import os
 import os.path
@@ -8,44 +7,24 @@ import subprocess
 import logging
 from base64 import b64encode
 from random import choice
-from sqlalchemy import create_engine
 from ..base import BaseScheduler, TIMING_MAP
 
-with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
+with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.luigi.py')), 'r') as fp:
     TEMPLATE = fp.read()
-
-QUERY = '''
-SELECT task_id, dag_id, execution_date, state, unixname
-FROM task_instance
-ORDER BY execution_date ASC
-LIMIT 20;
-'''
 
 
 class LuigiScheduler(BaseScheduler):
     def __init__(self, *args, **kwargs):
         '''Create a new airflow scheduler, connecting to the airflow instances configuration'''
         super(LuigiScheduler, self).__init__(*args, **kwargs)
-        cp = configparser.ConfigParser()
-        cp.read(self.config.scheduler.config)
-        try:
-            self.sql_conn = cp['core']['sql_alchemy_conn']
-        except KeyError:
-            self.sql_conn = ''
-
-        if self.sql_conn:
-            self.engine = create_engine(self.sql_conn)
-        else:
-            self.engine = None
 
     def status(self, user, params, session, *args, **kwargs):
-        '''Get status of job/report DAGs'''
+        '''Get status of job/report tasks'''
         type = params.get('type', '')
-        if self.engine:
-            gen = LuigiScheduler.query(self.engine)
-        else:
-            logging.debug('Scheduler offline, using fake scheduler query')
-            gen = LuigiScheduler.fakequery()
+
+        # TODO
+        logging.debug('Scheduler offline, using fake scheduler query')
+        gen = LuigiScheduler.fakequery()
         if type == 'jobs':
             return gen['jobs']
         elif type == 'reports':
@@ -55,60 +34,26 @@ class LuigiScheduler(BaseScheduler):
 
     @staticmethod
     def query(engine):
-        '''Get status of job/report DAGs from airflow\'s database'''
-        ret = {'jobs': [], 'reports': []}
-        with engine.begin() as conn:
-            res = conn.execute(QUERY)
-            for i, item in enumerate(res):
-                ret['jobs'].append(
-                    {'name': item[1],
-                     'id': item[1][4:],
-                     'meta': {
-                        'id':  item[1][4:],
-                        'execution': item[2].strftime('%m/%d/%Y %H:%M:%S'),
-                        'status': '✔' if item[3] == 'success' else '✘'}
-                     }
-                )
-
-                report_name = item[0].replace('ReportPost-', '') \
-                                     .replace('Report-', '') \
-                                     .replace('ReportNBConvert-', '') \
-                                     .replace('ReportPapermill-', '')
-
-                report_type = 'Post' if 'ReportPost' in item[0] else \
-                              'Papermill' if 'Papermill' in item[0] else \
-                              'NBConvert' if 'NBConvert' in item[0] else \
-                              'Setup'
-
-                ret['reports'].append(
-                    {'name': item[0],
-                     'id': report_name,
-                     'meta': {
-                        'run': item[2].strftime('%m/%d/%Y %H:%M:%S'),
-                        'status': '✔' if item[3] == 'success' else '✘',
-                        'type': report_type
-                        }
-                     }
-                )
-            return ret
+        '''Get status of job/report tasks from luigi'''
+        raise NotImplementedError()
 
     @staticmethod
     def fakequery():
-        '''If airflow not present, fake the results for now so the UI looks ok'''
+        '''If luigi not present, fake the results for now so the UI looks ok'''
         ret = {'jobs': [], 'reports': []}
         for i in range(10):
             ret['jobs'].append(
-                {'name': 'DAG-Job-{}'.format(i),
-                 'id': 'Job-{}'.format(i),
+                {'name': 'JobTask-{}'.format(i),
+                 'id': 'JobTask-{}'.format(i),
                  'meta': {
-                    'id':  'Job-{}'.format(i),
+                    'id':  'JobTask-{}'.format(i),
                     'execution': '01/02/2018 12:25:31',
                     'status': choice(['✔', '✘'])}
                  }
             )
             ret['reports'].append(
-                {'name': 'Report-{}'.format(i),
-                 'id': 'Report-{}'.format(i),
+                {'name': 'ReportTask-{}'.format(i),
+                 'id': 'ReportTask-{}'.format(i),
                  'meta': {
                     'run': '01/02/2018 12:25:31',
                     'status': choice(['✔', '✘']),
@@ -120,7 +65,7 @@ class LuigiScheduler(BaseScheduler):
 
     @staticmethod
     def template(config, user, notebook, job, reports, *args, **kwargs):
-        '''jinja templatize airflow DAG for paperboy (paperboy.airflow.py)'''
+        '''jinja templatize airflow task for paperboy (paperboy.luigi.py)'''
         owner = user.name
         start_date = job.meta.start_time.strftime('%m/%d/%Y %H:%M:%S')
         email = 'test@test.com'
