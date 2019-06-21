@@ -7,7 +7,6 @@ import jinja2
 import subprocess
 import logging
 from base64 import b64encode
-from random import choice
 from sqlalchemy import create_engine
 from ..base import BaseScheduler, TIMING_MAP
 
@@ -41,11 +40,7 @@ class AirflowScheduler(BaseScheduler):
     def status(self, user, params, session, *args, **kwargs):
         '''Get status of job/report DAGs'''
         type = params.get('type', '')
-        if self.engine:
-            gen = AirflowScheduler.query(self.engine)
-        else:
-            logging.debug('Scheduler offline, using fake scheduler query')
-            gen = AirflowScheduler.fakequery()
+        gen = AirflowScheduler.query(self.engine)
         if type == 'jobs':
             return gen['jobs']
         elif type == 'reports':
@@ -91,32 +86,6 @@ class AirflowScheduler(BaseScheduler):
                      }
                 )
             return ret
-
-    @staticmethod
-    def fakequery():
-        '''If airflow not present, fake the results for now so the UI looks ok'''
-        ret = {'jobs': [], 'reports': []}
-        for i in range(10):
-            ret['jobs'].append(
-                {'name': 'DAG-Job-{}'.format(i),
-                 'id': 'Job-{}'.format(i),
-                 'meta': {
-                    'id':  'Job-{}'.format(i),
-                    'execution': '01/02/2018 12:25:31',
-                    'status': choice(['✔', '✘'])}
-                 }
-            )
-            ret['reports'].append(
-                {'name': 'Report-{}'.format(i),
-                 'id': 'Report-{}'.format(i),
-                 'meta': {
-                    'run': '01/02/2018 12:25:31',
-                    'status': choice(['✔', '✘']),
-                    'type': choice(['Post', 'Papermill', 'NBConvert', 'Setup']),
-                    }
-                 }
-            )
-        return ret
 
     @staticmethod
     def template(config, user, notebook, job, reports, *args, **kwargs):
