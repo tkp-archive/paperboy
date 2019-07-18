@@ -12,11 +12,11 @@ with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.luig
     TEMPLATE = fp.read()
 
 LUIGI_URLS = {
-    'PENDING': '/api/task_list?data={\%22status\%22:\%22PENDING\%22}',
-    'RUNNING': '/api/task_list?data={\%22status\%22:\%22RUNNING\%22}',
-    'FAILED': '/api/task_list?data={\%22status\%22:\%22FAILED\%22}',
-    'DONE': '/api/task_list?data={\%22status\%22:\%22DONE\%22}',
-    'DISABLED': '/api/task_list?data={\%22status\%22:\%22DISABLED\%22}',
+    'PENDING': '/api/task_list?data={"status":"PENDING"}',
+    'RUNNING': '/api/task_list?data={"status":"RUNNING"}',
+    'FAILED': '/api/task_list?data={"status":"FAILED"}',
+    'DONE': '/api/task_list?data={"status":"DONE"}',
+    'DISABLED': '/api/task_list?data={"status":"DISABLED"}',
 }
 
 

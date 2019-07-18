@@ -1,6 +1,6 @@
 import logging
 from luigi import Task
-from luigi.parameter import Parameter, DateIntervalParameter, DateParameter, ParameterVisibility
+from luigi.parameter import Parameter, DateParameter, ParameterVisibility
 
 
 class BaseTask(Task):
