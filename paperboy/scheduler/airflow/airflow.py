@@ -5,9 +5,7 @@ import os
 import os.path
 import jinja2
 import subprocess
-import logging
 from base64 import b64encode
-from random import choice
 from sqlalchemy import create_engine
 from ..base import BaseScheduler, TIMING_MAP
 
@@ -21,18 +19,13 @@ ORDER BY execution_date ASC
 LIMIT 20;
 '''
 
-#######################################
-#  FIXME merge with dummy when        #
-#  airflow has better python3 support #
-#######################################
-
 
 class AirflowScheduler(BaseScheduler):
     def __init__(self, *args, **kwargs):
         '''Create a new airflow scheduler, connecting to the airflow instances configuration'''
         super(AirflowScheduler, self).__init__(*args, **kwargs)
         cp = configparser.ConfigParser()
-        cp.read(self.config.scheduler.config)
+        cp.read(self.config.scheduler_config.config)
         try:
             self.sql_conn = cp['core']['sql_alchemy_conn']
         except KeyError:
@@ -46,11 +39,7 @@ class AirflowScheduler(BaseScheduler):
     def status(self, user, params, session, *args, **kwargs):
         '''Get status of job/report DAGs'''
         type = params.get('type', '')
-        if self.engine:
-            gen = AirflowScheduler.query(self.engine)
-        else:
-            logging.debug('Scheduler offline, using fake scheduler query')
-            gen = AirflowScheduler.fakequery()
+        gen = AirflowScheduler.query(self.engine)
         if type == 'jobs':
             return gen['jobs']
         elif type == 'reports':
@@ -98,32 +87,6 @@ class AirflowScheduler(BaseScheduler):
             return ret
 
     @staticmethod
-    def fakequery():
-        '''If airflow not present, fake the results for now so the UI looks ok'''
-        ret = {'jobs': [], 'reports': []}
-        for i in range(10):
-            ret['jobs'].append(
-                {'name': 'DAG-Job-{}'.format(i),
-                 'id': 'Job-{}'.format(i),
-                 'meta': {
-                    'id':  'Job-{}'.format(i),
-                    'execution': '01/02/2018 12:25:31',
-                    'status': choice(['✔', '✘'])}
-                 }
-            )
-            ret['reports'].append(
-                {'name': 'Report-{}'.format(i),
-                 'id': 'Report-{}'.format(i),
-                 'meta': {
-                    'run': '01/02/2018 12:25:31',
-                    'status': choice(['✔', '✘']),
-                    'type': choice(['Post', 'Papermill', 'NBConvert', 'Setup']),
-                    }
-                 }
-            )
-        return ret
-
-    @staticmethod
     def template(config, user, notebook, job, reports, *args, **kwargs):
         '''jinja templatize airflow DAG for paperboy (paperboy.airflow.py)'''
         owner = user.name
@@ -148,8 +111,8 @@ class AirflowScheduler(BaseScheduler):
         '''Schedule a DAG for `job` composed of `reports` to be run on airflow'''
         template = AirflowScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
         name = job.id + '.py'
-        os.makedirs(self.config.scheduler.dagbag, exist_ok=True)
-        with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
+        os.makedirs(self.config.scheduler_config.dagbag, exist_ok=True)
+        with open(os.path.join(self.config.scheduler_config.dagbag, name), 'w') as fp:
             fp.write(template)
         return template
 
@@ -163,7 +126,7 @@ class AirflowScheduler(BaseScheduler):
         else:
             # delete
             name = job.id + '.py'
-            file = os.path.join(self.config.scheduler.dagbag, name)
+            file = os.path.join(self.config.scheduler_config.dagbag, name)
             dag = 'DAG-' + job.id
 
             # delete dag file

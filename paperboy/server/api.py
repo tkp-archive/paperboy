@@ -35,7 +35,7 @@ def FalconAPI(config):
     #############
     # Scheduler #
     #############
-    scheduler = config.scheduler.clazz(config, db)
+    scheduler = config.scheduler_config.clazz(config, db)
 
     ####################
     # Static resources #
