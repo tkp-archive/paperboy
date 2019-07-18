@@ -21,10 +21,11 @@ with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
         requires.append('waitress')
 
 setup(
-    name='paperboy',
+    name='jupyter_paperboy',
     version='0.0.3',
     description='Jupyter notebooks',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/timkpaine/paperboy',
     download_url='https://github.com/timkpaine/paperboy/archive/v0.0.3.tar.gz',
     author='Tim Paine',
