@@ -10,7 +10,6 @@ runsql:  ## run server with sql backend, airflow scheduler
 runsql2:  ## run server with sql backend, luigi scheduler
 	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='luigi'
 
-
 rundummy:  ## run server with sql backend
 	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='dummy'
 
