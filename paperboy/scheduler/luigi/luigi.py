@@ -3,14 +3,24 @@ import json
 import os
 import os.path
 import jinja2
-import subprocess
+import sys
 import logging
 from base64 import b64encode
-from random import choice
 from ..base import BaseScheduler, TIMING_MAP
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.luigi.py')), 'r') as fp:
     TEMPLATE = fp.read()
+
+LUIGI_URLS = {
+    'PENDING': '/api/task_list?data={\%22status\%22:\%22PENDING\%22}',
+    'RUNNING': '/api/task_list?data={\%22status\%22:\%22RUNNING\%22}',
+    'FAILED': '/api/task_list?data={\%22status\%22:\%22FAILED\%22}',
+    'DONE': '/api/task_list?data={\%22status\%22:\%22DONE\%22}',
+    'DISABLED': '/api/task_list?data={\%22status\%22:\%22DISABLED\%22}',
+}
+
+
+LUIGI_COMMAND = [sys.executable, '-m', 'luigi', '--module', 'MODULE', 'TAST']
 
 
 class LuigiScheduler(BaseScheduler):
@@ -24,44 +34,19 @@ class LuigiScheduler(BaseScheduler):
 
         # TODO
         logging.debug('Scheduler offline, using fake scheduler query')
-        gen = LuigiScheduler.fakequery()
+        gen = LuigiScheduler.query()
         if type == 'jobs':
-            return gen['jobs']
+            return gen.get('jobs', [])
         elif type == 'reports':
-            return gen['reports']
+            return gen.get('reports', [])
         else:
-            return gen
+            return gen or {}
 
     @staticmethod
-    def query(engine):
+    def query():
         '''Get status of job/report tasks from luigi'''
+        return {}
         raise NotImplementedError()
-
-    @staticmethod
-    def fakequery():
-        '''If luigi not present, fake the results for now so the UI looks ok'''
-        ret = {'jobs': [], 'reports': []}
-        for i in range(10):
-            ret['jobs'].append(
-                {'name': 'JobTask-{}'.format(i),
-                 'id': 'JobTask-{}'.format(i),
-                 'meta': {
-                    'id':  'JobTask-{}'.format(i),
-                    'execution': '01/02/2018 12:25:31',
-                    'status': choice(['✔', '✘'])}
-                 }
-            )
-            ret['reports'].append(
-                {'name': 'ReportTask-{}'.format(i),
-                 'id': 'ReportTask-{}'.format(i),
-                 'meta': {
-                    'run': '01/02/2018 12:25:31',
-                    'status': choice(['✔', '✘']),
-                    'type': choice(['Post', 'Papermill', 'NBConvert', 'Setup']),
-                    }
-                 }
-            )
-        return ret
 
     @staticmethod
     def template(config, user, notebook, job, reports, *args, **kwargs):
@@ -85,11 +70,11 @@ class LuigiScheduler(BaseScheduler):
         return tpl
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):
-        '''Schedule a DAG for `job` composed of `reports` to be run on airflow'''
-        template = AirflowScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
+        '''Schedule a DAG for `job` omposed of `reports` to be run on airflow'''
+        template = LuigiScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
         name = job.id + '.py'
-        os.makedirs(self.config.scheduler.dagbag, exist_ok=True)
-        with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
+        os.makedirs(self.config.scheduler_config.task_folder, exist_ok=True)
+        with open(os.path.join(self.config.scheduler_config.task_folder, name), 'w') as fp:
             fp.write(template)
         return template
 
@@ -102,17 +87,4 @@ class LuigiScheduler(BaseScheduler):
 
         else:
             # delete
-            name = job.id + '.py'
-            file = os.path.join(self.config.scheduler.dagbag, name)
-            dag = 'DAG-' + job.id
-
-            # delete dag file
-            os.remove(file)
-
-            # delete dag
-            # FIXME
-            try:
-                cmd = ['airflow', 'delete_dag', dag, '-y']
-                subprocess.call(cmd)
-            except Exception as e:
-                print(e)
+            raise NotImplementedError()

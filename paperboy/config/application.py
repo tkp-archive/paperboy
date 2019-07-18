@@ -223,7 +223,6 @@ class Paperboy(Application):
                 logging.critical('Using Luigi scheduler')
                 self.scheduler_config = LuigiSchedulerConfig()
 
-
         FalconDeploy(FalconAPI(self), options).run()
 
     @classmethod

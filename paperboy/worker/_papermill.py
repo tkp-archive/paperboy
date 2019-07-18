@@ -1,6 +1,7 @@
 import json
 import os
 import os.path
+import nbformat
 from six import string_types
 from papermill import execute_notebook
 try:
@@ -18,13 +19,14 @@ def run(nb_name, nb_text, parameters, hide_input):
         paramters (string): json parameters to use for papermill
         hide_input (boolean): hide code
     '''
-    with TemporaryDirectory() as tempdir:
+    # validation for papermill
+    nb = nbformat.reads(nb_text, 4)
 
+    with TemporaryDirectory() as tempdir:
         in_file = os.path.join(tempdir, '{}.ipynb'.format(nb_name))
         out_file = os.path.join(tempdir, '{}_out.ipynb'.format(nb_name))
 
-        with open(in_file, 'w') as fp:
-            fp.write(nb_text)
+        nbformat.write(nb, in_file)
 
         if isinstance(parameters, string_types):
             parameters = json.loads(parameters)

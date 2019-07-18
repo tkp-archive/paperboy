@@ -5,7 +5,6 @@ import os
 import os.path
 import jinja2
 import subprocess
-import logging
 from base64 import b64encode
 from sqlalchemy import create_engine
 from ..base import BaseScheduler, TIMING_MAP
@@ -26,7 +25,7 @@ class AirflowScheduler(BaseScheduler):
         '''Create a new airflow scheduler, connecting to the airflow instances configuration'''
         super(AirflowScheduler, self).__init__(*args, **kwargs)
         cp = configparser.ConfigParser()
-        cp.read(self.config.scheduler.config)
+        cp.read(self.config.scheduler_config.config)
         try:
             self.sql_conn = cp['core']['sql_alchemy_conn']
         except KeyError:
@@ -112,8 +111,8 @@ class AirflowScheduler(BaseScheduler):
         '''Schedule a DAG for `job` composed of `reports` to be run on airflow'''
         template = AirflowScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
         name = job.id + '.py'
-        os.makedirs(self.config.scheduler.dagbag, exist_ok=True)
-        with open(os.path.join(self.config.scheduler.dagbag, name), 'w') as fp:
+        os.makedirs(self.config.scheduler_config.dagbag, exist_ok=True)
+        with open(os.path.join(self.config.scheduler_config.dagbag, name), 'w') as fp:
             fp.write(template)
         return template
 
@@ -127,7 +126,7 @@ class AirflowScheduler(BaseScheduler):
         else:
             # delete
             name = job.id + '.py'
-            file = os.path.join(self.config.scheduler.dagbag, name)
+            file = os.path.join(self.config.scheduler_config.dagbag, name)
             dag = 'DAG-' + job.id
 
             # delete dag file

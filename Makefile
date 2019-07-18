@@ -4,8 +4,12 @@ run:  ## run server
 runnoauth:  ## run server without auth
 	python3 -m paperboy.server --auth='none'
 
-runsql:  ## run server with sql backend
-	python3 -m paperboy.server --backend='sqla' --auth='sqla'
+runsql:  ## run server with sql backend, airflow scheduler
+	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='airflow'
+
+runsql2:  ## run server with sql backend, luigi scheduler
+	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='luigi'
+
 
 rundummy:  ## run server with sql backend
 	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='dummy'
@@ -23,7 +27,7 @@ test: clean lint ## run the tests for travis CI
 	yarn test
 
 test_av: clean ## run the tests for appveyor
-	C:\Python37-x64\python -m nose2 -v tests 
+	C:\Python37-x64\python -m pytest -v tests --cov=paperboy
 
 lint: ## run linter
 	flake8 paperboy 

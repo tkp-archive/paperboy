@@ -1,34 +1,41 @@
-import luigi
 from .common import BaseTask
+import json
+import luigi
+from luigi.parameter import Parameter, ParameterVisibility
 
 
 class NBConvertTask(BaseTask):
-    def __init__(self, report, *args, **kwargs):
+    report = Parameter(visibility=ParameterVisibility.HIDDEN)
+
+    def __init__(self, *args, **kwargs):
         super(NBConvertTask, self).__init__(*args, **kwargs)
-        self.report = report
+        self._report = json.loads(self.report)
 
     def run(self):
         self.log.critical('nbconvert')
 
-        with open(self.input(), 'r') as fp:
-            papermilled = fp.read()
+        fp = self.input().open('r')
+        papermilled = fp.read()
+        fp.close()
 
-        if self.report['meta']['output'] != 'notebook':
+        if self._report['meta']['output'] != 'notebook':
             from paperboy.worker import run_nbconvert
 
-            template = self.report['meta'].get('template', '')
+            template = self._report['meta'].get('template', '')
 
-            ret = run_nbconvert(self.report['meta']['notebook'],
+            ret = run_nbconvert(self._report['meta']['notebook'],
                                 papermilled,
-                                self.report['meta']['output'],
+                                self._report['meta']['output'],
                                 template,
-                                self.report['meta']['strip_code'],
+                                self._report['meta']['strip_code'],
                                 )
         else:
             ret = papermilled
 
-        with open(self.output(), 'w') as fp:
-            fp.write(ret)
+        fp = self.output().open('w')
+        fp.write(ret.decode('utf8'))
+        fp.close()
+        self._completed = True
 
     def output(self):
-        return luigi.LocalTarget(self.report['name'])
+        return luigi.LocalTarget(self._report['name'])

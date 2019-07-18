@@ -1,23 +1,29 @@
-import luigi
 from .common import BaseTask
+import json
+import luigi
+from luigi.parameter import Parameter, ParameterVisibility
 
 
 class PapermillTask(BaseTask):
-    def __init__(self, report, *args, **kwargs):
-        super(PapermillTask, self).__init__(*args, **kwargs)
-        self.report = report
+    report = Parameter(visibility=ParameterVisibility.HIDDEN)
 
-    def run(self, context):
+    def __init__(self, *args, **kwargs):
+        super(PapermillTask, self).__init__(*args, **kwargs)
+        self._report = json.loads(self.report)
+
+    def run(self):
         self.log.critical('papermill')
 
         from paperboy.worker import run_papermill
-        ret = run_papermill(self.report['meta']['notebook'],
-                            self.report['meta']['notebook_text'],
-                            self.report['meta']['parameters'],
-                            self.report['meta']['strip_code'])
+        ret = run_papermill(self._report['meta']['notebook'],
+                            self._report['meta']['notebook_text'],
+                            self._report['meta']['parameters'],
+                            self._report['meta']['strip_code'])
 
-        task_instance = context['task_instance']
-        task_instance.xcom_push(key=self.nbconvert_task_id, value=ret)
+        fp = self.output().open('w')
+        fp.write(ret)
+        fp.close()
+        self._completed = True
 
     def output(self):
-        return luigi.LocalTarget(self.report['name'])
+        return luigi.LocalTarget(self._report['name'])

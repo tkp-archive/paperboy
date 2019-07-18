@@ -27,3 +27,4 @@ class LuigiSchedulerConfig(SchedulerConfig):
     '''Configuration for luigi'''
     type = 'luigi'
     clazz = LuigiScheduler
+    task_folder = Unicode(default_value=os.path.expanduser('~/luigi/tasks'))

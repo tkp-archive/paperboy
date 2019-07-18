@@ -1,19 +1,28 @@
 from .common import BaseTask
+import json
 from paperboy.utils import name_to_class
+from luigi.parameter import Parameter, ParameterVisibility
 
 
 class VoilaTask(BaseTask):
-    def __init__(self, report, config, *args, **kwargs):
-        super(VoilaTask, self).__init__(*args, **kwargs)
-        self.report = report
-        self.config = name_to_class(config.get('config')).from_json(config)
+    report = Parameter(visibility=ParameterVisibility.HIDDEN)
+    config = Parameter(visibility=ParameterVisibility.HIDDEN)
 
-    def run(self, context):
+    def __init__(self, *args, **kwargs):
+        super(VoilaTask, self).__init__(*args, **kwargs)
+        config = json.loads(kwargs.get('config', {}))
+        self._config = name_to_class(config.get('config')).from_json(config)
+        self._report = json.loads(self.report)
+
+    def run(self):
         self.log.critical('report-post')
 
-        with open(self.input(), 'r') as fp:
-            output_nb = fp.read()
+        fp = self.input().open('r')
+        output_nb = fp.read()
+        fp.close()
+
         self.log.critical(output_nb)
 
-        outputter = self.config.clazz(self.config)
-        outputter.write(self.report, output_nb, task_id=self.task_id)
+        outputter = self.config.clazz(self._config)
+        outputter.write(self._report, output_nb, task_id=self.task_id)
+        self._completed = True

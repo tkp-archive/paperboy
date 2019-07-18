@@ -92,11 +92,7 @@ function buildInput(type?: string,
     // tslint:disable-next-line: no-empty
     case "textarea": {}
     case "json": {
-      if (value) {
-        return buildTextarea(name || "", placeholder, value, required, json);
-      } else {
-        type = "file";
-      }
+      return buildTextarea(name || "", placeholder, value, required, json);
     }
     case "file": {
       input.type = type;
