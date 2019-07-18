@@ -109,6 +109,7 @@ def build():
                              interval=interval,
                              email=email)
     cleanup._reqs = cleanup_requires
+    cleanup.time = datetime.now()
     return cleanup
 
 if __name__ == '__main__':

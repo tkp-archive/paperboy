@@ -40,6 +40,7 @@ class JobCleanupTask(BaseTask):
     start_date = DateParameter()
     owner = Parameter()
     email = Parameter()
+    time = DateParameter()
 
     def __init__(self, *args, **kwargs):
         super(JobCleanupTask, self).__init__(*args, **kwargs)

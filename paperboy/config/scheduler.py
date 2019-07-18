@@ -26,5 +26,8 @@ class AirflowSchedulerConfig(SchedulerConfig):
 class LuigiSchedulerConfig(SchedulerConfig):
     '''Configuration for luigi'''
     type = 'luigi'
-    clazz = LuigiScheduler
     task_folder = Unicode(default_value=os.path.expanduser('~/luigi/tasks'))
+    db_connection = Unicode(default_value=os.path.expanduser('sqlite://~/luigi/luigi-task-hist.db'))
+    state_path = Unicode(default_value=os.path.expanduser('~/luigi/state.pickle'))
+    crontab = Unicode(default_value=os.path.expanduser('~/luigi/cron.tab'))
+    clazz = LuigiScheduler

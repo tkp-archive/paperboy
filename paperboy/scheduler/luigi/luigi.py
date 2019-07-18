@@ -6,6 +6,7 @@ import jinja2
 import sys
 import logging
 from base64 import b64encode
+from ..cron import schedule_cron, unschedule_cron
 from ..base import BaseScheduler, TIMING_MAP
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.luigi.py')), 'r') as fp:
@@ -71,12 +72,19 @@ class LuigiScheduler(BaseScheduler):
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):
         '''Schedule a DAG for `job` omposed of `reports` to be run on airflow'''
+        # create task
         template = LuigiScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
         name = job.id + '.py'
         os.makedirs(self.config.scheduler_config.task_folder, exist_ok=True)
         with open(os.path.join(self.config.scheduler_config.task_folder, name), 'w') as fp:
             fp.write(template)
+
+        # create crontab
+        schedule_cron(self.luigi_command(os.path.join(self.config.scheduler_config.task_folder, name)), TIMING_MAP.get(job.meta.interval), self.config.scheduler_config.crontab)
         return template
+
+    def luigi_command(self, path):
+        return ' '.join((sys.executable, path))
 
     def unschedule(self, user, notebook, job, reports, *args, **kwargs):
         '''Remove the DAG for `user` and `notebook` composed of `job` running `reports` from
@@ -87,4 +95,4 @@ class LuigiScheduler(BaseScheduler):
 
         else:
             # delete
-            raise NotImplementedError()
+            return unschedule_cron(self.luigi_command(os.path.join(self.config.scheduler_config.task_folder, job.id + '.py')), self.config.scheduler_config.crontab)
