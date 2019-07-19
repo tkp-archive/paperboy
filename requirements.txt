@@ -9,6 +9,7 @@ nbconvert>=5.4.0
 nbformat>=4.4.0
 nbstripout>=0.3.3
 papermill>=0.16.2
+python-crontab>=2.3.8
 PyJWT>=1.6.4
 traitlets>=4.3.2
 voila>=0.0.6
