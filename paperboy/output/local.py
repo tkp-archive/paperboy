@@ -22,5 +22,8 @@ class LocalOutput(BaseOutput):
         elif report['meta']['output'] in ('pdf', 'html'):
             path += '.{}'.format(report['meta']['output'])
 
-        with open(path, 'wb') as fp:
+        if isinstance(output, bytes):
+            output = output.decode('utf8')
+
+        with open(path, 'w') as fp:
             fp.write(output)

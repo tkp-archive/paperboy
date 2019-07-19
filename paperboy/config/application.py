@@ -19,7 +19,7 @@ from .user import UserConfig
 from .notebook import NotebookConfig
 from .job import JobConfig
 from .report import ReportConfig
-from .scheduler import AirflowSchedulerConfig
+from .scheduler import SchedulerConfig, DummySchedulerConfig, AirflowSchedulerConfig, LuigiSchedulerConfig
 from .storage import SQLAStorageConfig
 from .output import LocalOutputConfig
 
@@ -103,6 +103,7 @@ class Paperboy(Application):
     #
     ##########################################
     backend = Unicode(default_value='dummy', help="Backend set to use, options are {sqla, custom}").tag(config=True)
+    scheduler = Unicode(default_value='dummy', help="Scheduler type to use, options are {dummy, airflow, luigi}").tag(config=True)
     auth = Unicode(default_value='dummy', help="Authentication backend set to use, options are {none, sqla, custom}").tag(config=True)
     secret = Unicode()
 
@@ -124,20 +125,20 @@ class Paperboy(Application):
     ###########
     # FIXME doesnt allow default_value yet
     storage = SQLAStorageConfig()
-    sql_dev = Bool(default_value=False)
+    dev = Bool(default_value=False)
     ###########
 
     #############
     # Scheduler #
     #############
     # FIXME doesnt allow default_value yet
-    scheduler = AirflowSchedulerConfig()
+    scheduler_config = Instance(klass=SchedulerConfig, args=(), kwargs={})
     #############
 
     ##################
     # Output         #
     ##################
-    output = LocalOutputConfig()
+    output = Instance(klass=LocalOutputConfig, args=(), kwargs={})
     ##################
 
     def start(self):
@@ -150,8 +151,7 @@ class Paperboy(Application):
         }
         self.secret = str(uuid4())
 
-        if self.sql_dev:
-
+        if self.dev:
             self.sql_url = 'sqlite:///:memory:'
             logging.critical('Using SQL in memory backend')
 
@@ -171,6 +171,10 @@ class Paperboy(Application):
             logging.critical('Using SQL auth')
             self.auth_required_middleware = SQLAuthRequiredMiddleware
             self.load_user_middleware = SQLUserMiddleware
+
+            logging.critical('Using Dummy scheduler')
+            self.scheduler = 'dummy'
+            self.scheduler_config = DummySchedulerConfig()
 
         else:
 
@@ -207,6 +211,18 @@ class Paperboy(Application):
                 self.auth_required_middleware = SQLAuthRequiredMiddleware
                 self.load_user_middleware = SQLUserMiddleware
 
+            if self.scheduler == 'dummy':
+                logging.critical('Using dummy scheduler')
+                self.scheduler_config = DummySchedulerConfig()
+
+            elif self.scheduler == 'airflow':
+                logging.critical('Using Airflow scheduler')
+                self.scheduler_config = AirflowSchedulerConfig()
+
+            elif self.scheduler == 'luigi':
+                logging.critical('Using Luigi scheduler')
+                self.scheduler_config = LuigiSchedulerConfig()
+
         FalconDeploy(FalconAPI(self), options).run()
 
     @classmethod
@@ -224,6 +240,7 @@ class Paperboy(Application):
         'port': 'Paperboy.port',
         'baseurl': 'Paperboy.baseurl',
         'backend': 'Paperboy.backend',
+        'scheduler': 'Paperboy.scheduler',
         'auth': 'Paperboy.auth',
         'sql_url': 'Paperboy.storage.sql_url',
     }
