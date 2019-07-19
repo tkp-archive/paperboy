@@ -27,7 +27,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/timkpaine/paperboy',
-    download_url='https://github.com/timkpaine/paperboy/archive/v0.0.3.tar.gz',
+    download_url='https://github.com/timkpaine/paperboy/archive/v0.0.4.tar.gz',
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
     license='BSD 3 Clause',
