@@ -20,21 +20,21 @@ test: clean lint ## run the tests for travis CI
 	yarn test
 
 test_av: clean ## run the tests for appveyor
-	C:\Python37-x64\python -m nose2 -v tests 
+	C:\Python37-x64\python -m nose2 -v tests
 
 lint: ## run linter
-	flake8 paperboy 
+	flake8 paperboy
 	yarn lint
 
 annotate: ## MyPy type annotation check
 	mypy -s paperboy
 
 annotate_l: ## MyPy type annotation check - count only
-	mypy -s paperboy | wc -l 
+	mypy -s paperboy | wc -l
 
 clean: ## clean the repository
-	find . -name "__pycache__" | xargs  rm -rf 
-	find . -name "*.pyc" | xargs rm -rf 
+	find . -name "__pycache__" | xargs  rm -rf
+	find . -name "*.pyc" | xargs rm -rf
 	rm -rf .coverage cover htmlcov logs build dist *.egg-info
 	make -C ./docs clean || echo
 
@@ -60,8 +60,11 @@ minor:  ## steps before dist, defaults to previous tag + one micro
 major:  ## steps before dist, defaults to previous tag + one micro
 	. scripts/deploy.sh MAJOR
 
-dist:  ## dist to pypi
-	python3 setup.py sdist upload -r pypi
+dist:  js  ## dist to pypi
+	rm -rf dist build
+	python3 setup.py sdist
+	python3 setup.py bdist_wheel
+	twine check dist/* && twine upload dist/*
 
 # Thanks to Francoise at marmelab.com for this
 .DEFAULT_GOAL := help
