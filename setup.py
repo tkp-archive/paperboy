@@ -22,7 +22,7 @@ with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name='jupyter_paperboy',
-    version='0.0.3',
+    version='0.0.4',
     description='Jupyter notebooks',
     long_description=long_description,
     long_description_content_type='text/markdown',
