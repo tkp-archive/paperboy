@@ -1,9 +1,9 @@
 import os
 import getpass
-from crontab import CronTab, CronItem
 
 
 def schedule_cron(command, interval, crontab=None):
+    from crontab import CronTab, CronItem
     if not os.path.exists(crontab):
         with open(crontab, 'w'):
             pass
@@ -21,6 +21,7 @@ def schedule_cron(command, interval, crontab=None):
 
 
 def unschedule_cron(command, crontab=None):
+    from crontab import CronTab
     if crontab:
         c = CronTab(tabfile=crontab)
     else:

@@ -7,7 +7,7 @@ import jinja2
 import subprocess
 from base64 import b64encode
 from sqlalchemy import create_engine
-from ..base import BaseScheduler, TIMING_MAP
+from ..base import BaseScheduler, interval_to_cron
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.airflow.py')), 'r') as fp:
     TEMPLATE = fp.read()
@@ -94,7 +94,7 @@ class AirflowScheduler(BaseScheduler):
         email = 'test@test.com'
         job_json = b64encode(json.dumps(job.to_json(True)).encode('utf-8'))
         report_json = b64encode(json.dumps([r.to_json() for r in reports]).encode('utf-8'))
-        interval = TIMING_MAP.get(job.meta.interval)
+        interval = interval_to_cron(job.meta.interval, job.meta.start_time)
 
         tpl = jinja2.Template(TEMPLATE).render(
             owner=owner,

@@ -9,7 +9,7 @@ env:
 
 install:
     - pip install -r requirements.txt
-    - pip install -U pytest pytest-cov flake8 pylint codecov sphinx apache-airflow luigi python-crontab mock
+    - pip install -U pytest pytest-cov flake8 pylint codecov sphinx apache-airflow luigi python-crontab mock matplotlib pyEX pandas seaborn pylantern
     - yarn
 
 script: make test
