@@ -4,10 +4,13 @@ run:  ## run server
 runnoauth:  ## run server without auth
 	python3 -m paperboy.server --auth='none'
 
-runsql:  ## run server with sql backend, airflow scheduler
+runlocal:  ## run server with sql backend, local scheduler
+	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='local'
+
+runsql_airflow:  ## run server with sql backend, airflow scheduler
 	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='airflow'
 
-runsql2:  ## run server with sql backend, luigi scheduler
+runsql_luigi:  ## run server with sql backend, luigi scheduler
 	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='luigi'
 
 rundummy:  ## run server with sql backend

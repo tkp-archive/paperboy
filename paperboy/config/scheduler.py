@@ -1,7 +1,8 @@
 import os
 import os.path
-from traitlets import HasTraits, Unicode
-from ..scheduler import DummyScheduler, AirflowScheduler, LuigiScheduler
+import tempfile
+from traitlets import HasTraits, Unicode, Bool
+from ..scheduler import DummyScheduler, AirflowScheduler, LuigiScheduler, LocalScheduler
 
 
 class SchedulerConfig(HasTraits):
@@ -29,5 +30,16 @@ class LuigiSchedulerConfig(SchedulerConfig):
     task_folder = Unicode(default_value=os.path.expanduser('~/luigi/tasks'))
     db_connection = Unicode(default_value=os.path.expanduser('sqlite://~/luigi/luigi-task-hist.db'))
     state_path = Unicode(default_value=os.path.expanduser('~/luigi/state.pickle'))
+
+    # local or cron for scheduler
+    local = Bool(default_value=True)
+
     crontab = Unicode(default_value=os.path.expanduser('~/luigi/cron.tab'))
     clazz = LuigiScheduler
+
+
+class LocalSchedulerConfig(SchedulerConfig):
+    '''Configuration for local scheduler'''
+    type = 'local'
+    working_directory = Unicode(default_value=os.path.join(tempfile.gettempdir(), 'paperboy'))
+    clazz = LocalScheduler

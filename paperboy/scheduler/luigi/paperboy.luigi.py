@@ -8,6 +8,8 @@
 #
 
 import luigi
+import os
+import os.path
 import json
 from base64 import b64decode
 
@@ -95,8 +97,12 @@ def build():
         # The post-report task, used for post-report
         # tasks such as sending the report in an email
         # or pushing the deploy to dokku
+
+        # FIXME
         rp = ReportPostTask(report=json.dumps(rep),
-                            config='{"type": "local", "dir": "/Users/theocean154/Downloads", "clazz": "paperboy.output.local.LocalOutput", "config": "paperboy.config.output.LocalOutputConfig"}',
+                            config='{"type": "local", "dir": "' +
+                            os.path.expanduser("~/Downloads") +
+                            '", "clazz": "paperboy.output.local.LocalOutput", "config": "paperboy.config.output.LocalOutputConfig"}',
                             task_id='ReportPost-{}'.format(rep['id']))
         rp._reqs = nb
         cleanup_requires.append(rp)

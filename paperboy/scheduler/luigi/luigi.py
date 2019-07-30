@@ -7,7 +7,7 @@ import sys
 import logging
 from base64 import b64encode
 from ..cron import schedule_cron, unschedule_cron
-from ..base import BaseScheduler, TIMING_MAP
+from ..base import BaseScheduler, interval_to_cron
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'paperboy.luigi.py')), 'r') as fp:
     TEMPLATE = fp.read()
@@ -21,12 +21,9 @@ LUIGI_URLS = {
 }
 
 
-LUIGI_COMMAND = [sys.executable, '-m', 'luigi', '--module', 'MODULE', 'TAST']
-
-
 class LuigiScheduler(BaseScheduler):
     def __init__(self, *args, **kwargs):
-        '''Create a new airflow scheduler, connecting to the airflow instances configuration'''
+        '''Create a new luigi scheduler, connecting to the luigi instances configuration'''
         super(LuigiScheduler, self).__init__(*args, **kwargs)
 
     def status(self, user, params, session, *args, **kwargs):
@@ -47,17 +44,16 @@ class LuigiScheduler(BaseScheduler):
     def query():
         '''Get status of job/report tasks from luigi'''
         return {}
-        raise NotImplementedError()
 
     @staticmethod
     def template(config, user, notebook, job, reports, *args, **kwargs):
-        '''jinja templatize airflow task for paperboy (paperboy.luigi.py)'''
+        '''jinja templatize luigi task for paperboy (paperboy.luigi.py)'''
         owner = user.name
         start_date = job.meta.start_time.strftime('%m/%d/%Y %H:%M:%S')
         email = 'test@test.com'
         job_json = b64encode(json.dumps(job.to_json(True)).encode('utf-8'))
         report_json = b64encode(json.dumps([r.to_json() for r in reports]).encode('utf-8'))
-        interval = TIMING_MAP.get(job.meta.interval)
+        interval = interval_to_cron(job.meta.interval, job.meta.start_time)
 
         tpl = jinja2.Template(TEMPLATE).render(
             owner=owner,
@@ -71,7 +67,7 @@ class LuigiScheduler(BaseScheduler):
         return tpl
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):
-        '''Schedule a DAG for `job` omposed of `reports` to be run on airflow'''
+        '''Schedule a task for `job` composed of `reports` to be run on luigi'''
         # create task
         template = LuigiScheduler.template(self.config, user, notebook, job, reports, *args, **kwargs)
         name = job.id + '.py'
@@ -80,15 +76,15 @@ class LuigiScheduler(BaseScheduler):
             fp.write(template)
 
         # create crontab
-        schedule_cron(self.luigi_command(os.path.join(self.config.scheduler_config.task_folder, name)), TIMING_MAP.get(job.meta.interval), self.config.scheduler_config.crontab)
+        schedule_cron(self.luigi_command(os.path.join(self.config.scheduler_config.task_folder, name)), interval_to_cron(job.meta.interval, job.meta.start_time), self.config.scheduler_config.crontab)
         return template
 
     def luigi_command(self, path):
         return ' '.join((sys.executable, path))
 
     def unschedule(self, user, notebook, job, reports, *args, **kwargs):
-        '''Remove the DAG for `user` and `notebook` composed of `job` running `reports` from
-            airflow 2 parts, remove the dag from disk and delete the dag from airflow's database using the CLI'''
+        '''Remove the task for `user` and `notebook` composed of `job` running `reports` from
+            luigi 2 parts, remove the task from disk and unschedule the task in cron'''
         if reports:
             # reschedule
             return self.schedule(user, notebook, job, reports, *args, **kwargs)

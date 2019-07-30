@@ -19,7 +19,7 @@ from .user import UserConfig
 from .notebook import NotebookConfig
 from .job import JobConfig
 from .report import ReportConfig
-from .scheduler import SchedulerConfig, DummySchedulerConfig, AirflowSchedulerConfig, LuigiSchedulerConfig
+from .scheduler import SchedulerConfig, DummySchedulerConfig, AirflowSchedulerConfig, LuigiSchedulerConfig, LocalSchedulerConfig
 from .storage import SQLAStorageConfig
 from .output import LocalOutputConfig
 
@@ -222,6 +222,13 @@ class Paperboy(Application):
             elif self.scheduler == 'luigi':
                 logging.critical('Using Luigi scheduler')
                 self.scheduler_config = LuigiSchedulerConfig()
+
+            elif self.scheduler == 'local':
+                logging.critical('Using Local scheduler')
+                self.scheduler_config = LocalSchedulerConfig()
+
+            else:
+                raise Exception('Must specify a valid scheduler!')
 
         FalconDeploy(FalconAPI(self), options).run()
 

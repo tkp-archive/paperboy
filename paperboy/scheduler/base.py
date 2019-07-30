@@ -1,22 +1,39 @@
-from six import with_metaclass
 from abc import abstractmethod, ABCMeta
 from random import choice
+from six import with_metaclass
+from ..config.base import Interval
 
-# Approximate string->cron/airflow intervals
-TIMING_MAP = {
-  'minutely': '*/1 * * * *',
-  '5 minutes': '*/5 * * * *',
-  '10 minutes': '*/10 * * * *',
-  '30 minutes': '*/30 * * * *',
-  'hourly': '@hourly',
-  '2 hours': '0 */2 * * *',
-  '3 hours': '0 */3 * * *',
-  '6 hours': '0 */6 * * *',
-  '12 hours': '0 */12 * * *',
-  'daily': '@daily',
-  'weekly': '@weekly',
-  'monthly': '@monthly'
-}
+
+def interval_to_cron(interval, start_time):
+    if isinstance(interval, str):
+        interval = Interval(interval)
+    if interval == Interval.MINUTELY:
+        # simple
+        return '*/1 * * * *'
+    elif interval == Interval.FIVE_MINUTES:
+        return '{start_minute_mod_five}-59/5 * * * *'.format(start_minute_mod_five=start_time.minute % 5)
+    elif interval == Interval.TEN_MINUTES:
+        return '{start_minute_mod_ten}-59/10 * * * *'.format(start_minute_mod_ten=start_time.minute % 10)
+    elif interval == Interval.THIRTY_MINUTES:
+        return '{start_minute_mod_thirty}-59/30 * * * *'.format(start_minute_mod_thirty=start_time.minute % 30)
+    elif interval == Interval.HOURLY:
+        return '{start_minute} */1 * * *'.format(start_minute=start_time.minute)
+    elif interval == Interval.TWO_HOURS:
+        return '{start_minute} {start_hour_mod_two}-23/2 * * *'.format(start_minute=start_time.minute, start_hour_mod_two=start_time.hour % 2)
+    elif interval == Interval.THREE_HOURS:
+        return '{start_minute} {start_hour_mod_three}-23/3 * * *'.format(start_minute=start_time.minute, start_hour_mod_three=start_time.hour % 3)
+    elif interval == Interval.SIX_HOURS:
+        return '{start_minute} {start_hour_mod_six}-23/6 * * *'.format(start_minute=start_time.minute, start_hour_mod_six=start_time.hour % 6)
+    elif interval == Interval.TWELVE_HOURS:
+        return '{start_minute} {start_hour_mod_twelve}-23/12 * * *'.format(start_minute=start_time.minute, start_hour_mod_twelve=start_time.hour % 12)
+    elif interval == Interval.DAILY:
+        return '{start_minute} {start_hour} * * *'.format(start_minute=start_time.minute, start_hour=start_time.hour)
+    elif interval == Interval.WEEKLY:
+        return '{start_minute} {start_hour} * * {day_of_week}'.format(start_minute=start_time.minute, start_hour=start_time.hour, day_of_week=start_time.strftime('%a'))
+    elif interval == Interval.MONTHLY:
+        return '{start_minute} {start_hour} {start_day} * *'.format(start_minute=start_time.minute, start_hour=start_time.hour, start_day=start_time.day)
+    else:
+        raise Exception('Unknown interval: %s' % interval)
 
 
 class BaseScheduler(with_metaclass(ABCMeta)):

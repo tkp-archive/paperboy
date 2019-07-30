@@ -1,11 +1,66 @@
+from enum import Enum
+from functools import lru_cache
 from traitlets import HasTraits
 
-_INTERVAL_TYPES = ('minutely', '5 minutes', '10 minutes', '30 minutes', 'hourly', '2 hours', '3 hours', '6 hours', '12 hours', 'daily', 'weekly', 'monthly')
-# _REPORT_TYPES = ('convert', 'publish')  # Temporarily disable
-_REPORT_TYPES = ('convert',)
-_OUTPUT_TYPES = ('notebook', 'pdf', 'html', 'email', 'script')
-_PRIVACY_LEVELS = ('public', 'private')
-_SERVICE_LEVELS = ('production', 'research', 'development', 'personal')
+
+class BaseEnum(Enum):
+    @classmethod
+    @lru_cache(None)
+    def members(cls):
+        return cls.__members__.keys()
+
+    @classmethod
+    @lru_cache(None)
+    def values(cls):
+        return tuple(x.value for x in cls.__members__.values())
+
+
+class Interval(BaseEnum):
+    MINUTELY = 'minutely'
+    FIVE_MINUTES = '5 minutes'
+    TEN_MINUTES = '10 minutes'
+    THIRTY_MINUTES = '30 minutes'
+    HOURLY = 'hourly'
+    TWO_HOURS = '2 hours'
+    THREE_HOURS = '3 hours'
+    SIX_HOURS = '6 hours'
+    TWELVE_HOURS = '12 hours'
+    DAILY = 'daily'
+    WEEKLY = 'weekly'
+    MONTHLY = 'monthly'
+
+
+class ReportType(BaseEnum):
+    CONVERT = 'convert'
+    # PUBLISH = 'publish'
+
+
+class OutputType(BaseEnum):
+    NOTEBOOK = 'notebook'
+    PDF = 'pdf'
+    HTML = 'html'
+    EMAIL = 'email'
+    SCRIPT = 'script'
+    # POWERPOINT = 'powerpoint'
+
+
+class PrivacyLevel(BaseEnum):
+    PUBLIC = 'public'
+    PRIVATE = 'private'
+
+
+class ServiceLevel(BaseEnum):
+    PRODUCTION = 'production'
+    RESEARCH = 'research'
+    DEVELOPMENT = 'development'
+    PERSONAL = 'personal'
+
+
+_INTERVAL_TYPES = Interval.values()
+_REPORT_TYPES = ReportType.values()
+_OUTPUT_TYPES = OutputType.values()
+_PRIVACY_LEVELS = PrivacyLevel.values()
+_SERVICE_LEVELS = ServiceLevel.values()
 
 
 class Base(HasTraits):
