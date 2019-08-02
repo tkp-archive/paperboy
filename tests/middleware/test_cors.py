@@ -231,7 +231,6 @@ class TestCors(testing.TestBase):
         self.api = falcon.API(middleware=[cors.middleware])
         self.api.add_route(route, self.resource)
 
-
     @raises(ValueError)
     def test_init_settings(self):
         CORS(not_a_real_setting=True)
