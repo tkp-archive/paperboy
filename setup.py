@@ -22,17 +22,17 @@ with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name='jupyter_paperboy',
-    version='0.1.1',
+    version='0.1.2',
     description='Jupyter notebooks',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/timkpaine/paperboy',
-    download_url='https://github.com/timkpaine/paperboy/archive/v0.1.1.tar.gz',
+    download_url='https://github.com/timkpaine/paperboy/archive/v0.1.2.tar.gz',
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
     license='BSD 3 Clause',
     install_requires=requires,
-    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pylint', 'flake8']},
+    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pytest-falcon', 'pylint', 'flake8']},
 
     classifiers=[
         'Development Status :: 3 - Alpha',
