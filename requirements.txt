@@ -9,4 +9,5 @@ papermill>=0.16.2
 python-crontab>=2.3.8
 PyJWT>=1.6.4
 traitlets>=4.3.2
+sqlalchemy>=1.2.0
 voila>=0.0.6
