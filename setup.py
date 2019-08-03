@@ -33,7 +33,7 @@ setup(
     license='BSD 3 Clause',
     python_requires='>=3.5',
     install_requires=requires,
-    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pytest-falcon', 'pylint', 'flake8', 'codecov', 'nose', 'mock', 'sphinx']},
+    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pytest-falcon', 'pylint', 'flake8', 'codecov', 'nose', 'mock', 'sphinx', 'sphinx_rtd_theme']},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python :: 3',
