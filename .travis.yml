@@ -13,7 +13,6 @@ install:
     - pip install .[dev]
     - pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
     - yarn
-    - make docs
 
 script: make test
 
