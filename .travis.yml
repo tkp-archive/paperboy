@@ -10,9 +10,7 @@ env:
   - AIRFLOW_GPL_UNIDECODE=1
 
 install:
-    - pip install -r requirements.txt
-    - pip install .[test]
-    - pip install .[docs]
+    - pip install .[dev]
     - pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
     - yarn
 

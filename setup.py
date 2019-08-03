@@ -32,15 +32,10 @@ setup(
     author_email='timothy.k.paine@gmail.com',
     license='BSD 3 Clause',
     install_requires=requires,
-    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pytest-falcon', 'pylint', 'flake8']},
-
+    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pytest-falcon', 'pylint', 'flake8', 'codecov', 'nose', 'mock', 'sphinx']},
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
@@ -57,19 +52,4 @@ setup(
             'paperboy-worker = paperboy.worker:main'
         ],
     },
-    extras_require = {
-    'test': [
-        'pytest',
-        'pytest-cov',
-        'pytest-falcon',
-        'flake8',
-        'pylint',
-        'codecov',
-        'mock',
-        'nose'
-    ],
-    'docs': [
-        'sphinx'
-    ],
-}
 )
