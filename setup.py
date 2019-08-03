@@ -31,6 +31,7 @@ setup(
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
     license='BSD 3 Clause',
+    python_requires='>=3.5'
     install_requires=requires,
     extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pytest-falcon', 'pylint', 'flake8', 'codecov', 'nose', 'mock', 'sphinx']},
     classifiers=[
