@@ -13,10 +13,9 @@ install:
     - pip install .[dev]
     - pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
     - yarn
+    - make docs
 
-script:
-  - make test
-  - make docs
+script: make test
 
 after_success:
     - codecov --token 35952f9c-a1a5-4d77-ba0c-d91e6f24dfec
