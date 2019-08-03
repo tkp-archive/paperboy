@@ -76,7 +76,7 @@ dist:  js  ## dist to pypi
 	python3 setup.py sdist
 	python3 setup.py bdist_wheel
 	twine check dist/* && twine upload dist/*
-	git commit -a -m "Release $(version)"
+	git commit -a -m "Release $(version)"; true
 	git tag v$(version)
 	git push --tags
 
