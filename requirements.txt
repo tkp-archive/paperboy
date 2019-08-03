@@ -2,6 +2,7 @@ falcon==1.4.1
 gunicorn>=19.9.0
 gitpython>=2.1.11
 Jinja2>=2.8.1
+jupyter-packaging>=0.4.0
 nbconvert>=5.4.0
 nbformat>=4.4.0
 nbstripout>=0.3.3

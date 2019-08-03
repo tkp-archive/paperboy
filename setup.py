@@ -1,13 +1,18 @@
-# # # # GENERATED FILE -- DO NOT MODIFY # # # #
 import os
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
+from jupyter_packaging import ensure_python, get_version
 
-here = path.abspath(path.dirname(__file__))
+pjoin = path.join
+ensure_python(('>=3.5',))
 
 print('WARNING: https://issues.apache.org/jira/browse/AIRFLOW-1430?subTaskView=unresolved')
 os.environ['AIRFLOW_GPL_UNIDECODE'] = '1'
+
+name = 'paperboy'
+here = path.abspath(path.dirname(__file__))
+version = get_version(pjoin(here, name, '_version.py'))
 
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
@@ -22,12 +27,12 @@ with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name='jupyter_paperboy',
-    version='0.1.2',
+    version=version,
     description='Jupyter notebooks',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/timkpaine/paperboy',
-    download_url='https://github.com/timkpaine/paperboy/archive/v0.1.2.tar.gz',
+    download_url='https://github.com/timkpaine/paperboy/archive/v0.1.3.tar.gz',
     author='Tim Paine',
     author_email='timothy.k.paine@gmail.com',
     license='BSD 3 Clause',
