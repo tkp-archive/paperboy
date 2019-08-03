@@ -57,4 +57,19 @@ setup(
             'paperboy-worker = paperboy.worker:main'
         ],
     },
+    extras_require = {
+    'test': [
+        'pytest',
+        'pytest-cov',
+        'pytest-falcon',
+        'flake8',
+        'pylint',
+        'codecov',
+        'mock',
+        'nose'
+    ],
+    'docs': [
+        'sphinx'
+    ],
+}
 )

@@ -9,10 +9,14 @@ env:
 
 install:
     - pip install -r requirements.txt
-    - pip install -U pytest pytest-cov flake8 pylint codecov sphinx apache-airflow luigi python-crontab mock matplotlib pyEX pandas seaborn pytest-falcon nose
+    - pip install .[test]
+    - pip install .[docs]
+    - pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
     - yarn
 
-script: make test
+script:
+  - make test
+  - make docs
 
 after_success:
     - codecov --token 35952f9c-a1a5-4d77-ba0c-d91e6f24dfec
