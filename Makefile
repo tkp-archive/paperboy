@@ -1,3 +1,5 @@
+version = `python setup.py --version 2>/dev/null`
+
 run:  ## run server
 	python3 -m paperboy.server
 
@@ -74,6 +76,9 @@ dist:  js  ## dist to pypi
 	python3 setup.py sdist
 	python3 setup.py bdist_wheel
 	twine check dist/* && twine upload dist/*
+	git commit -a -m "Release $(version)"; true
+	git tag v$(version)
+	git push --tags
 
 # Thanks to Francoise at marmelab.com for this
 .DEFAULT_GOAL := help

@@ -2,14 +2,16 @@ language: python
 cache: pip
 
 python:
+  - "3.5"
   - "3.6"
+  - "3.7"
 
 env:
   - AIRFLOW_GPL_UNIDECODE=1
 
 install:
-    - pip install -r requirements.txt
-    - pip install -U pytest pytest-cov flake8 pylint codecov sphinx apache-airflow luigi python-crontab mock matplotlib pyEX pandas seaborn pytest-falcon nose
+    - pip install .[dev]
+    - pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
     - yarn
 
 script: make test
