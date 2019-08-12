@@ -1,15 +1,15 @@
 Paperboy UI Design 
 
 * Why?
-* Paperboy needs to allow users easily upload notebooks however they so choose, and parameterize and schedule notebooks. After doing so, the user should get timely reports generating the data intended by the notebooks. At the same time, Paperboy should be a library for notebooks/jobs/reports that are marked as ìpublicî by users to be shared in the Paperboy community. IN other words, it will maintain the open source spirit it was built in.
-* Goal: ì As an analyst/data scientist, I want to schedule notebooks and run jobs to create reports that will generate time-sensitive data in an effective and routinely manner.
+* Paperboy needs to allow users easily upload notebooks however they so choose, and parameterize and schedule notebooks. After doing so, the user should get timely reports generating the data intended by the notebooks. At the same time, Paperboy should be a library for notebooks/jobs/reports that are marked as ‚Äúpublic‚Äù by users to be shared in the Paperboy community. IN other words, it will maintain the open source spirit it was built in.
+* Goal: ‚Äú As an analyst/data scientist, I want to schedule notebooks and run jobs to create reports that will generate time-sensitive data in an effective and routinely manner.
 
 * User Journey:
-1. The journey begins with a new user. Ideally, the user would be able to access a Paperboy account using o-auth. This o-auth can be ìLogin using Google,î Login using Facebook,î or some authorization domain. The user should rarely see the login screen. 
-* 1. 5 If the login screen appears, the user creates an account, taking the user to a page that requests a username, email, password, and password confirmation. The user then selects ìCreate Accountî to be able to log in. 
-2. User arrives at Home Screen, which would show the most recent report for a seasoned user, but since the user has not used Paperboy before, the user selects ìHelpî at the top of the website to read documentation on how to use Paperboy. By default, the screen timeout is one hour.
+1. The journey begins with a new user. Ideally, the user would be able to access a Paperboy account using o-auth. This o-auth can be ‚ÄúLogin using Google,‚Äù Login using Facebook,‚Äù or some authorization domain. The user should rarely see the login screen. 
+* 1. 5 If the login screen appears, the user creates an account, taking the user to a page that requests a username, email, password, and password confirmation. The user then selects ‚ÄúCreate Account‚Äù to be able to log in. 
+2. User arrives at Home Screen, which would show the most recent report for a seasoned user, but since the user has not used Paperboy before, the user selects ‚ÄúHelp‚Äù at the top of the website to read documentation on how to use Paperboy. By default, the screen timeout is one hour.
 3. The user then adds a first notebook to the application, parameterizes the notebook, and finally schedules a job. The job will take said parameters and produce a report.
-4. The user will receive the desired report as a result of the notebookís code and parameterizations.
+4. The user will receive the desired report as a result of the notebook‚Äôs code and parameterizations.
 5. Given that reports are not made instantaneously, the user can go to the status page to check on the progress of jobs and reports.
 6. After gaining familiarity with the functionality of Paperboy, the user can change settings such as notifications for when a report is finished or has failed to be completed, and the theme of the website. Additionally, the user can change the associated email address, password, and screen timeout limit.
 7. After accumulating a large volume of notebooks, reports, and jobs, the user can switch between icon and detailed views of these files for easier access or identification. This option is available from the start, but becomes more necessary once a lot of files are accumulated. 
