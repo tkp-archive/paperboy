@@ -1,5 +1,5 @@
 import {deleteAllChildren} from "../dom/index";
-import {IRequestResult, request} from "../request";
+import {IRequestResult, request} from "requests-helper";
 
 /**
  * Helper function to autocomplete against a server endpoint and

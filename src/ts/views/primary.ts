@@ -8,7 +8,7 @@ import {apiurl,
         createErrorDialog,
         createPrimarySection,
         toProperCase} from "../utils/index";
-import {IRequestResult, request} from "../utils/request";
+import {IRequestResult, request} from "requests-helper";
 import {Status} from "./status";
 
 export

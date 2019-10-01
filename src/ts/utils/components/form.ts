@@ -1,5 +1,5 @@
 import {buildVerticalTable} from "../dom/index";
-import {IRequestResult, requestFormData} from "../request";
+import {IRequestResult, requestFormData} from "requests-helper";
 import {createModal} from "./modal";
 
 /**
