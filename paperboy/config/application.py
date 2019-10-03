@@ -124,7 +124,8 @@ class Paperboy(Application):
     # Storage #
     ###########
     storage = Instance(klass=StorageConfig)
-    sql_dev = Bool(default_value=False)
+
+    dev = Bool(default_value=False)
 
     sql_url = Unicode(default_value='sqlite:///:memory:')
     mongo_url = Unicode(default_value='mongodb://localhost:27017/')
