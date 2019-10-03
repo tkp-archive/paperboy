@@ -2,10 +2,10 @@ import {
     BoxPanel, SplitPanel, TabPanel, Widget,
 } from "@phosphor/widgets";
 
+import {IRequestResult, request} from "requests-helper";
 import {createStatusSection } from "../utils/components/index";
 import {deleteAllChildren} from "../utils/dom/index";
 import {apiurl, createErrorDialog, toProperCase} from "../utils/index";
-import {IRequestResult, request} from "requests-helper";
 
 export
 class StatusBrowser extends TabPanel {
