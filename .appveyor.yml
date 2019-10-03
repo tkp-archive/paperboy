@@ -10,7 +10,7 @@ image:
 
 install:
   - C:\Python37-x64\python -m pip install -r requirements.txt
-  - C:\Python37-x64\python -m pip install nose mock
+  - C:\Python37-x64\python -m pip install -U pytest pytest-cov flake8 pylint codecov sphinx apache-airflow==1.10.3 luigi python-crontab mock matplotlib pyEX pandas seaborn pytest-falcon nose
 
 environment:
   matrix:
@@ -23,4 +23,4 @@ build_script:
   - C:\Python37-x64\python setup.py build
 
 test_script:
-  - C:\Python37-x64\python -m nose -v tests 
+  - C:\Python37-x64\python -m pytest -v tests --cov=paperboy
