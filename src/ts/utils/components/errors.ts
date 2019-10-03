@@ -1,4 +1,4 @@
-import {IRequestResult} from "../request";
+import {IRequestResult} from "requests-helper";
 import {createModal} from "./modal";
 
 /**

@@ -2,13 +2,13 @@ import {
     BoxPanel, DockPanel, Panel, Widget,
 } from "@phosphor/widgets";
 
+import {IRequestResult, request} from "requests-helper";
 import {apiurl,
         createConfigForm,
         createDetail,
         createErrorDialog,
         createPrimarySection,
         toProperCase} from "../utils/index";
-import {IRequestResult, request} from "../utils/request";
 import {Status} from "./status";
 
 export
