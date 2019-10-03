@@ -32,7 +32,7 @@ from ..middleware import CORSMiddleware, MultipartMiddleware
 # sql
 from ..storage.sqla import Base
 from ..middleware import SQLAlchemySessionMiddleware, SQLUserMiddleware, SQLAuthRequiredMiddleware
-from ..middleware import MongoSessionMiddleware
+from ..middleware import MongoSessionMiddleware, MongoUserMiddleware, MongoAuthRequiredMiddleware
 
 
 class Paperboy(Application):
@@ -104,7 +104,7 @@ class Paperboy(Application):
     ##########################################
     backend = Unicode(default_value='dummy', help="Backend set to use, options are {sqla, mongo, custom}").tag(config=True)
     scheduler = Unicode(default_value='dummy', help="Scheduler type to use, options are {dummy, airflow, luigi}").tag(config=True)
-    auth = Unicode(default_value='dummy', help="Authentication backend set to use, options are {none, sqla, custom}").tag(config=True)
+    auth = Unicode(default_value='dummy', help="Authentication backend set to use, options are {none, sqla, mongo, dummy, custom}").tag(config=True)
     secret = Unicode()
 
     @validate('backend')
@@ -115,7 +115,7 @@ class Paperboy(Application):
 
     @validate('auth')
     def _validate_auth(self, proposed):
-        if proposed['value'] not in ('custom', 'none', 'sqla',):
+        if proposed['value'] not in ('custom', 'dummy', 'mongo', 'none', 'sqla',):
             raise TraitError('backend not recognized: %s'.format(proposed['value']))
         return proposed['value']
     ##########################################
@@ -126,9 +126,6 @@ class Paperboy(Application):
     storage = Instance(klass=StorageConfig)
 
     dev = Bool(default_value=False)
-
-    sql_url = Unicode(default_value='sqlite:///:memory:')
-    mongo_url = Unicode(default_value='mongodb://localhost:27017/')
     ###########
 
     #############
@@ -204,15 +201,20 @@ class Paperboy(Application):
             ###############################
             # Preconfigured auth backends #
             ###############################
-            if self.auth == 'none':
-                logging.critical('Using No auth')
-                self.auth_required_middleware = NoAuthRequiredMiddleware
-                self.load_user_middleware = NoUserMiddleware
+            if self.auth == 'mongo':
+                logging.critical('Using MongoDB auth')
+                self.auth_required_middleware = MongoAuthRequiredMiddleware
+                self.load_user_middleware = MongoUserMiddleware
 
             elif self.auth == 'sqla':
                 logging.critical('Using SQL auth')
                 self.auth_required_middleware = SQLAuthRequiredMiddleware
                 self.load_user_middleware = SQLUserMiddleware
+
+            else:
+                logging.critical('Using No auth')
+                self.auth_required_middleware = NoAuthRequiredMiddleware
+                self.load_user_middleware = NoUserMiddleware
             ###############################
 
             if self.scheduler == 'dummy':

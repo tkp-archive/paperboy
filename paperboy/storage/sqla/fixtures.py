@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -79,3 +80,10 @@ def main(sql_url):
     session.add(report)
     session.commit()
     session.refresh(report)
+
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("args: <sql_url>")
+    else:
+        main(sys.argv[1])

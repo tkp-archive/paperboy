@@ -4,9 +4,8 @@ from .base import Base
 
 class UserMongo(Base):
     __tablename__ = 'users'
-    id = StringField(required=True)
-    name = StringField()
-    password = StringField()
+    name = StringField(required=True)
+    password = StringField(default='')
 
     notebooks = ListField(ReferenceField('NotebookMongo'))
     jobs = ListField(ReferenceField('JobMongo'))

@@ -5,7 +5,6 @@ from .user import UserMongo
 
 
 class JobMongo(Base):
-    id = StringField(required=True)
     name = StringField()
     user = ReferenceField(UserMongo, reverse_delete_rule=CASCADE)
     notebook = ReferenceField('NotebookMongo', reverse_delete_rule=CASCADE)

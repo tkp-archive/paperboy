@@ -6,7 +6,6 @@ from .user import UserMongo
 
 class NotebookMongo(Base):
     __tablename__ = 'notebooks'
-    id = StringField(required=True)
     name = StringField()
 
     user = ReferenceField(UserMongo)

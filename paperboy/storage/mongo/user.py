@@ -18,11 +18,11 @@ class UserMongoStorage(BaseMongoStorageMixin, UserStorage):
         '''Pass through to shared method in BaseSQLStorageMixin'''
         return self._form(UserConfig)
 
-    def search(self, user, params, session, *args, **kwargs):
+    def search(self, user, params, *args, **kwargs):
         '''Pass through to shared method in BaseSQLStorageMixin'''
-        return self._search(UserMongo, 'User', user, params, session, *args, **kwargs)
+        return self._search(UserMongo, 'User', user, params, *args, **kwargs)
 
-    def login(self, user, params, session, *args, **kwargs):
+    def login(self, user, params, *args, **kwargs):
         '''username/password -> user/token'''
         username = params.get('username')
         password = params.get('password') or ''
@@ -32,11 +32,11 @@ class UserMongoStorage(BaseMongoStorageMixin, UserStorage):
             token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
             return token
 
-    def list(self, user, params, session, *args, **kwargs):
+    def list(self, user, params, *args, **kwargs):
         '''Not used'''
         return {}
 
-    def detail(self, user, params, session, *args, **kwargs):
+    def detail(self, user, params, *args, **kwargs):
         '''token -> user'''
         try:
             user = jwt.decode(user, self.config.secret, algorithms=['HS256'])
@@ -44,18 +44,16 @@ class UserMongoStorage(BaseMongoStorageMixin, UserStorage):
             return None
         return UserConfig(self.config, name=user['name'], id=user['id'])
 
-    def store(self, user, params, session, *args, **kwargs):
+    def store(self, user, params, *args, **kwargs):
         username = params.get('username')
         password = params.get('password') or ''
         user = UserMongo(name=username, password=password)
-
         user.save()
-
         token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
         logging.critical("Storing user {} {} {}".format(username, token, user.id))
         return token
 
-    def delete(self, user, params, session, *args, **kwargs):
+    def delete(self, user, params, *args, **kwargs):
         user = UserMongo.objects(id=user.id).first()
         name = user.name
         user.delete()

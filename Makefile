@@ -19,7 +19,13 @@ rundummy:  ## run server with sql backend
 	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='dummy'
 
 runmongo:  ## run server with MongoDB backend
-	python3 -m paperboy.server --backend='mongo' --auth='none'
+	python3 -m paperboy.server --backend='mongo' --auth='mongo' --scheduler='dummy'
+
+sqlfixtures:  ## install sql sample data
+	python3 -m paperboy.storage.sqla.fixtures sqlite:///paperboy.db
+
+mongofixtures:  ## install mongo sample data
+	python3 -m paperboy.storage.mongo.fixtures mongodb://localhost:27017/
 
 tests: clean ## Clean and Make unit tests
 	python3 -m pytest -v tests --cov=paperboy

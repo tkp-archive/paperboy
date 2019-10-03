@@ -5,7 +5,6 @@ from .report import ReportMongo
 
 class OutputMongo(Base):
     __tablename__ = 'outputs'
-    id = StringField(required=True)
     name = StringField()
 
     report = ReferenceField(ReportMongo)

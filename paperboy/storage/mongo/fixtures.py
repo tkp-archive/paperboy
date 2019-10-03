@@ -1,76 +1,69 @@
+import sys
 from datetime import datetime
-from sqlalchemy import create_engine
+from mongoengine import connect
+from pymongo import MongoClient
 from .models.user import UserMongo
 from .models.notebook import NotebookMongo
 from .models.job import JobMongo
 from .models.report import ReportMongo
 
 
-def main(sql_url):
+def main(mongo_url, db_name='paperboy'):
     '''Create dummy notebook data for sqlalchemy'''
-    engine = create_engine(sql_url, echo=False)
-    with engine.session() as session:
-        user = UserMongo(name='test')
-        session.add(user)
-        session.commit()
-        session.refresh(user)
+    connect(db_name, host=mongo_url)
+    user = UserMongo(name='test')
+    user.save()
 
-        notebook = '''
-        '''
-        created = datetime.now()
-        modified = datetime.now()
+    notebook = '''
+    '''
+    created = datetime.now()
+    modified = datetime.now()
 
-        notebook = NotebookMongo(name='MyNotebook',
-                                 userId=user.id,
-                                 user=user,
-                                 notebook='',
-                                 privacy='',
-                                 level='',
-                                 requirements='',
-                                 dockerfile='',
-                                 created=created,
-                                 modified=modified)
-        session.add(notebook)
-        session.commit()
-        session.refresh(notebook)
-
-        job = JobMongo(name='MyJob',
-                       userId=user.id,
-                       user=user,
-                       notebookId=notebook.id,
-                       notebook=notebook,
-                       start_time=created,
-                       interval='minutely',
-                       level='production',
-                       created=created,
-                       modified=modified)
-        session.add(job)
-        session.commit()
-        session.refresh(job)
-
-        type = 'run'
-        output = 'notebook'
-        strip_code = 'yes'
-
-        created = datetime.now()
-        modified = datetime.now()
-
-        name = job.name + '-Report-1'
-
-        param = '{}'
-        report = ReportMongo(name=name,
-                             userId=user.id,
+    notebook = NotebookMongo(name='MyNotebook',
                              user=user,
-                             notebookId=notebook.id,
-                             notebook=notebook,
-                             jobId=job.id,
-                             job=job,
-                             type=type,
-                             output=output,
-                             strip_code=strip_code,
-                             parameters=param,
+                             notebook='',
+                             privacy='',
+                             level='',
+                             requirements='',
+                             dockerfile='',
                              created=created,
                              modified=modified)
-        session.add(report)
-        session.commit()
-        session.refresh(report)
+    notebook.save()
+
+    job = JobMongo(name='MyJob',
+                   user=user,
+                   notebook=notebook,
+                   start_time=created,
+                   interval='minutely',
+                   level='production',
+                   created=created,
+                   modified=modified)
+    job.save()
+
+    type = 'run'
+    output = 'notebook'
+    strip_code = 'yes'
+
+    created = datetime.now()
+    modified = datetime.now()
+
+    name = job.name + '-Report-1'
+
+    param = '{}'
+    report = ReportMongo(name=name,
+                         user=user,
+                         notebook=notebook,
+                         job=job,
+                         type=type,
+                         output=output,
+                         strip_code=strip_code,
+                         parameters=param,
+                         created=created,
+                         modified=modified)
+    report.save()
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("args: <mongo_url>")
+    else:
+        main(sys.argv[1])

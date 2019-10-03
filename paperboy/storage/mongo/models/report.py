@@ -6,7 +6,6 @@ from .user import UserMongo
 
 class ReportMongo(Base):
     __tablename__ = 'reports'
-    id = StringField(required=True)
     name = StringField()
 
     user = ReferenceField(UserMongo)

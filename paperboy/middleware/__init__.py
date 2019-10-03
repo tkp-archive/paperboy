@@ -15,4 +15,4 @@ from .none import NoUserMiddleware, NoAuthRequiredMiddleware  # noqa: F401
 from .sqla import SQLUserMiddleware, SQLAuthRequiredMiddleware, SQLAlchemySessionMiddleware  # noqa: F401
 
 # Mongo
-from .mongo import MongoSessionMiddleware
+from .mongo import MongoUserMiddleware, MongoAuthRequiredMiddleware, MongoSessionMiddleware  # noqa: F401
