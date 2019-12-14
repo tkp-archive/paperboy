@@ -6,7 +6,11 @@ import {Status} from "./status";
 
 export
 class Browser extends SplitPanel {
-    constructor(notebooks: PrimaryTab, jobs: PrimaryTab, reports: PrimaryTab, status: Status) {
+    constructor(notebooks: PrimaryTab,
+                jobs: PrimaryTab,
+                reports: PrimaryTab,
+                outputs: PrimaryTab,
+                status: Status) {
         super({ orientation: "vertical", spacing: 0 });
         this.node.classList.add("browser");
         const searchpanel = new BoxPanel();
@@ -70,6 +74,8 @@ class Browser extends SplitPanel {
                 resultspanel.addWidget(new PrimaryDetail(type, search.value, jobs, status));
             } else if (type === "reports") {
                 resultspanel.addWidget(new PrimaryDetail(type, search.value, reports, status));
+            } else if (type === "outputs") {
+                resultspanel.addWidget(new PrimaryDetail(type, search.value, outputs, status));
             }
             hideLoader();
         });

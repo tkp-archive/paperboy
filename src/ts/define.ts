@@ -24,6 +24,10 @@ const COMMANDS = {
   browseReports: "browse-reports",
   newReport: "new-report",
 
+  // outputs
+  openOutputs: "open-output",
+  browseOutputs: "browse-outputs",
+
   // status
   openStatus: "open-status",
 
@@ -52,6 +56,10 @@ const COMMAND_ICONS = {
   browseReports: "fa fa-envelope",
   newReport: "fa fa-plus",
 
+  // outputs
+  openOutput: "fa fa-address-card",
+  browseOutputs: "fa fa-address-card",
+
   // status
   openStatus: "fa fa-clock-o",
 
@@ -79,6 +87,10 @@ const COMMAND_LABELS = {
   openReport: "Open Report",
   browseReports: "Browse Reports",
   newReport: "Add Report",
+
+  // outputs
+  openOutput: "Open Output",
+  browseOutputs: "Browse Outputs",
 
   // status
   openStatus: "Open Status",

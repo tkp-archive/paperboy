@@ -1,5 +1,5 @@
 from traitlets import HasTraits, Unicode, Bool
-from ..storage.sqla import UserSQLStorage, NotebookSQLStorage, JobSQLStorage, ReportSQLStorage
+from ..storage.sqla import UserSQLStorage, NotebookSQLStorage, JobSQLStorage, ReportSQLStorage, OutputSQLStorage
 
 
 class StorageConfig(HasTraits):
@@ -23,3 +23,4 @@ class SQLAStorageConfig(StorageConfig):
     notebook_storage = NotebookSQLStorage
     job_storage = JobSQLStorage
     report_storage = ReportSQLStorage
+    output_storage = OutputSQLStorage

@@ -25,7 +25,11 @@ def FalconAPI(config):
     ###########
     # Storage #
     ###########
-    db = StorageEngine(config.storage.user_storage(config), config.storage.notebook_storage(config), config.storage.job_storage(config), config.storage.report_storage(config))
+    db = StorageEngine(config.storage.user_storage(config),
+                       config.storage.notebook_storage(config),
+                       config.storage.job_storage(config),
+                       config.storage.report_storage(config),
+                       config.storage.output_storage(config))
     api = falcon.API(middleware=[config.auth_required_middleware(config, db),
                                  config.load_user_middleware(config, db)] +
                      config.essential_middleware +

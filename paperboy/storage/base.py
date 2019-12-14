@@ -81,3 +81,8 @@ class ReportStorage(BaseStorage):
     def generate(self, *args, **kwargs):
         '''Generate reports from Job instance and JSONL papermill parameters'''
         pass
+
+
+class OutputStorage(BaseStorage):
+    '''Base class for Output storage. Output backends should inherit from this class'''
+    pass

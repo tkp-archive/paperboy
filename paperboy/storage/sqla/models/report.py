@@ -19,6 +19,8 @@ class ReportSQL(Base):
     jobId = Column(Integer, ForeignKey('jobs.id', ondelete='cascade'))
     job = relationship('JobSQL', back_populates='reports')
 
+    outputs = relationship('OutputSQL', cascade='all,delete,delete-orphan', back_populates='report')
+
     parameters = Column(String)
     type = Column(String)
     output = Column(String)

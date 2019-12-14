@@ -12,6 +12,7 @@ export interface IMenuPages {
   notebooks: PrimaryTab;
   jobs: PrimaryTab;
   reports: PrimaryTab;
+  outputs: PrimaryTab;
   status: Widget;
 }
 
@@ -61,6 +62,16 @@ function buildFile(pages: IMenuPages): Menu {
     mnemonic: 2,
   });
 
+  commands.addCommand(COMMANDS.browseOutputs, {
+    execute: () => {
+      pages.main.addWidget(pages.outputs);
+      pages.main.selectWidget(pages.outputs);
+    },
+    iconClass: COMMAND_ICONS.browseOutputs,
+    label: COMMAND_LABELS.browseOutputs,
+    mnemonic: 2,
+  });
+
   commands.addCommand(COMMANDS.openStatus, {
     execute: () => {
       pages.main.addWidget(pages.status);
@@ -75,6 +86,7 @@ function buildFile(pages: IMenuPages): Menu {
   menu.addItem({ command: COMMANDS.browseNotebooks});
   menu.addItem({ command: COMMANDS.browseJobs});
   menu.addItem({ command: COMMANDS.browseReports});
+  menu.addItem({ command: COMMANDS.browseOutputs});
   return menu;
 }
 

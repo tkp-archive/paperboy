@@ -2,6 +2,8 @@ import {
     BoxPanel, DockPanel, Panel, Widget,
 } from "@phosphor/widgets";
 
+// tslint:disable: max-classes-per-file
+
 import {IRequestResult, request} from "requests-helper";
 import {apiurl,
         createConfigForm,
@@ -158,7 +160,6 @@ class PrimaryTab extends Panel {
     }
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export
 class Notebooks extends PrimaryTab {
     constructor(home: DockPanel, status: Status) {
@@ -166,7 +167,6 @@ class Notebooks extends PrimaryTab {
     }
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export
 class Jobs extends PrimaryTab {
     constructor(home: DockPanel, status: Status) {
@@ -174,10 +174,16 @@ class Jobs extends PrimaryTab {
     }
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export
 class Reports extends PrimaryTab {
     constructor(home: DockPanel, status: Status) {
         super("configurator", "reports", status, home);
+    }
+}
+
+export
+class Outputs extends PrimaryTab {
+    constructor(home: DockPanel, status: Status) {
+        super("configurator", "outputs", status, home);
     }
 }

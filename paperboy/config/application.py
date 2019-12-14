@@ -138,7 +138,7 @@ class Paperboy(Application):
     ##################
     # Output         #
     ##################
-    output = Instance(klass=LocalOutputConfig, args=(), kwargs={})
+    output = Instance(klass=LocalOutputConfig, args=(), kwargs={})  # TODO make configurable
     ##################
 
     def start(self):

@@ -2,7 +2,7 @@ import {DockPanel, MenuBar, Widget} from "@phosphor/widgets";
 
 import "../src/style/index.css";
 import {hideLoader, showLoader} from "./utils/index";
-import {Browser, buildMenus, Header, Jobs, Notebooks, Reports, Status} from "./views/index";
+import {Browser, buildMenus, Header, Jobs, Notebooks, Reports, Outputs, Status} from "./views/index";
 
 export
 function main(): void {
@@ -25,8 +25,11 @@ function main(): void {
   const jobs = new Jobs(main, status);
   /* Create Reports page */
   const reports = new Reports(main, status);
+  /* Create Outputs page */
+  const outputs = new Outputs(main, status);
+
   /* Create Search browser page */
-  const browser = new Browser(notebooks, jobs, reports, status);
+  const browser = new Browser(notebooks, jobs, reports, outputs, status);
 
   browser.title.label = "Home";
   browser.title.closable = true;
@@ -44,6 +47,7 @@ function main(): void {
     main,
     notebooks,
     reports,
+    outputs,
     status,
   });
 
