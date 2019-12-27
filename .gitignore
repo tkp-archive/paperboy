@@ -114,3 +114,10 @@ dask-worker-space/
 coverage/
 paperboy.db
 paperboy/assets/static/bundle.js
+
+conda.recipe
+docs/api
+luigi_logs
+mdb/
+pidfile
+

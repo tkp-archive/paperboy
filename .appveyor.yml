@@ -9,8 +9,8 @@ image:
   - Visual Studio 2017
 
 install:
-  - C:\Python37-x64\python -m pip install -r requirements.txt
-  - C:\Python37-x64\python -m pip install -U pytest pytest-cov flake8 pylint codecov sphinx apache-airflow==1.10.3 luigi python-crontab mock matplotlib pyEX pandas seaborn pytest-falcon nose
+  - C:\Python37-x64\python -m pip install jupyter_packaging
+  - C:\Python37-x64\python -m pip install -e .[dev]
 
 environment:
   matrix:

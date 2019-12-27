@@ -1,20 +1,37 @@
-language: python
-cache: pip
-
-python:
-  - "3.5"
-  - "3.6"
-  - "3.7"
+dist: xenial
+language: node_js
+node_js: "12"
+sudo: required
 
 env:
   - AIRFLOW_GPL_UNIDECODE=1
 
-install:
-    - pip install .[dev]
-    - pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
-    - yarn
+matrix:
+  fast_finish: true
+  include:
+    - python: "3.7"
+      language: python
+      cache: pip
 
-script: make test
+addons:
+  homebrew:
+    update: true
+    packages:
+      - python
+
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link --overwrite python; fi
+  - npm install -g yarn
+
+install:
+  - pip3 install jupyter_packaging
+  - python3 -m pip install -e .[dev]
+  - python3 -m pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
+  - yarn
+
+script:
+  - make lint
+  - make test
 
 after_success:
     - codecov --token 35952f9c-a1a5-4d77-ba0c-d91e6f24dfec

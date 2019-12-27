@@ -37,6 +37,10 @@ lint: ## run linter
 	flake8 paperboy
 	yarn lint
 
+fix:  ## run autopep8/tslint fix
+	autopep8 --in-place -r -a -a paperboy/
+	./node_modules/.bin/tslint --fix src/ts/**/*.ts
+
 annotate: ## MyPy type annotation check
 	mypy -s paperboy
 
@@ -61,15 +65,6 @@ install:  ## install to site-packages
 
 docs:  ## make documentation
 	make -C ./docs html && open docs/_build/html/index.html
-
-micro:  ## steps before dist, defaults to previous tag + one micro
-	. scripts/deploy.sh MICRO
-
-minor:  ## steps before dist, defaults to previous tag + one micro
-	. scripts/deploy.sh MINOR
-
-major:  ## steps before dist, defaults to previous tag + one micro
-	. scripts/deploy.sh MAJOR
 
 dist:  js  ## dist to pypi
 	rm -rf dist build
