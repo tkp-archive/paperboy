@@ -11,6 +11,7 @@ image:
 install:
   - C:\Python37-x64\python -m pip install jupyter_packaging
   - C:\Python37-x64\python -m pip install -e .[dev]
+  - C:\Python37-x64\python -m pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
 
 environment:
   matrix:
