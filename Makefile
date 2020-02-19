@@ -1,32 +1,32 @@
 version = `python setup.py --version 2>/dev/null`
 
 run:  ## run server
-	python3 -m paperboy.server
+	python3.7 -m paperboy.server
 
 runnoauth:  ## run server without auth
-	python3 -m paperboy.server --auth='none'
+	python3.7 -m paperboy.server --auth='none'
 
 runlocal:  ## run server with sql backend, local scheduler
-	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='local'
+	python3.7 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='local'
 
 runsql_airflow:  ## run server with sql backend, airflow scheduler
-	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='airflow'
+	python3.7 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='airflow'
 
 runsql_luigi:  ## run server with sql backend, luigi scheduler
-	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='luigi'
+	python3.7 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='luigi'
 
 rundummy:  ## run server with sql backend
-	python3 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='dummy'
+	python3.7 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='dummy'
 
 tests: clean ## Clean and Make unit tests
-	python3 -m pytest -v tests --cov=paperboy
+	python3.7 -m pytest -v tests --cov=paperboy
 
 testjs: clean ## run the js tests for travis CI
 	yarn
 	yarn test
 
 test: clean lint ## run the tests for travis CI
-	@ python3 -m pytest -v tests --cov=paperboy
+	@ python3.7 -m pytest -v tests --cov=paperboy
 	yarn
 	yarn test
 
@@ -58,18 +58,18 @@ js:  ## build the js
 	yarn build
 
 build:  ## build the repository
-	python3 setup.py build
+	python3.7 setup.py build
 
 install:  ## install to site-packages
-	python3 setup.py install
+	python3.7 setup.py install
 
 docs:  ## make documentation
 	make -C ./docs html && open docs/_build/html/index.html
 
 dist:  js  ## dist to pypi
 	rm -rf dist build
-	python3 setup.py sdist
-	python3 setup.py bdist_wheel
+	python3.7 setup.py sdist
+	python3.7 setup.py bdist_wheel
 	twine check dist/* && twine upload dist/*
 	git commit -a -m "Release $(version)"; true
 	git tag v$(version)

@@ -17,6 +17,16 @@ jobs:
         versionSpec: '$(python.version)'
       displayName: 'Use Python $(python.version)'
 
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '12.x'
+
+    - bash: npm install -g yarn
+      displayName: "Install Yarn"
+
+    - bash: yarn
+      displayName: "Install Deps"
+
     - script: |
         python -m pip install --upgrade pip
         pip install -e .[dev]
@@ -58,6 +68,16 @@ jobs:
         versionSpec: '$(python.version)'
       displayName: 'Use Python $(python.version)'
 
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '12.x'
+
+    - bash: npm install -g yarn
+      displayName: "Install Yarn"
+
+    - bash: yarn
+      displayName: "Install Deps"
+
     - script: |
         python -m pip install --upgrade pip
         pip install -e .[dev]
@@ -98,6 +118,16 @@ jobs:
       inputs:
         versionSpec: '$(python.version)'
       displayName: 'Use Python $(python.version)'
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '12.x'
+
+    - bash: npm install -g yarn
+      displayName: "Install Yarn"
+
+    - bash: yarn
+      displayName: "Install Deps"
 
     - script: |
         which python > python.txt
