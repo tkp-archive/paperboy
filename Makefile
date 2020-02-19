@@ -19,7 +19,7 @@ rundummy:  ## run server with sql backend
 	python3.7 -m paperboy.server --backend='sqla' --auth='sqla' --scheduler='dummy'
 
 tests: clean ## Clean and Make unit tests
-	python3.7 -m pytest -v tests --cov=paperboy
+	python3.7 -m pytest -v tests --cov=paperboy --junitxml=python_junit.xml --cov-report=xml --cov-branch
 
 testjs: clean ## run the js tests for travis CI
 	yarn
