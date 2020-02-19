@@ -29,8 +29,9 @@ jobs:
 
     - script: |
         python -m pip install --upgrade pip
+        pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
         pip install -e .[dev]
-      displayName: 'Install dependencies'
+  displayName: 'Install dependencies'
       env:
         AIRFLOW_GPL_UNIDECODE: 1
 
@@ -80,6 +81,7 @@ jobs:
 
     - script: |
         python -m pip install --upgrade pip
+        pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
         pip install -e .[dev]
       displayName: 'Install dependencies'
       env:
@@ -139,6 +141,7 @@ jobs:
 
     - script: |
         python -m pip install --upgrade pip
+        pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
         pip install -e .[dev]
       displayName: 'Install dependencies'
       env:
