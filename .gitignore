@@ -117,6 +117,7 @@ paperboy/assets/static/bundle.js
 
 conda.recipe
 docs/api
+docs/index.md
 luigi_logs
 mdb/
 pidfile
