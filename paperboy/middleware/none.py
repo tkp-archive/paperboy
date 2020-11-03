@@ -1,6 +1,7 @@
 
 class NoUserMiddleware(object):
     '''Dummy user authentication middleware'''
+
     def __init__(self, config, db, *args, **kwargs):
         self.config = config
         self.db = db
@@ -13,6 +14,7 @@ class NoUserMiddleware(object):
 
 class NoAuthRequiredMiddleware(object):
     '''Dummy no-auth-required middleware'''
+
     def __init__(self, config, db, *args, **kwargs):
         self.config = config
         self.db = db

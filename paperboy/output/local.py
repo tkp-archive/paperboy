@@ -6,6 +6,7 @@ from .base import BaseOutput
 
 class LocalOutput(BaseOutput):
     '''Output to local filesystem'''
+
     def __init__(self, config, *args, **kwargs):
         self.config = config
 

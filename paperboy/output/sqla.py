@@ -7,6 +7,7 @@ from .base import BaseOutput
 
 class SQLAOutput(BaseOutput):
     '''Output to sql database'''
+
     def __init__(self, config, *args, **kwargs):
         self.config = config
         self.engine = create_engine(self.storage.sql_url, echo=False)

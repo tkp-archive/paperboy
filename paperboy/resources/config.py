@@ -5,6 +5,7 @@ from .base import BaseResource
 
 class ConfigResource(BaseResource):
     '''Falcon resource to get form entries'''
+
     def __init__(self, *args, **kwargs):
         super(ConfigResource, self).__init__(*args, **kwargs)
 

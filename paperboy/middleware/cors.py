@@ -226,6 +226,7 @@ class CORSMiddleware:
         default_enabled (bool, optional): Whether CORS processing should
             take place for every resource.  Default ``True``.
     """
+
     def __init__(self, cors, default_enabled=True):
         self.cors = cors
         self.default_enabled = default_enabled
@@ -333,6 +334,7 @@ class CORS(object):
         introduce an unintentionally allowed origin or other vulnerability
         into your application.
     """
+
     def __init__(self, **cors_config):
         default_cors_config = {
             'logger': get_default_logger(),

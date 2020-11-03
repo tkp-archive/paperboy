@@ -106,7 +106,7 @@ class DummyScheduler(BaseScheduler):
                 {'name': 'DAG-Job-{}'.format(i),
                  'id': 'Job-{}'.format(i),
                  'meta': {
-                    'id':  'Job-{}'.format(i),
+                    'id': 'Job-{}'.format(i),
                     'execution': '01/02/2018 12:25:31',
                     'status': choice(['✔', '✘'])}
                  }
@@ -118,8 +118,8 @@ class DummyScheduler(BaseScheduler):
                     'run': '01/02/2018 12:25:31',
                     'status': choice(['✔', '✘']),
                     'type': choice(['Post', 'Papermill', 'NBConvert', 'Setup']),
-                    }
-                 }
+                }
+                }
             )
         return ret
 

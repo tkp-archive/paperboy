@@ -18,7 +18,7 @@ class ReportSQLStorage(BaseSQLStorageMixin, ReportStorage):
 
         return {'total': base.count(),
                 'notebook': base.filter(ReportSQL.output == 'notebook').count(),
-                'pdf':  base.filter(ReportSQL.output == 'pdf').count(),
+                'pdf': base.filter(ReportSQL.output == 'pdf').count(),
                 'html': base.filter(ReportSQL.output == 'html').count(),
                 'email': base.filter(ReportSQL.output == 'email').count(),
                 'script': base.filter(ReportSQL.output == 'script').count()}

@@ -4,6 +4,7 @@ from abc import abstractmethod, ABCMeta
 
 class BaseStorage(with_metaclass(ABCMeta)):
     '''Abstract base class representing the interface to a storage configuration'''
+
     def __init__(self, config, *args, **kwargs):
         '''
         Args:

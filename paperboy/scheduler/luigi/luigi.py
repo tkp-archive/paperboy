@@ -63,7 +63,7 @@ class LuigiScheduler(BaseScheduler):
             job_json=job_json,
             report_json=report_json,
             output_config=json.dumps(config.output.to_json())
-            )
+        )
         return tpl
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):

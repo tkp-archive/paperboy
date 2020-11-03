@@ -3,6 +3,7 @@ import logging
 
 class BaseResource(object):
     '''Base falcon resource to handle shared attributes'''
+
     def __init__(self, config, db=None, scheduler=None):
         '''Base falcon resource
         Args:

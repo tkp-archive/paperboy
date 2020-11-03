@@ -58,7 +58,7 @@ class AirflowScheduler(BaseScheduler):
                     {'name': item[1],
                      'id': item[1][4:],
                      'meta': {
-                        'id':  item[1][4:],
+                        'id': item[1][4:],
                         'execution': item[2].strftime('%m/%d/%Y %H:%M:%S'),
                         'status': '✔' if item[3] == 'success' else '✘'}
                      }
@@ -81,8 +81,8 @@ class AirflowScheduler(BaseScheduler):
                         'run': item[2].strftime('%m/%d/%Y %H:%M:%S'),
                         'status': '✔' if item[3] == 'success' else '✘',
                         'type': report_type
-                        }
-                     }
+                    }
+                    }
                 )
             return ret
 
@@ -104,7 +104,7 @@ class AirflowScheduler(BaseScheduler):
             job_json=job_json,
             report_json=report_json,
             output_config=json.dumps(config.output.to_json())
-            )
+        )
         return tpl
 
     def schedule(self, user, notebook, job, reports, *args, **kwargs):

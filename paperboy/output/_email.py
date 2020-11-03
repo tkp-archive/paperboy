@@ -138,6 +138,7 @@ def email(message, to, username, password, domain, host, port):
 
 class EmailOutput(BaseOutput):
     '''Email output type'''
+
     def __init__(self, config, *args, **kwargs):
         self.config = config
 

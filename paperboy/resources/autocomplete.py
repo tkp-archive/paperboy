@@ -4,6 +4,7 @@ from .base import BaseResource
 
 class AutocompleteResource(BaseResource):
     '''Autocompletion Falcon resource'''
+
     def __init__(self, *args, **kwargs):
         super(AutocompleteResource, self).__init__(*args, **kwargs)
 

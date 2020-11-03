@@ -31,11 +31,11 @@ test: clean lint ## run the tests for travis CI
 	yarn test
 
 lint: ## run linter
-	python -m flake8 paperboy
+	python -m flake8 paperboy setup.py
 	yarn lint
 
 fix:  ## run autopep8/tslint fix
-	python -m autopep8 --in-place -r -a -a paperboy/
+	python -m autopep8 --in-place -r -a -a paperboy/  setup.py
 	./node_modules/.bin/tslint --fix src/ts/**/*.ts
 
 annotate: ## MyPy type annotation check

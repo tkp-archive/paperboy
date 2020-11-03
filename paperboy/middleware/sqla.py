@@ -4,6 +4,7 @@ from six.moves.urllib_parse import urljoin
 
 class SQLAlchemySessionMiddleware(object):
     '''variant of https://gitlab.com/skosh/falcon-helpers/blob/master/falcon_helpers/middlewares/sqla.py'''
+
     def __init__(self, sessionmaker=None):
         self.sessionmaker = sessionmaker
 
@@ -31,6 +32,7 @@ class SQLAlchemySessionMiddleware(object):
 
 class SQLUserMiddleware(object):
     '''Middleware to fetch current user and put in resource's context'''
+
     def __init__(self, config, db, *args, **kwargs):
         self.config = config
         self.db = db
@@ -64,6 +66,7 @@ class SQLUserMiddleware(object):
 
 class SQLAuthRequiredMiddleware(object):
     '''Middleware to authenticate user with sqlalchemy'''
+
     def __init__(self,
                  config,
                  db):

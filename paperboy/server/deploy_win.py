@@ -3,6 +3,7 @@ from waitress import serve
 
 class FalconWaitress():
     '''Utility to deploy falcon.API on waitress'''
+
     def __init__(self, app, options=None):
         '''Constructor
         Args:

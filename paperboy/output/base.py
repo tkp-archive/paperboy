@@ -4,6 +4,7 @@ from abc import abstractmethod, ABCMeta
 
 class BaseOutput(with_metaclass(ABCMeta)):
     '''Abstract base class for Output types'''
+
     def __init__(self, config, *args, **kwargs):
         self.config = config
 
