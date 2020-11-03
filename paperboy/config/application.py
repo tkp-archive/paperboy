@@ -110,13 +110,13 @@ class Paperboy(Application):
     @validate('backend')
     def _validate_backend(self, proposed):
         if proposed['value'] not in ('custom', 'dummy', 'git', 'sqla',):
-            raise TraitError('backend not recognized: %s'.format(proposed['value']))
+            raise TraitError('backend not recognized: {}'.format(proposed['value']))
         return proposed['value']
 
     @validate('auth')
     def _validate_auth(self, proposed):
         if proposed['value'] not in ('custom', 'none', 'sqla',):
-            raise TraitError('backend not recognized: %s'.format(proposed['value']))
+            raise TraitError('backend not recognized: {}'.format(proposed['value']))
         return proposed['value']
     ##########################################
 
