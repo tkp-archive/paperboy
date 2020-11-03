@@ -30,8 +30,6 @@ jobs:
       displayName: "Install Deps"
 
     - script: |
-        python -m pip install --upgrade pip
-        pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
         pip install -e .[dev]
       displayName: 'Install dependencies'
       env:
@@ -84,8 +82,6 @@ jobs:
       displayName: "Install Deps"
 
     - script: |
-        python -m pip install --upgrade pip
-        pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
         pip install -e .[dev]
       displayName: 'Install dependencies'
       env:
@@ -146,8 +142,6 @@ jobs:
       displayName: "Which python"
 
     - script: |
-        python -m pip install --upgrade pip
-        pip install -U apache-airflow luigi python-crontab matplotlib pyEX pandas seaborn
         pip install -e .[dev]
       displayName: 'Install dependencies'
       env:

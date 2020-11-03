@@ -19,13 +19,46 @@ os.environ['AIRFLOW_GPL_UNIDECODE'] = '1'
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-with open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
-    requires = [r for r in f.read().split(os.linesep) if '-e' not in r]
-    if os.name == 'nt':
-        # no gunicorn on windows
-        if 'gunicorn' in requires:
-            requires.remove('gunicorn')
-        requires.append('waitress')
+requires = [
+    'falcon==1.4.1',
+    'gitpython>=2.1.11',
+    'Jinja2>=2.8.1',
+    'nbconvert>=5.4.0',
+    'nbformat>=4.4.0',
+    'nbstripout>=0.3.3',
+    'papermill>=0.16.2',
+    'python-crontab>=2.3.8',
+    'PyJWT>=1.6.4',
+    'traitlets>=4.3.2',
+    'sqlalchemy>=1.2.0',
+    'voila>=0.0.6',
+]
+
+if os.name == 'nt':
+    requires.append('waitress')
+else:
+    requires.append('gunicorn>=19.9.0')
+
+requires_dev = [
+    'apache-airflow',
+    'codecov',
+    'flake8',
+    'luigi',
+    'matplotlib',
+    'mock',
+    'pyEX',
+    'pytest',
+    'pytest-cov',
+    'pytest-falcon',
+    'pytest-tornasync',
+    'python-crontab',
+    'pylint',
+    'pandas',
+    'seaborn',
+    'sphinx',
+    'sphinx_rtd_theme',
+]
+
 
 setup(
     name=name,
@@ -39,7 +72,7 @@ setup(
     license='BSD 3 Clause',
     python_requires='>=3.5',
     install_requires=requires,
-    extras_require={'dev': requires + ['pytest', 'pytest-cov', 'pytest-falcon', 'pylint', 'flake8', 'codecov', 'nose', 'mock', 'sphinx', 'sphinx_rtd_theme']},
+    extras_require={'dev': requires_dev},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python :: 3',
