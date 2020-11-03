@@ -46,6 +46,7 @@ requires_dev = [
     'luigi',
     'matplotlib',
     'mock',
+    'nose',
     'pyEX',
     'pytest',
     'pytest-cov',
