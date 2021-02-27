@@ -69,7 +69,7 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/timkpaine/paperboy',
     author='Tim Paine',
-    author_email='timothy.k.paine@gmail.com',
+    author_email='t.paine154@gmail.com',
     license='BSD 3 Clause',
     python_requires='>=3.5',
     install_requires=requires,
