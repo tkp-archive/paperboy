@@ -55,7 +55,7 @@ class UserSQLStorage(BaseSQLStorageMixin, UserStorage):
         session.flush()
         session.refresh(user)
 
-        token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256').decode('ascii')
+        token = jwt.encode({'id': str(user.id), 'name': user.name}, self.config.secret, algorithm='HS256')
         logging.critical("Storing user {} {} {}".format(username, token, user.id))
         return token
 
