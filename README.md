@@ -8,8 +8,6 @@ A web frontend for scheduling Jupyter Notebooks as reports
 
 [![Build Status](https://dev.azure.com/tpaine154/jupyter/_apis/build/status/timkpaine.paperboy?branchName=main)](https://dev.azure.com/tpaine154/jupyter/_build/latest?definitionId=9&branchName=main)
 [![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/tpaine154/jupyter/9)](https://dev.azure.com/tpaine154/jupyter/_build?definitionId=9&_a=summary&view=runs)
-[![Docs](https://img.shields.io/readthedocs/paperboy.svg)](https://paperboy.readthedocs.io)
-[![Site](https://img.shields.io/badge/Site--grey.svg?colorB=FFFFFF)](https://paperboy-jp.herokuapp.com/)
 
 Paperboy is a production-grade application for scheduling reports. It has a flexible architecture and extensible APIs, and can integrate into a wide variety of deployments. It is composed of various industrial-strength technologies from the open source world.
 
