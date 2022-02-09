@@ -41,23 +41,25 @@ else:
 
 requires_dev = [
     'apache-airflow',
+    "black>=20.0*",
+    "bump2version>=1.0.0",
     'codecov',
-    'flake8',
+    "flake8>=3.7.8",
+    "flake8-black>=0.2.1",
     'luigi',
     'matplotlib',
-    'mock',
+    "mock",
     'nose',
     'pyEX',
-    'pytest',
-    'pytest-cov',
+    "pytest",
+    "pytest-cov>=2.6.1",
+    'python-crontab',
     'pytest-falcon',
     'pytest-tornasync',
-    'python-crontab',
-    'pylint',
     'pandas',
     'seaborn',
-    'sphinx',
-    'sphinx_rtd_theme',
+    "Sphinx>=1.8.4",
+    "sphinx-markdown-builder>=0.5.2",
 ]
 
 
